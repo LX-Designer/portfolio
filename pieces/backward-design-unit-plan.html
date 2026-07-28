@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backward-Design Unit Plan — Dave</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFFFF;
+  --bg-soft:#F5F5F3;
+  --text:#1E1E1E;
+  --text-soft:#6B6B65;
+  --line:#E7E6E1;
+  --blue:#2D5FF0;
+  --blue-bg:#EAF0FE;
+  --radius:14px;
+  --max:1080px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{
+  font-family:'Poppins',sans-serif;
+  font-weight:600;
+  margin:0;
+  letter-spacing:-0.01em;
+}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 28px;}
+a{color:inherit;}
+.eyebrow{
+  font-size:13px;font-weight:600;letter-spacing:0.06em;
+  text-transform:uppercase;color:var(--text-soft);margin:0 0 12px;
+}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:20;background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;}
+.nav .wordmark{font-weight:600;font-size:15px;text-decoration:none;}
+.nav ul{list-style:none;display:flex;gap:8px;margin:0;padding:0;font-size:14px;font-weight:500;}
+.nav ul a{text-decoration:none;color:var(--text-soft);padding:8px 14px;border-radius:999px;}
+.nav ul a:hover{background:var(--bg-soft);color:var(--text);}
+.nav-toggle{display:none;background:none;border:1px solid var(--line);border-radius:8px;
+  width:36px;height:36px;font-size:16px;cursor:pointer;}
+
+/* HERO (home) */
+.hero{padding:76px 0 68px;}
+.badge{display:inline-flex;align-items:center;gap:8px;background:var(--bg-soft);
+  border-radius:999px;padding:7px 14px;font-size:13px;font-weight:500;
+  color:var(--text-soft);margin-bottom:22px;}
+.badge .dot{width:7px;height:7px;border-radius:50%;background:#4CAF6D;display:inline-block;}
+h1.headline{font-size:clamp(30px,4.4vw,48px);line-height:1.2;max-width:800px;}
+.hero-sub{max-width:600px;margin-top:20px;color:var(--text-soft);font-size:17px;}
+.cta-row{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap;}
+.btn{font-size:14.5px;font-weight:600;padding:13px 22px;border-radius:999px;
+  text-decoration:none;display:inline-block;border:none;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn.primary{background:var(--text);color:#fff;}
+.btn.primary:hover{background:#3a3a3a;}
+.btn.ghost{background:var(--bg-soft);color:var(--text);}
+.btn.ghost:hover{background:var(--line);}
+
+section{padding:60px 0;}
+section + section{border-top:1px solid var(--line);}
+.section-head{max-width:620px;margin-bottom:36px;}
+.section-head h2{font-size:clamp(24px,3vw,30px);}
+.section-head p{color:var(--text-soft);margin-top:10px;}
+
+/* WHAT I DO (home) */
+.do-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.do-card{background:var(--bg-soft);border-radius:var(--radius);padding:28px 26px;}
+.do-card .tab{display:inline-flex;align-items:center;justify-content:center;
+  width:32px;height:32px;border-radius:10px;background:var(--blue-bg);color:var(--blue);
+  font-size:14px;font-weight:700;margin-bottom:16px;}
+.do-card h3{font-size:19px;margin-bottom:10px;}
+.do-card p{color:var(--text-soft);font-size:15px;}
+.do-card .draws{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);}
+.do-card .label{font-size:12px;font-weight:600;letter-spacing:0.05em;
+  text-transform:uppercase;color:var(--text-soft);margin-bottom:8px;}
+.do-card ul{margin:0;padding-left:18px;font-size:14.5px;}
+.do-card ul li{margin-bottom:4px;}
+
+/* CATEGORY BROWSE (home) */
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.cat-card{
+  display:block;text-decoration:none;color:var(--text);
+  border:1px solid var(--line);border-radius:var(--radius);
+  padding:26px 24px;transition:border-color .15s ease;
+}
+.cat-card:hover{border-color:var(--blue);}
+.cat-card h3{font-size:18px;margin-bottom:8px;}
+.cat-card p{color:var(--text-soft);font-size:14px;margin:0;}
+.cat-card .count{font-size:12.5px;color:var(--blue);font-weight:600;margin-top:14px;display:block;}
+
+/* BACKGROUND */
+.bg-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:48px;}
+.bg-grid p{color:var(--text-soft);}
+.cred-list{list-style:none;margin:0 0 26px;padding:0;font-size:14.5px;}
+.cred-list li{padding:10px 0;border-top:1px solid var(--line);}
+.cred-list li:last-child{border-bottom:1px solid var(--line);}
+.chip-wrap{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{font-size:13px;border-radius:999px;background:var(--bg-soft);padding:7px 13px;color:var(--text);}
+
+/* BREADCRUMB (category + piece pages) */
+.crumb{font-size:13px;color:var(--text-soft);margin-bottom:18px;}
+.crumb a{text-decoration:none;}
+.crumb a:hover{text-decoration:underline;}
+.crumb .sep{margin:0 6px;color:var(--line);}
+
+/* CATEGORY PAGE HEADER */
+.cat-hero{padding:48px 0 44px;}
+.cat-hero h1{font-size:clamp(26px,3.6vw,38px);max-width:640px;}
+.cat-hero p{color:var(--text-soft);margin-top:14px;max-width:560px;font-size:16px;}
+
+/* PIECE CARD GRID */
+.piece-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.piece-card{
+  border:1px solid var(--line);border-radius:var(--radius);
+  padding:22px 22px 20px;text-decoration:none;color:var(--text);
+  display:flex;flex-direction:column;gap:10px;transition:border-color .15s ease, transform .15s ease;
+}
+.piece-card:hover{border-color:var(--blue);}
+.tag-pill{
+  align-self:flex-start;font-size:11.5px;font-weight:600;
+  background:var(--bg-soft);color:var(--text-soft);
+  padding:4px 10px;border-radius:999px;
+}
+.piece-card h3{font-size:16.5px;margin-top:2px;}
+.piece-card .is{font-size:13.5px;color:var(--text-soft);margin:0;}
+.piece-card .demo{
+  font-size:12.5px;color:var(--blue);margin-top:auto;padding-top:10px;
+  border-top:1px solid var(--line);font-weight:500;
+}
+.piece-card .demo b{font-weight:600;color:var(--text);}
+.piece-card.soon{opacity:0.5;cursor:default;pointer-events:none;}
+
+/* PIECE PAGE / MODAL CONTENT */
+.piece-body{padding:44px 0 60px;}
+.piece-body .tag-pill{margin-bottom:16px;}
+.piece-body h1{font-size:clamp(24px,3.4vw,32px);margin-bottom:22px;}
+.piece-section{margin-top:26px;}
+.piece-section h3{font-size:13px;text-transform:uppercase;letter-spacing:0.05em;
+  color:var(--text-soft);margin-bottom:8px;font-family:'Inter',sans-serif;font-weight:600;}
+.piece-section p{font-size:15.5px;color:var(--text);}
+.placeholder-box{
+  margin-top:28px;border:2px dashed var(--line);border-radius:var(--radius);
+  background:var(--bg-soft);padding:56px 24px;text-align:center;
+  color:var(--text-soft);font-size:14px;
+}
+.piece-back{
+  display:inline-block;margin-top:32px;font-size:14px;font-weight:600;
+  text-decoration:none;color:var(--text-soft);
+}
+.piece-back:hover{color:var(--text);}
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(30,30,26,0.55);
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:48px 20px;z-index:100;
+  opacity:0;visibility:hidden;transition:opacity .18s ease;
+  overflow-y:auto;
+}
+.modal-overlay.open{opacity:1;visibility:visible;}
+.modal-panel{
+  background:#fff;border-radius:18px;max-width:680px;width:100%;
+  position:relative;padding:40px 40px 32px;
+}
+.modal-close{
+  position:absolute;top:18px;right:18px;width:34px;height:34px;border-radius:50%;
+  border:1px solid var(--line);background:#fff;cursor:pointer;font-size:15px;
+  display:flex;align-items:center;justify-content:center;color:var(--text-soft);
+}
+.modal-close:hover{background:var(--bg-soft);color:var(--text);}
+.modal-panel .piece-back{display:none;}
+
+/* CONTACT / FOOTER */
+footer{padding:60px 0 44px;}
+footer h2{font-size:clamp(24px,3vw,30px);max-width:500px;}
+footer p.lead{color:var(--text-soft);max-width:460px;margin-top:12px;}
+.contact-row{display:flex;gap:14px;margin-top:26px;flex-wrap:wrap;}
+.contact-row a{font-size:14px;font-weight:600;background:var(--bg-soft);
+  border-radius:999px;padding:10px 18px;text-decoration:none;}
+.foot-line{margin-top:52px;padding-top:20px;border-top:1px solid var(--line);
+  font-size:13px;color:var(--text-soft);}
+
+/* SLIM FOOTER (category + piece pages) */
+.sub-footer{padding:36px 0 48px;border-top:1px solid var(--line);}
+.sub-footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;
+  font-size:13px;color:var(--text-soft);}
+.sub-footer a{color:var(--blue);font-weight:600;text-decoration:none;}
+
+@media (max-width:900px){
+  .cat-grid,.piece-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:800px){
+  .do-grid,.bg-grid{grid-template-columns:1fr;}
+  .cat-grid,.piece-grid{grid-template-columns:1fr;}
+  .nav ul{position:absolute;top:68px;left:0;right:0;background:#fff;
+    flex-direction:column;gap:0;border-bottom:1px solid var(--line);
+    display:none;padding:8px 20px 16px;}
+  .nav ul.open{display:flex;}
+  .nav ul a{padding:12px 6px;border-radius:0;}
+  .nav-toggle{display:block;}
+  .modal-panel{padding:32px 22px 26px;}
+}
+
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="wordmark" href="../index.html">Dave</a>
+    <ul id="navlinks">
+      <li><a href="../category-interactive.html">Interactive</a></li>
+      <li><a href="../category-assessment.html">Assessment</a></li>
+      <li><a href="../category-products.html">Products</a></li>
+      <li><a href="../index.html#background">Background</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">≡</button>
+  </div>
+</header>
+
+<section class="piece-body">
+  <div class="wrap">
+    <p class="crumb">
+      <a href="../index.html">Home</a><span class="sep">/</span>
+      <a href="../category-assessment.html">Assessment Strategies &amp; Design</a><span class="sep">/</span>
+      Backward-Design Unit Plan
+    </p>
+
+    <div id="piece-content">
+      <span class="tag-pill">Tertiary Education</span>
+      <h1>Backward-Design Unit Plan</h1>
+      <div class="piece-section">
+        <h3>What this is</h3>
+        <p>An exemplar unit plan on invented subject matter, showing outcomes, assessment, and learning activities built in that order and kept aligned throughout.</p>
+      </div>
+      <div class="piece-section">
+        <h3>What this demonstrates</h3>
+        <p>Backward design and constructive alignment applied end-to-end, not just described.</p>
+      </div>
+      <div class="placeholder-box">Preview coming soon.</div>
+    </div>
+
+    <a class="piece-back" href="../category-assessment.html">← Back to Assessment Strategies &amp; Design</a>
+  </div>
+</section>
+
+<footer class="sub-footer">
+  <div class="wrap row">
+    <span>Learning Design Portfolio</span>
+    <a href="../index.html#contact">Get in touch →</a>
+  </div>
+</footer>
+
+<script>
+// Mobile nav toggle — present on every page
+document.addEventListener('DOMContentLoaded', () => {
+  const toggle = document.getElementById('navToggle');
+  const links = document.getElementById('navlinks');
+  if (toggle && links) {
+    toggle.addEventListener('click', () => links.classList.toggle('open'));
+    links.querySelectorAll('a').forEach(a =>
+      a.addEventListener('click', () => links.classList.remove('open'))
+    );
+  }
+
+  // Modal interception — only runs on category pages, which include
+  // a #modal-overlay element and piece cards with [data-modal] hrefs.
+  const overlay = document.getElementById('modal-overlay');
+  if (!overlay) return;
+
+  const panel = overlay.querySelector('.modal-panel');
+  // Captured once, before any pushState touches the address bar. Resolving
+  // against window.location instead (which pushState mutates) makes every
+  // relative href after the first open/close cycle resolve to the wrong path.
+  const categoryUrl = window.location.href;
+
+  async function openModal(href, push) {
+    const url = new URL(href, categoryUrl).href;
+    try {
+      const res = await fetch(url);
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const content = doc.querySelector('#piece-content');
+      if (!content) { window.location.href = url; return; }
+      panel.innerHTML =
+        '<button class="modal-close" id="modalClose" aria-label="Close">✕</button>' +
+        content.innerHTML;
+      // innerHTML never executes <script> tags — re-create each one so that
+      // interactive pieces (not just static copy) work inside the modal too.
+      panel.querySelectorAll('script').forEach((old) => {
+        const fresh = document.createElement('script');
+        for (const attr of old.attributes) fresh.setAttribute(attr.name, attr.value);
+        fresh.textContent = old.textContent;
+        old.replaceWith(fresh);
+      });
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      document.getElementById('modalClose').addEventListener('click', closeModal);
+      if (push) history.pushState({ modal: url }, '', url);
+    } catch (err) {
+      // If fetch fails (e.g. opened via file:// with no local server),
+      // fall back to a normal page load rather than leaving a dead click.
+      window.location.href = url;
+    }
+  }
+
+  function closeModal(push) {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    if (push !== false) history.pushState({}, '', categoryUrl);
+  }
+
+  document.querySelectorAll('[data-modal]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      openModal(link.getAttribute('href'), true);
+    });
+  });
+
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal();
+  });
+
+  window.addEventListener('popstate', (e) => {
+    if (e.state && e.state.modal) {
+      openModal(e.state.modal, false);
+    } else {
+      closeModal(false);
+    }
+  });
+});
+
+</script>
+</body>
+</html>
