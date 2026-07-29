@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PieceCard from './PieceCard.astro';
+import SubFooter from './SubFooter.astro';
+import { piecesByCategory } from '../data/pieces.js';
+
+const { category } = Astro.props;
+const pieces = piecesByCategory(category.slug);
+---
+<BaseLayout title={`${category.label} — Dave`} showModalOverlay>
+  <section class="cat-hero">
+    <div class="wrap">
+      <p class="crumb"><a href="/">Home</a><span class="sep">/</span>{category.label}</p>
+      <h1>{category.label}</h1>
+      <p>{category.blurb}</p>
+    </div>
+  </section>
+
+  <section style="padding-top:0;">
+    <div class="wrap">
+      <div class="piece-grid">
+        {pieces.map((piece) => <PieceCard piece={piece} />)}
+      </div>
+    </div>
+  </section>
+
+  <SubFooter />
+</BaseLayout>

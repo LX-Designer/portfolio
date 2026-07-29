@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SubFooter from '../../components/SubFooter.astro';
+import NaturalSelection from '../../components/NaturalSelection.jsx';
+import { pieces, categories, getPiece } from '../../data/pieces.js';
+
+export function getStaticPaths() {
+  return pieces.map((piece) => ({ params: { slug: piece.slug }, props: { piece } }));
+}
+
+const { piece } = Astro.props;
+const category = categories[piece.category];
+---
+<BaseLayout title={`${piece.title} — Dave`}>
+  <section class="piece-body">
+    <div class="wrap">
+      <p class="crumb">
+        <a href="/">Home</a><span class="sep">/</span>
+        <a href={`/${category.file}`}>{category.label}</a><span class="sep">/</span>
+        {piece.title}
+      </p>
+
+      <div id="piece-content">
+        <span class="tag-pill">{piece.tag}</span>
+        <h1>{piece.title}</h1>
+        <div class="piece-section">
+          <h3>What this is</h3>
+          <p>{piece.is}</p>
+        </div>
+        <div class="piece-section">
+          <h3>What this demonstrates</h3>
+          <p>{piece.demonstrates}</p>
+        </div>
+
+        {piece.island === 'NaturalSelection' ? (
+          <div id="piece-asset" class="ns-mount">
+            {/* client:only — this component's initial state is Math.random()-driven,
+               so server-rendering it would produce different moths than the client
+               and trigger a hydration mismatch. Nothing here is useful without JS
+               anyway, so skipping SSR for it costs nothing. */}
+            <NaturalSelection client:only="react" />
+          </div>
+        ) : (
+          <div id="piece-asset" class="placeholder-box">Preview coming soon.</div>
+        )}
+      </div>
+
+      <a class="piece-back" href={`/${category.file}`}>← Back to {category.label}</a>
+    </div>
+  </section>
+
+  <SubFooter />
+</BaseLayout>

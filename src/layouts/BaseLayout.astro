@@ -1,0 +1,122 @@
+---
+import '../styles/global.css';
+
+const { title, description = '', showModalOverlay = false } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  {description && <meta name="description" content={description} />}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap">
+      <a class="wordmark" href="/">Dave</a>
+      <ul id="navlinks">
+        <li><a href="/category-interactive">Interactive</a></li>
+        <li><a href="/category-assessment">Assessment</a></li>
+        <li><a href="/category-products">Products</a></li>
+        <li><a href="/#background">Background</a></li>
+        <li><a href="/#contact">Contact</a></li>
+      </ul>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">≡</button>
+    </div>
+  </header>
+
+  <slot />
+
+  {showModalOverlay && (
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal-panel"></div>
+    </div>
+  )}
+
+  <script>
+    // Mobile nav toggle — present on every page
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggle = document.getElementById('navToggle');
+      const links = document.getElementById('navlinks');
+      if (toggle && links) {
+        toggle.addEventListener('click', () => links.classList.toggle('open'));
+        links.querySelectorAll('a').forEach((a) =>
+          a.addEventListener('click', () => links.classList.remove('open'))
+        );
+      }
+
+      // Modal interception — only runs on category pages, which include
+      // a #modal-overlay element and piece cards with [data-modal] hrefs.
+      const overlay = document.getElementById('modal-overlay');
+      if (!overlay) return;
+
+      const panel = overlay.querySelector('.modal-panel');
+      // Captured once, before any pushState touches the address bar. Resolving
+      // against window.location instead (which pushState mutates) makes every
+      // relative href after the first open/close cycle resolve to the wrong path.
+      const categoryUrl = window.location.href;
+
+      async function openModal(href, push) {
+        const url = new URL(href, categoryUrl).href;
+        try {
+          const res = await fetch(url);
+          const html = await res.text();
+          const doc = new DOMParser().parseFromString(html, 'text/html');
+          // The modal shows only the asset itself, not the card's framing text
+          // (tag, title, "what this is") repeated — the visitor already saw that
+          // on the card they just clicked.
+          const content = doc.querySelector('#piece-asset');
+          if (!content) { window.location.href = url; return; }
+          panel.innerHTML =
+            '<button class="modal-close" id="modalClose" aria-label="Close">✕</button>' +
+            content.outerHTML;
+          // innerHTML never executes <script> tags (classic or module, including
+          // Astro's own island-hydration scripts) — re-create each one so that
+          // interactive pieces work inside the modal too, not just static copy.
+          panel.querySelectorAll('script').forEach((old) => {
+            const fresh = document.createElement('script');
+            for (const attr of old.attributes) fresh.setAttribute(attr.name, attr.value);
+            fresh.textContent = old.textContent;
+            old.replaceWith(fresh);
+          });
+          overlay.classList.add('open');
+          document.body.style.overflow = 'hidden';
+          document.getElementById('modalClose').addEventListener('click', closeModal);
+          if (push) history.pushState({ modal: url }, '', url);
+        } catch (err) {
+          // If fetch fails, fall back to a normal page load rather than leaving a dead click.
+          window.location.href = url;
+        }
+      }
+
+      function closeModal(push) {
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+        if (push !== false) history.pushState({}, '', categoryUrl);
+      }
+
+      document.querySelectorAll('[data-modal]').forEach((link) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          openModal(link.getAttribute('href'), true);
+        });
+      });
+
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeModal();
+      });
+
+      window.addEventListener('popstate', (e) => {
+        if (e.state && e.state.modal) {
+          openModal(e.state.modal, false);
+        } else {
+          closeModal(false);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

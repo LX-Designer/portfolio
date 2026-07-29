@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { categories } from '../data/pieces.js';
+---
+<BaseLayout title="Dave — Learning Designer">
+  <section class="hero" id="top">
+    <div class="wrap">
+      <div class="badge"><span class="dot"></span>Open to work</div>
+      <h1 class="headline">Learning design that works.</h1>
+      <p class="hero-sub">Curriculum, assessment, vocational training, and the Canvas tooling to build it all.</p>
+      <div class="cta-row">
+        <a href="#categories" class="btn primary">See the work</a>
+        <a href="#contact" class="btn ghost">Get in touch</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="categories">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Portfolio</p>
+        <h2>Browse the portfolio</h2>
+      </div>
+      <div class="cat-grid">
+        {Object.values(categories).map((category) => (
+          <a class="cat-card" href={`/${category.file}`}>
+            <h3>{category.label}</h3>
+            <p>{category.blurb}</p>
+            <span class="count">Explore →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="background">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Background</p>
+        <h2>Where this comes from</h2>
+      </div>
+      <div class="bg-grid">
+        <div>
+          <p>Currently leading assessment reform and Cambridge curriculum coordination at a pathway college, and building the Canvas tooling behind it. Earlier work spans vocational compliance training and safety-critical e-learning for transit operators. Outside of paid work, I build Inquiry Labs — interactive learning simulations.</p>
+          <div class="chip-wrap">
+            <span class="chip">Competency-based curriculum design</span>
+            <span class="chip">Backward design &amp; constructive alignment</span>
+            <span class="chip">Criterion-referenced assessment writing</span>
+            <span class="chip">LMS build &amp; content pipelines</span>
+            <span class="chip">Safety-critical / compliance training</span>
+            <span class="chip">Outcome &amp; skills unpacking</span>
+          </div>
+        </div>
+        <div>
+          <ul class="cred-list">
+            <li>Master of Education, Secondary Teaching (Languages &amp; Humanities)</li>
+            <li>Postgraduate Diploma, International Development</li>
+            <li>Bachelor of Social Science, Policy</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="contact">
+    <div class="wrap">
+      <p class="eyebrow">Get in touch</p>
+      <h2>Let's talk about where this could fit.</h2>
+      <p class="lead">Open to conversations about learning design, curriculum, or training work.</p>
+      <div class="contact-row">
+        <a href="mailto:dave@example.com">dave@example.com</a>
+        <a href="#">LinkedIn ↗</a>
+      </div>
+      <div class="foot-line">Learning Design Portfolio</div>
+    </div>
+  </footer>
+</BaseLayout>
