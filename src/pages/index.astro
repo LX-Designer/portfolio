@@ -2,12 +2,15 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { categories } from '../data/pieces.js';
 ---
-<BaseLayout title="Dave — Learning Designer">
+<BaseLayout title="David King — Learning Design Specialist">
   <section class="hero" id="top">
+    <div class="hero-media">
+      <img src="/images/hero.png" alt="Dave collaborating with a colleague at a laptop in an office" />
+    </div>
     <div class="wrap">
-      <div class="badge"><span class="dot"></span>Open to work</div>
-      <h1 class="headline">Learning design that works.</h1>
-      <p class="hero-sub">Curriculum, assessment, vocational training, and the Canvas tooling to build it all.</p>
+      <h1 class="headline">Learning Design Specialist</h1>
+      <p class="hero-sub">Helping institutions build learning environments that cultivate genuine capability.</p>
+      <hr class="hero-accent" />
       <div class="cta-row">
         <a href="#categories" class="btn primary">See the work</a>
         <a href="#contact" class="btn ghost">Get in touch</a>
@@ -18,8 +21,8 @@ import { categories } from '../data/pieces.js';
   <section id="categories">
     <div class="wrap">
       <div class="section-head">
-        <p class="eyebrow">Portfolio</p>
-        <h2>Browse the portfolio</h2>
+        <h2>Portfolio</h2>
+        <p>Browse the selection of work samples that showcase my areas of expertise.</p>
       </div>
       <div class="cat-grid">
         {Object.values(categories).map((category) => (
@@ -35,38 +38,23 @@ import { categories } from '../data/pieces.js';
 
   <section id="background">
     <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow">Background</p>
-        <h2>Where this comes from</h2>
+      <div class="section-head section-head--tight">
+        <h2>About me</h2>
       </div>
-      <div class="bg-grid">
-        <div>
-          <p>Currently leading assessment reform and Cambridge curriculum coordination at a pathway college, and building the Canvas tooling behind it. Earlier work spans vocational compliance training and safety-critical e-learning for transit operators. Outside of paid work, I build Inquiry Labs — interactive learning simulations.</p>
-          <div class="chip-wrap">
-            <span class="chip">Competency-based curriculum design</span>
-            <span class="chip">Backward design &amp; constructive alignment</span>
-            <span class="chip">Criterion-referenced assessment writing</span>
-            <span class="chip">LMS build &amp; content pipelines</span>
-            <span class="chip">Safety-critical / compliance training</span>
-            <span class="chip">Outcome &amp; skills unpacking</span>
-          </div>
-        </div>
-        <div>
-          <ul class="cred-list">
-            <li>Master of Education, Secondary Teaching (Languages &amp; Humanities)</li>
-            <li>Postgraduate Diploma, International Development</li>
-            <li>Bachelor of Social Science, Policy</li>
-          </ul>
-        </div>
+      <div class="about-body">
+        <p>When I started in education, "learning by doing" was the mantra echoing through every staff room I passed through. Early on, I had a mentor who brought that mantra to life. Students leaned into his lessons, eagerly participating in carefully crafted activities that asked them to solve problems, propose new ideas, make mistakes, and help each other develop deep understanding of complex topics. He had an engaging personality, but the real value of his teaching ran deeper than that. He was an expert at creating experimental spaces where students could work right at the edge of their abilities: challenged but never lost, guided but never given the answer. In this environment, they were able to reach their own conclusions and build real skill through their own effort.</p>
+        <p>Since moving into learning design, after many years writing curricula and designing courses in my own field, I've been building those same conditions into online learning environments. It's a gap I see often: a lot of online courses default to passive delivery, content to click through rather than problems to work through. And it's not just an online problem. Plenty of traditional classrooms, especially in higher education, lean the same way, treating a lecture or a reading list as if it were the learning itself.</p>
+        <p>With technology and AI now part of mainstream education, the possibility of building authentic, engaging environments where learners can journey from novice to expert through simulated experience is greater than it's ever been. I enjoy working with future-minded educators and institutions who share that vision.</p>
       </div>
     </div>
   </section>
 
   <footer id="contact">
     <div class="wrap">
-      <p class="eyebrow">Get in touch</p>
-      <h2>Let's talk about where this could fit.</h2>
-      <p class="lead">Open to conversations about learning design, curriculum, or training work.</p>
+      <div class="section-head section-head--tight">
+        <h2>Get in touch</h2>
+      </div>
+      <p class="lead">Open to conversations about learning design, curriculum or training work.</p>
       <div class="contact-row">
         <a href="mailto:dave@example.com">dave@example.com</a>
         <a href="#">LinkedIn ↗</a>

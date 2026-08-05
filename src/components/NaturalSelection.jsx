@@ -109,16 +109,32 @@ const nextId = () => ++_uid;
 // with no dense clumps or empty gaps, so the scene reads as a considered
 // branch of moths rather than a scatter of dots.
 function gridPositions(n) {
-  const cols = 5;
+  // Below the same breakpoint the rest of the layout treats as "mobile", the
+  // moth button's fixed pixel size is actually bigger than a 5-column cell on
+  // a phone-width field — every moth in a row would overlap its neighbours
+  // even with zero jitter. Dropping to 4 wider columns (5 rows instead of 4)
+  // gives each moth a cell it can actually fit inside.
+  const isNarrow = typeof window !== "undefined" && window.matchMedia?.("(max-width:600px)").matches;
+  const cols = isNarrow ? 4 : 5;
   const rows = Math.ceil(n / cols);
   const cellW = 100 / cols, cellH = 100 / rows;
   const rand = mulberry32((Date.now() ^ (Math.random() * 1e9)) >>> 0);
+  // The moth button has a fixed pixel footprint (SVG + padding), but this grid
+  // is pure percentage math with no idea how many pixels that is on a given
+  // screen. On a narrow phone-width field the old jitter (up to 31% of a
+  // cell's width from centre) could push a moth's edge past the field's own
+  // boundary, or two neighbouring moths into each other. EDGE_MARGIN keeps
+  // every position at least that far from the field edge regardless of field
+  // size, and the jitter spread is pulled in slightly so neighbours have more
+  // room between them too.
+  const EDGE_MARGIN = 13;
+  const clamp = (v) => Math.min(100 - EDGE_MARGIN, Math.max(EDGE_MARGIN, v));
   const out = [];
   for (let i = 0; i < n; i++) {
     const col = i % cols, row = Math.floor(i / cols);
     out.push({
-      x: col * cellW + cellW * 0.5 + (rand() - 0.5) * cellW * 0.62,
-      y: row * cellH + cellH * 0.5 + (rand() - 0.5) * cellH * 0.62,
+      x: clamp(col * cellW + cellW * 0.5 + (rand() - 0.5) * cellW * 0.4),
+      y: clamp(row * cellH + cellH * 0.5 + (rand() - 0.5) * cellH * 0.4),
       rot: (rand() - 0.5) * 22,
     });
   }
@@ -379,8 +395,8 @@ export default function NaturalSelection() {
 
         .ns-takeaway{font-size:14.5px;line-height:1.68;color:#3B4234;}
         .ns-takeaway p{margin:0 0 13px;} .ns-takeaway p:last-child{margin-bottom:0;} .ns-takeaway b{color:var(--ink);}
-        .ns-pull{margin:0 0 16px;padding:15px 18px 15px 20px;background:var(--accent-wash);border-left:3px solid var(--accent);
-          border-radius:0 10px 10px 0;font-family:'Fraunces',Georgia,serif;font-size:16px;line-height:1.55;font-weight:500;color:var(--ink);}
+        .ns-pull{margin:0 0 16px;padding:20px 24px;background:var(--accent-wash);
+          border-radius:14px;font-family:'Fraunces',Georgia,serif;font-size:16px;line-height:1.55;font-weight:500;color:var(--ink);}
         .ns-concept{margin:16px 0;padding:16px 18px;background:var(--amber-wash);border:1px solid var(--amber-line);border-radius:12px;}
         .ns-concept-term{font-weight:700;color:var(--amber);font-family:'Fraunces',Georgia,serif;font-size:15px;}
         .ns-ingredients{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:9px;}
@@ -405,6 +421,8 @@ export default function NaturalSelection() {
         .ns-footer b{color:var(--ink);} .ns-footer-icon{flex:0 0 auto;margin-top:2px;color:var(--muted);}
 
         @media(max-width:600px){
+          .ns-root{padding:20px 12px 14px;}
+          .ns-card{padding:14px;}
           .ns-title{font-size:24px;} .ns-field{height:300px;}
           .ns-yax{width:40px;flex:0 0 40px;} .ns-xax{margin-left:48px;}
         }

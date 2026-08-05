@@ -10,13 +10,12 @@ const pieces = piecesByCategory(category.slug);
 <BaseLayout title={`${category.label} — Dave`} showModalOverlay>
   <section class="cat-hero">
     <div class="wrap">
-      <p class="crumb"><a href="/">Home</a><span class="sep">/</span>{category.label}</p>
       <h1>{category.label}</h1>
       <p>{category.blurb}</p>
     </div>
   </section>
 
-  <section style="padding-top:0;">
+  <section style="padding-top:0;border-top:none;">
     <div class="wrap">
       <div class="piece-grid">
         {pieces.map((piece) => <PieceCard piece={piece} />)}

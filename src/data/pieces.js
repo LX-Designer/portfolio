@@ -39,8 +39,16 @@ export const pieces = [
   {
     slug: 'cumulative-advantage-explorable', category: 'interactive', tag: 'Tertiary Education',
     title: 'Cumulative Advantage Explorable',
-    is: 'A Music-Lab-inspired simulation across several named worlds, where small early differences in popularity compound into large outcome gaps.',
+    is: 'Build a music chart one listener at a time and watch a moderately good song snowball into a runaway hit from nothing but an accidental early lead, then compare it against a world where listeners can’t see the charts at all. A recreation of the 2006 Music Lab experiment.',
     demonstrates: 'Modelling a systems-level concept — path dependency — through direct manipulation rather than description.',
+    island: 'CumulativeAdvantage',
+  },
+  {
+    slug: 'metacognition-literature-review', category: 'interactive', tag: 'Professional Development',
+    title: 'Metacognition & Self-Directed Learning',
+    is: 'An interactive literature review for educators, walking through metacognitive theory and its link to self-directed learning via a guided journey: a baseline self-assessment, seven concept-building activities, and a personal action plan generated from your own responses.',
+    demonstrates: 'Turning a reference document into a structured learning experience — teaching the underlying five-stage instructional model by having the reader move through it themselves.',
+    island: 'MetacognitionLab',
   },
   {
     slug: 'milltown-recession-simulation', category: 'interactive', tag: 'Tertiary Education',
@@ -55,10 +63,11 @@ export const pieces = [
     demonstrates: 'Applying the same interaction design skill to procedural and safety judgement, not just conceptual understanding.',
   },
   {
-    slug: 'parameter-driven-simulation', category: 'interactive', tag: 'Concept',
-    title: 'Parameter-Driven Simulation',
-    is: 'A live chart driven by continuous sliders instead of discrete choices, so cause and effect update smoothly as the inputs change.',
+    slug: 'reaction-rate-simulator', category: 'interactive', tag: 'Concept',
+    title: 'Reaction Rate Simulator',
+    is: 'A live particle collision simulation, driven by two continuous sliders (temperature and activation energy) instead of discrete choices, so cause and effect in collision theory update smoothly as the inputs change.',
     demonstrates: 'A different simulation mechanic: continuous cause-and-effect rather than discrete decisions.',
+    island: 'ReactionRateSimulator',
   },
   {
     slug: 'sort-and-categorise-interactive', category: 'interactive', tag: 'Concept',
@@ -77,14 +86,16 @@ export const pieces = [
   {
     slug: 'interactive-alignment-map', category: 'assessment', tag: 'Tertiary Education',
     title: 'Interactive Alignment Map',
-    is: 'A clickable diagram tracing each learning outcome through to its assessment task and the activities that support it.',
+    is: 'Select a learning outcome and trace it live through to the shared assessment task it feeds, the activities that build toward it, and the content it draws on — then reveal the sequenced learning plan that ties them together.',
     demonstrates: 'Making an alignment structure genuinely inspectable, rather than a static table.',
+    island: 'AlignmentMap',
   },
   {
     slug: 'solo-rubric-explorer', category: 'assessment', tag: 'Tertiary Education',
     title: 'SOLO Rubric Explorer',
-    is: 'A rubric where clicking a criterion reveals its descriptors and an example response at each SOLO taxonomy level, from unistructural through to extended abstract.',
+    is: 'Select one of five student responses to an economics task and see it graded live against three criteria, each written along the SOLO taxonomy’s progression from a single disconnected idea through to a fully integrated, self-questioning argument.',
     demonstrates: 'Criterion-writing expertise paired directly with interaction design.',
+    island: 'SoloRubric',
   },
   {
     slug: 'slo-unpacking-exemplar', category: 'assessment', tag: 'Tertiary Education',

@@ -16,7 +16,7 @@ const { title, description = '', showModalOverlay = false } = Astro.props;
 <body>
   <header class="nav">
     <div class="wrap">
-      <a class="wordmark" href="/">Dave</a>
+      <a class="wordmark" href="/">David King</a>
       <ul id="navlinks">
         <li><a href="/category-interactive">Interactive</a></li>
         <li><a href="/category-assessment">Assessment</a></li>
@@ -98,8 +98,17 @@ const { title, description = '', showModalOverlay = false } = Astro.props;
         if (push !== false) history.pushState({}, '', categoryUrl);
       }
 
+      // Below this width, skip the modal shortcut entirely and let the tap
+      // navigate to the piece's real page. A modal floating over content is a
+      // desktop-web convention; full-page navigation on tap is how mobile
+      // browsing already works, and it's what a shared link lands on anyway —
+      // this just makes browsing the grid behave the same way. Checked fresh
+      // on every click (not cached) so a resize/rotation is respected.
+      const isMobile = () => window.matchMedia('(max-width: 640px)').matches;
+
       document.querySelectorAll('[data-modal]').forEach((link) => {
         link.addEventListener('click', (e) => {
+          if (isMobile()) return;
           e.preventDefault();
           openModal(link.getAttribute('href'), true);
         });
