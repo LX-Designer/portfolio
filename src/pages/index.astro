@@ -41,13 +41,74 @@ import { categories } from '../data/pieces.js';
       <div class="section-head section-head--tight">
         <h2>About me</h2>
       </div>
-      <div class="about-body">
-        <p>When I started in education, "learning by doing" was the mantra echoing through every staff room I passed through. Early on, I had a mentor who brought that mantra to life. Students leaned into his lessons, eagerly participating in carefully crafted activities that asked them to solve problems, propose new ideas, make mistakes, and help each other develop deep understanding of complex topics. He had an engaging personality, but the real value of his teaching ran deeper than that. He was an expert at creating experimental spaces where students could work right at the edge of their abilities: challenged but never lost, guided but never given the answer. In this environment, they were able to reach their own conclusions and build real skill through their own effort.</p>
-        <p>Since moving into learning design, after many years writing curricula and designing courses in my own field, I've been building those same conditions into online learning environments. It's a gap I see often: a lot of online courses default to passive delivery, content to click through rather than problems to work through. And it's not just an online problem. Plenty of traditional classrooms, especially in higher education, lean the same way, treating a lecture or a reading list as if it were the learning itself.</p>
-        <p>With technology and AI now part of mainstream education, the possibility of building authentic, engaging environments where learners can journey from novice to expert through simulated experience is greater than it's ever been. I enjoy working with future-minded educators and institutions who share that vision.</p>
+      <div class="about-grid">
+        <div class="about-photo">
+          <span>Photo coming soon</span>
+        </div>
+        <div class="about-text" id="aboutText">
+          <div class="about-body" id="aboutBody">
+            <p>When I started in education, "learning by doing" was the mantra echoing through every staff room I passed through. Early on, I had a mentor who brought that mantra to life. Students leaned into his lessons, eagerly participating in carefully crafted activities that asked them to solve problems, propose new ideas, make mistakes, and help each other develop deep understanding of complex topics. He had an engaging personality, but the real value of his teaching ran deeper than that. He was an expert at creating experimental spaces where students could work right at the edge of their abilities: challenged but never lost, guided but never given the answer. In this environment, they were able to reach their own conclusions and build real skill through their own effort.</p>
+            <p>Since moving into learning design, after many years writing curricula and designing courses in my own field, I've been building those same conditions into online learning environments. It's a gap I see often: a lot of online courses default to passive delivery, content to click through rather than problems to work through. And it's not just an online problem. Plenty of traditional classrooms, especially in higher education, lean the same way, treating a lecture or a reading list as if it were the learning itself.</p>
+            <p>With technology and AI now part of mainstream education, the possibility of building authentic, engaging environments where learners can journey from novice to expert through simulated experience is greater than it's ever been. I enjoy working with future-minded educators and institutions who share that vision.</p>
+          </div>
+          <button class="read-more-btn" id="readMoreBtn" type="button">Read more ↓</button>
+        </div>
       </div>
     </div>
   </section>
+
+  <script>
+    (function () {
+      const photo = document.querySelector('.about-photo');
+      const textWrap = document.getElementById('aboutText');
+      const body = document.getElementById('aboutBody');
+      const btn = document.getElementById('readMoreBtn');
+      if (!photo || !textWrap || !body || !btn) return;
+
+      // The column height always tracks the photo's rendered height (not a
+      // fixed value) so it stays correct across breakpoints and once a real
+      // photo replaces the placeholder at a different aspect ratio. It's set
+      // on the column itself (not just the clamped text) so the flex layout
+      // pins the trigger to that exact bottom edge, flush with the photo.
+      function syncClampHeight() {
+        if (textWrap.classList.contains('expanded')) return;
+        textWrap.style.height = photo.getBoundingClientRect().height + 'px';
+      }
+
+      function updateButtonVisibility() {
+        // No point showing "Read more" if the text already fits within the
+        // clamp height with nothing hidden below it.
+        const overflowing = body.scrollHeight > body.clientHeight + 2;
+        btn.style.display = overflowing || textWrap.classList.contains('expanded') ? '' : 'none';
+      }
+
+      syncClampHeight();
+      updateButtonVisibility();
+      // Re-sync after full load too — once the placeholder is replaced with
+      // a real <img>, its async decode/load can change the photo's rendered
+      // height after this script's first (pre-image-load) measurement.
+      window.addEventListener('load', () => {
+        syncClampHeight();
+        updateButtonVisibility();
+      });
+      window.addEventListener('resize', () => {
+        syncClampHeight();
+        updateButtonVisibility();
+      });
+
+      btn.addEventListener('click', () => {
+        const expanded = textWrap.classList.toggle('expanded');
+        if (expanded) {
+          textWrap.style.height = 'auto';
+          btn.textContent = 'Read less ↑';
+        } else {
+          syncClampHeight();
+          btn.textContent = 'Read more ↓';
+        }
+        updateButtonVisibility();
+      });
+    })();
+  </script>
 
   <footer id="contact">
     <div class="wrap">
