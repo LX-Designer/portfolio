@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CatalogueCard from '../components/CatalogueCard.astro';
+import ContactOptions from '../components/ContactOptions.astro';
 import { pieces, getPiece } from '../data/pieces.js';
 
 const featuredSlugs = ['natural-selection-explorable', 'solo-rubric-explorer', 'build-tool-demo'];
@@ -197,9 +198,8 @@ const allPieces = [...featured, ...rest];
         <h2>Get in touch</h2>
       </div>
       <p class="lead">Open to conversations about learning design, curriculum or training work.</p>
-      <div class="contact-row">
-        <a href="mailto:dave@example.com">dave@example.com</a>
-        <a href="https://www.linkedin.com/in/david-king-learning-designer/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+      <div class="contact-row contact-options">
+        <ContactOptions />
       </div>
       <div class="foot-line">Learning Design Portfolio</div>
     </div>

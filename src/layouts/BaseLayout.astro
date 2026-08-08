@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import ContactOptions from '../components/ContactOptions.astro';
 
 const { title, description = '', showModalOverlay = false } = Astro.props;
 ---
@@ -20,7 +21,7 @@ const { title, description = '', showModalOverlay = false } = Astro.props;
       <ul id="navlinks">
         <li><a href="/#portfolio">Portfolio</a></li>
         <li><a href="/#background">About</a></li>
-        <li><a href="/#contact">Contact</a></li>
+        <li><a href="/#contact" id="contactLink">Contact</a></li>
       </ul>
       <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">≡</button>
     </div>
@@ -34,6 +35,16 @@ const { title, description = '', showModalOverlay = false } = Astro.props;
     </div>
   )}
 
+  <div class="modal-overlay" id="contact-modal-overlay">
+    <div class="modal-panel contact-modal-panel">
+      <button class="modal-close" id="contactModalClose" aria-label="Close">✕</button>
+      <h3>Get in touch</h3>
+      <div class="contact-options">
+        <ContactOptions />
+      </div>
+    </div>
+  </div>
+
   <script>
     // Mobile nav toggle — present on every page
     document.addEventListener('DOMContentLoaded', () => {
@@ -45,6 +56,58 @@ const { title, description = '', showModalOverlay = false } = Astro.props;
           a.addEventListener('click', () => links.classList.remove('open'))
         );
       }
+
+      // Contact picker — present on every page via BaseLayout, unlike the
+      // piece-preview modal below which only exists on pages that opt in.
+      const contactTrigger = document.getElementById('contactLink');
+      const contactOverlay = document.getElementById('contact-modal-overlay');
+      const contactClose = document.getElementById('contactModalClose');
+      if (contactTrigger && contactOverlay) {
+        const openContact = (e) => {
+          e.preventDefault();
+          contactOverlay.classList.add('open');
+          document.body.style.overflow = 'hidden';
+        };
+        const closeContact = () => {
+          contactOverlay.classList.remove('open');
+          document.body.style.overflow = '';
+        };
+        contactTrigger.addEventListener('click', openContact);
+        contactClose.addEventListener('click', closeContact);
+        contactOverlay.addEventListener('click', (e) => {
+          if (e.target === contactOverlay) closeContact();
+        });
+        window.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && contactOverlay.classList.contains('open')) closeContact();
+        });
+      }
+
+      // Email copy-to-clipboard — the link's real href stays a working
+      // mailto: fallback (no-JS, or if the Clipboard API/permission fails),
+      // so this only intercepts the click once a copy actually succeeds.
+      document.querySelectorAll('[data-contact-action="email"]').forEach((el) => {
+        const valueEl = el.querySelector('.contact-value');
+        const defaultText = valueEl.textContent;
+        let resetTimer;
+        el.addEventListener('click', (e) => {
+          if (!navigator.clipboard) return;
+          e.preventDefault();
+          navigator.clipboard
+            .writeText(el.dataset.copyValue)
+            .then(() => {
+              clearTimeout(resetTimer);
+              el.classList.add('copied');
+              valueEl.textContent = 'Copied ✓';
+              resetTimer = setTimeout(() => {
+                el.classList.remove('copied');
+                valueEl.textContent = defaultText;
+              }, 1800);
+            })
+            .catch(() => {
+              window.location.href = el.getAttribute('href');
+            });
+        });
+      });
 
       // Modal interception — only runs on category pages, which include
       // a #modal-overlay element and piece cards with [data-modal] hrefs.
