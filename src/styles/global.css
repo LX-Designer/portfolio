@@ -186,6 +186,7 @@ section + section{border-top:1px solid var(--line);}
   border-top:1px solid var(--line);font-weight:500;
 }
 .piece-card .demo b{font-weight:600;color:var(--text);}
+.piece-card .pill-row-bottom{align-self:stretch;margin-top:auto;padding-top:10px;border-top:1px solid var(--line);}
 .piece-card.soon{opacity:0.5;cursor:default;pointer-events:none;}
 
 /* PIECE PAGE / MODAL CONTENT */

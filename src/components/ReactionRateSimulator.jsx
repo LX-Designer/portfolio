@@ -235,7 +235,7 @@ export default function ReactionRateSimulator() {
   return (
     <div className="reaction-sim">
       <style>{`
-        .reaction-sim{background:var(--bg);border:1px solid var(--line);padding:36px 34px;
+        .reaction-sim{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:36px 34px;
           font-family:'Inter',sans-serif;color:var(--text);font-size:16px;line-height:1.6;
           container-type:inline-size;}
         .reaction-sim *{box-sizing:border-box;}
@@ -250,9 +250,14 @@ export default function ReactionRateSimulator() {
         .rxn-legend-item{display:inline-flex;align-items:center;gap:6px;}
         .rxn-legend-dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
 
-        .rxn-callout{background:var(--blue-bg);border-radius:12px;padding:16px 18px;margin-bottom:24px;}
-        .rxn-callout p{margin:0;font-size:14px;color:var(--text-soft);line-height:1.65;}
+        .rxn-callout{background:var(--blue-bg);border-radius:12px;padding:18px 20px;margin-bottom:24px;}
+        .rxn-callout-lede{margin:0 0 15px;font-size:14px;color:var(--text-soft);line-height:1.65;}
         .rxn-callout b{color:var(--text);}
+        .rxn-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px;}
+        .rxn-steps li{display:flex;gap:12px;align-items:flex-start;}
+        .rxn-num{flex:0 0 22px;width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;
+          font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+        .rxn-steps li > span:last-child{font-size:14px;line-height:1.55;color:var(--text-soft);padding-top:2px;}
 
         .rxn-controls{display:grid;grid-template-columns:1fr 1fr;gap:16px 24px;margin-bottom:18px;}
         .rxn-control-label{display:flex;justify-content:space-between;align-items:center;
@@ -350,9 +355,10 @@ export default function ReactionRateSimulator() {
 
       <h2 className="rxn-h2">Reaction rate simulator</h2>
       <p className="rxn-intro">
-        This simulation explores collision theory — the set of ideas chemists use to explain why
-        reactions happen at the rate they do. Observe the particles, then use the controls below to
-        test what actually influences whether a reaction takes place.
+        This simulation explores collision theory, which is the set of ideas chemists use to explain
+        why reactions happen at the rate they do. Observe the particles as they move around the
+        simulated environment, then use the controls below to manipulate the environment and see how
+        the particles react.
       </p>
 
       <div className="rxn-canvas-wrap">
@@ -365,13 +371,15 @@ export default function ReactionRateSimulator() {
       </div>
 
       <div className="rxn-callout">
-        <p>
-          <b>Try this:</b> the simulation starts slow, with a high energy barrier — watch for a few
-          seconds first and notice how many collisions actually succeed. Then lower the Activation
-          Energy slider and see what changes. Reset, and this time raise the Temperature instead,
-          leaving activation energy where it started. Compare what's different about each change
-          before answering the questions below.
+        <p className="rxn-callout-lede">
+          The environment starts with a low temperature and high energy barrier. Notice that in this
+          environment, no reactions are occuring between the particles. Now, do the following:
         </p>
+        <ol className="rxn-steps">
+          <li><span className="rxn-num">1</span><span>Lower the Activation Energy slider and see what changes.</span></li>
+          <li><span className="rxn-num">2</span><span>Reset the experiment and raise only the Temperature slider.</span></li>
+          <li><span className="rxn-num">3</span><span>Compare what is different about each change before answering the questions below.</span></li>
+        </ol>
       </div>
 
       <div className="rxn-controls">
@@ -475,35 +483,35 @@ function Stat({ num, label }) {
 
 const QUESTIONS = [
   {
-    prompt: "At the start of the simulation (low temperature, high activation energy), what do you notice about most A–B collisions?",
+    prompt: "At the start of the simulation (low temperature, high activation energy), what do you notice about the collisions between Reactants A and B?",
     options: [
-      { text: "Most collisions immediately produce a green product", correct: false, feedback: "Watch again — at a high activation energy, most collisions should just bounce apart without reacting." },
-      { text: "Most collisions just bounce apart — only occasionally does one succeed", correct: true, feedback: "Right. Colliding isn’t the same as reacting — most collisions don’t have enough energy to clear the threshold." },
-      { text: "A and B particles pass through each other without colliding", correct: false, feedback: "They do collide — look for the moment two circles touch. Most of those touches just bounce, rather than reacting." },
+      { text: "Most collisions immediately produce a green product", correct: false, feedback: "Watch again, at this activation energy, collisions don’t carry enough energy to react; they just bounce apart." },
+      { text: "The particles just bounce apart when they collide", correct: true, feedback: "Correct. At this activation energy threshold, collisions don’t have enough energy to cause a reaction, so they bounce apart instead." },
+      { text: "The particles pass through each other without colliding", correct: false, feedback: "They do collide; look for the moment two circles touch. When they do, they just bounce apart rather than reacting." },
     ],
   },
   {
-    prompt: "What happens to the reaction rate when you lower the activation energy slider?",
+    prompt: "What happens when you lower the Activation Energy slider?",
     options: [
-      { text: "It increases, because collisions now need less energy to clear the threshold", correct: true, feedback: "Right. Lowering activation energy doesn’t change how the particles move — it changes how easy the threshold is to clear." },
-      { text: "It increases, because the particles start moving faster", correct: false, feedback: "Activation energy doesn’t affect particle speed — only temperature does. Try it again and watch the particles’ speed." },
-      { text: "It decreases, because the reaction becomes less sensitive", correct: false, feedback: "The opposite: a lower activation energy makes reactions easier, not less likely." },
+      { text: "The reaction rate increases, because collisions now need less energy to clear the threshold required for a reaction to take place", correct: true, feedback: "Correct. Lowering the Activation Energy slider doesn’t change how the particles move, it changes the threshold for a reaction to occur." },
+      { text: "The reaction rate increases, because the particles start moving faster", correct: false, feedback: "Activation energy doesn’t affect particle speed, only temperature does. Try it again and watch the particles’ speed." },
+      { text: "The reaction rate decreases, because the reaction becomes less sensitive", correct: false, feedback: "The opposite: a lower activation energy makes reactions easier, not less likely." },
     ],
   },
   {
-    prompt: "What happens when you raise the temperature?",
+    prompt: "What happens when you raise the Temperature slider?",
     options: [
-      { text: "The reaction rate increases, because particles collide more often and with more energy", correct: true, feedback: "Right — temperature raises both collision frequency and the share of collisions energetic enough to succeed, at the same time." },
-      { text: "The reaction rate increases, but only because collisions happen more often", correct: false, feedback: "That’s half the story — faster particles also hit harder, not just more often." },
-      { text: "The reaction rate increases, but only because each collision carries more energy", correct: false, feedback: "That’s half the story — faster particles also collide more often, not just harder." },
+      { text: "The reaction rate increases, because particles collide more often and with more energy", correct: true, feedback: "Correct. Temperature does two things at once: particles move faster, so they collide more often, and each collision carries more energy, making it more likely to clear the threshold required for a reaction to occur." },
+      { text: "The reaction rate increases, but only because collisions happen more often", correct: false, feedback: "That’s half the story: faster particles also hit harder, not just more often." },
+      { text: "The reaction rate increases, but only because each collision carries more energy", correct: false, feedback: "That’s half the story: faster particles also collide more often, not just harder." },
     ],
   },
   {
-    prompt: "Two A–B collisions happen at the same temperature. One is a direct, head-on meeting; the other is a glancing touch between particles moving at similar speeds. Which is more likely to cause a reaction?",
+    prompt: "Two A/B collisions happen at the same temperature. One is a direct, head-on meeting; the other is a glancing touch between particles moving at similar speeds. Which is more likely to cause a reaction?",
     options: [
-      { text: "The head-on collision", correct: true, feedback: "Right. A head-on meeting produces a bigger difference in velocity between the two particles at the moment of impact — which is what the simulation actually checks." },
-      { text: "The glancing collision", correct: false, feedback: "The other way around — a glancing touch between similarly-moving particles produces a smaller relative speed, so it’s less likely to clear the threshold." },
-      { text: "They’re equally likely — angle makes no difference", correct: false, feedback: "Angle does matter here — it changes the relative speed between the two particles, which is exactly what determines success." },
+      { text: "The glancing collision", correct: false, feedback: "The other way around: a glancing touch between similarly-moving particles produces a smaller relative speed, so it’s less likely to clear the threshold." },
+      { text: "The head-on collision", correct: true, feedback: "Correct. A head-on meeting produces a bigger difference in velocity between the two particles at the moment of impact, which is what the simulation actually checks." },
+      { text: "They’re equally likely to cause a reaction as the angle of the collision makes no difference", correct: false, feedback: "Angle does matter here: it changes the relative speed between the two particles, which is exactly what determines success." },
     ],
   },
 ];

@@ -92,6 +92,12 @@ export const pieces = [
     is: 'A live particle collision simulation, driven by two continuous sliders (temperature and activation energy) instead of discrete choices, so cause and effect in collision theory update smoothly as the inputs change.',
     demonstrates: 'A different simulation mechanic: continuous cause-and-effect rather than discrete decisions.',
     island: 'ReactionRateSimulator',
+    // Card-only overrides: this piece's catalogue card reads differently from
+    // the rest (no "Demonstrates" line, tags moved below the body text) while
+    // its standalone piece page keeps the standard is/demonstrates sections.
+    cardBody: 'This explorable demonstrates an observational approach to helping learners build conceptual understanding. It allows learners to manipulate variables in an experiment and observe the results, then checks their understanding of the concept (collision theory) via a question set.',
+    cardShowDemonstrates: false,
+    cardTagsPosition: 'bottom',
   },
   {
     slug: 'sort-and-categorise-interactive', category: 'interactive', tag: 'Concept',
