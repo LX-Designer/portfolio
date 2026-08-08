@@ -53,8 +53,13 @@ a{color:inherit;}
    centering (shared with every other section) needs an explicit width:100%
    here to actually take effect. */
 .hero .wrap{position:relative;z-index:1;width:100%;}
-h1.headline{font-size:clamp(30px,4.4vw,48px);line-height:1.2;max-width:800px;color:var(--text);}
-.hero-sub{max-width:600px;margin-top:20px;color:var(--text-soft);font-size:17px;}
+/* The hero photo is proportionally wider than the section box, so
+   object-fit:cover fills edge-to-edge with no horizontal crop room —
+   object-position's X value can't move the subject. His face ends up fixed
+   at ~55% of the section's width at any viewport, so the text column is
+   capped here instead, to stay clear of it rather than run under it. */
+h1.headline{font-size:clamp(30px,4.4vw,48px);line-height:1.2;max-width:min(520px, 46vw);color:var(--text);}
+.hero-sub{max-width:min(480px, 42vw);margin-top:20px;color:var(--text-soft);font-size:17px;}
 .hero-accent{width:46px;height:3px;background:var(--blue);border:none;margin:22px 0 0;border-radius:2px;}
 .cta-row{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap;}
 .btn{font-size:14.5px;font-weight:600;padding:13px 22px;border-radius:999px;
@@ -65,6 +70,12 @@ h1.headline{font-size:clamp(30px,4.4vw,48px);line-height:1.2;max-width:800px;col
 .btn.ghost:hover{background:var(--line);}
 @media (max-width:600px){
   .hero{padding:120px 0 80px;min-height:380px;}
+  /* .wrap's left padding (28px) is a flat value, so it eats a bigger share
+     of a narrow viewport than of a wide one — the vw-only cap above isn't
+     tight enough to keep clear of the face once the padding is factored in
+     this close to the edge. This formula keeps ~60px clearance at any width
+     in this range instead of shrinking toward zero at the narrowest phones. */
+  h1.headline,.hero-sub{max-width:calc(55vw - 90px);}
 }
 
 section{padding:60px 0;}
@@ -107,9 +118,10 @@ section + section{border-top:1px solid var(--line);}
 .about-grid{display:grid;grid-template-columns:320px 1fr;gap:44px;align-items:start;}
 .about-photo{
   aspect-ratio:3/4;border-radius:var(--radius);
-  border:2px dashed var(--line);background:var(--bg-soft);
-  display:flex;align-items:center;justify-content:center;
-  color:var(--text-soft);font-size:14px;text-align:center;padding:16px;
+  overflow:hidden;background:var(--bg-soft);
+}
+.about-photo img{
+  width:100%;height:100%;object-fit:cover;object-position:center 55%;display:block;
 }
 /* height is set inline by the page's own script, tracking the photo's
    rendered height, so the whole column — clamped text plus the trigger
