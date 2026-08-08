@@ -1,0 +1,20 @@
+---
+import { sectors, pieceTypes } from '../data/pieces.js';
+
+const { piece } = Astro.props;
+---
+<a
+  class="piece-card"
+  href={`/pieces/${piece.slug}`}
+  data-modal
+  data-sector={piece.sector}
+  data-type={piece.type}
+>
+  <div class="pill-row">
+    <span class="tag-pill">{sectors[piece.sector]}</span>
+    <span class="tag-pill alt">{pieceTypes[piece.type]}</span>
+  </div>
+  <h3>{piece.title}</h3>
+  <p class="is">{piece.is}</p>
+  <p class="demo"><b>Demonstrates:</b> {piece.demonstrates}</p>
+</a>

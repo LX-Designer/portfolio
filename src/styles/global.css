@@ -102,17 +102,24 @@ section + section{border-top:1px solid var(--line);}
 .do-card ul{margin:0;padding-left:18px;font-size:14.5px;}
 .do-card ul li{margin-bottom:4px;}
 
-/* CATEGORY BROWSE (home) */
-.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
-.cat-card{
-  display:block;text-decoration:none;color:var(--text);
-  border:1px solid var(--line);border-radius:var(--radius);
-  padding:26px 24px;transition:border-color .15s ease;
-}
-.cat-card:hover{border-color:var(--blue);}
-.cat-card h3{font-size:18px;margin-bottom:8px;}
-.cat-card p{color:var(--text-soft);font-size:14px;margin:0;}
-.cat-card .count{font-size:12.5px;color:var(--blue);font-weight:600;margin-top:14px;display:block;}
+/* PORTFOLIO (home) — pill row on cards, filters, catalogue expand trigger */
+.pill-row{display:flex;flex-wrap:wrap;gap:6px;align-self:flex-start;}
+.tag-pill.alt{background:var(--blue-bg);color:var(--blue);}
+
+.filters{display:flex;flex-wrap:wrap;gap:28px;margin-bottom:32px;}
+.filter-group{display:flex;flex-direction:column;gap:10px;}
+.filter-label{font-size:12px;font-weight:600;letter-spacing:0.05em;
+  text-transform:uppercase;color:var(--text-soft);}
+.filter-pills{display:flex;flex-wrap:wrap;gap:8px;}
+.fpill{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;
+  background:var(--bg-soft);color:var(--text-soft);border:1px solid transparent;
+  padding:7px 14px;border-radius:999px;transition:all .15s ease;}
+.fpill:hover{color:var(--text);}
+.fpill.active{background:var(--text);color:#fff;border-color:var(--text);}
+.piece-card.hide{display:none;}
+.no-results{color:var(--text-soft);font-size:14.5px;padding:8px 0;}
+.no-results[hidden]{display:none;}
+.read-more-btn.catalogue-trigger{margin-top:28px;}
 
 /* BACKGROUND */
 .about-grid{display:grid;grid-template-columns:320px 1fr;gap:44px;align-items:start;}
@@ -247,7 +254,7 @@ footer p.lead{color:var(--text-soft);margin-top:12px;}
    grid AND the full horizontal nav, instead of both collapsing to phone-style
    together just because 768 happened to be under one shared cutoff. */
 @media (max-width:900px){
-  .cat-grid,.piece-grid{grid-template-columns:repeat(2,1fr);}
+  .piece-grid{grid-template-columns:repeat(2,1fr);}
 }
 @media (max-width:640px){
   .nav ul{position:absolute;top:68px;left:0;right:0;background:#fff;
@@ -259,6 +266,6 @@ footer p.lead{color:var(--text-soft);margin-top:12px;}
 }
 @media (max-width:560px){
   .do-grid{grid-template-columns:1fr;}
-  .cat-grid,.piece-grid{grid-template-columns:1fr;}
+  .piece-grid{grid-template-columns:1fr;}
   .modal-panel{padding:32px 22px 26px;}
 }
