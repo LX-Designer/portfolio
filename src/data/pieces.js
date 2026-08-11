@@ -1,25 +1,5 @@
-// Single source of truth for every portfolio piece — feeds both the category
-// grid cards and the piece detail pages, so copy only ever lives in one place.
-export const categories = {
-  interactive: {
-    slug: 'interactive',
-    file: 'category-interactive',
-    label: 'Interactive Learning Experiences',
-    blurb: 'Simulations, explorables, and scenarios built to generate understanding through exploration — not just present it.',
-  },
-  assessment: {
-    slug: 'assessment',
-    file: 'category-assessment',
-    label: 'Assessment Strategies & Design',
-    blurb: 'Backward-designed curriculum, criterion-referenced rubrics, and outcome unpacking, from plan through to gradeable criteria.',
-  },
-  products: {
-    slug: 'products',
-    file: 'category-products',
-    label: 'Educational Products',
-    blurb: 'Build tooling, course pages, and field-ready materials, ready to hand to a team or a learner.',
-  },
-};
+// Single source of truth for every portfolio piece — feeds both the homepage
+// catalogue and the piece detail pages, so copy only ever lives in one place.
 
 // Sector: which market the piece is aimed at (feeds the homepage catalogue's
 // sector filter). Type mirrors `category` 1:1 today — kept as its own field
@@ -47,6 +27,9 @@ export const pieces = [
     is: 'Hunt a population of moths and breed the survivors to see natural selection in action, generation by generation.',
     demonstrates: 'Designing interaction that builds conceptual understanding.',
     island: 'NaturalSelection',
+    // Card-only override: this card's body copy differs from the "is" text
+    // used on its own standalone page.
+    cardBody: "This explorable demonstrates an experiential approach to building conceptual understanding. Learners hunt moths in a simulated environment and breed the survivors to observe natural selection in action. They apply what they've learned by identifying the same mechanism at work in other real-world scenarios.",
   },
   {
     slug: 'simpsons-paradox-explorable', category: 'interactive', tag: 'Tertiary Education',
@@ -62,6 +45,9 @@ export const pieces = [
     is: 'Build a music chart one listener at a time and watch a moderately good song snowball into a runaway hit from nothing but an accidental early lead, then compare it against a world where listeners can’t see the charts at all. A recreation of the 2006 Music Lab experiment.',
     demonstrates: 'Modelling a systems-level concept — path dependency — through direct manipulation rather than description.',
     island: 'CumulativeAdvantage',
+    // Card-only override: this card's body copy differs from the "is" text
+    // used on its own standalone page.
+    cardBody: 'This explorable demonstrates a discovery-based approach to conceptual understanding. Learners build the same music chart across several simulated worlds, then observe how an initial, random advantage leads to wildly different results. This phenomenon is then exemplified through additional real-world examples.',
   },
   {
     slug: 'metacognition-literature-review', category: 'interactive', tag: 'Professional Development',
@@ -92,12 +78,9 @@ export const pieces = [
     is: 'A live particle collision simulation, driven by two continuous sliders (temperature and activation energy) instead of discrete choices, so cause and effect in collision theory update smoothly as the inputs change.',
     demonstrates: 'A different simulation mechanic: continuous cause-and-effect rather than discrete decisions.',
     island: 'ReactionRateSimulator',
-    // Card-only overrides: this piece's catalogue card reads differently from
-    // the rest (no "Demonstrates" line, tags moved below the body text) while
-    // its standalone piece page keeps the standard is/demonstrates sections.
+    // Card-only override: this card's body copy differs from the "is" text
+    // used on its own standalone page.
     cardBody: 'This explorable demonstrates an observational approach to helping learners build conceptual understanding. It allows learners to manipulate variables in an experiment and observe the results, then checks their understanding of the concept (collision theory) via a question set.',
-    cardShowDemonstrates: false,
-    cardTagsPosition: 'bottom',
   },
   {
     slug: 'sort-and-categorise-interactive', category: 'interactive', tag: 'Concept',
@@ -183,10 +166,6 @@ export const pieces = [
     demonstrates: 'Designing for use in the moment, not just for study in advance.',
   },
 ];
-
-export function piecesByCategory(categorySlug) {
-  return pieces.filter((p) => p.category === categorySlug);
-}
 
 export function getPiece(slug) {
   return pieces.find((p) => p.slug === slug);

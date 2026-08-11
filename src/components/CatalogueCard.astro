@@ -2,9 +2,9 @@
 import { sectors, pieceTypes } from '../data/pieces.js';
 
 const { piece } = Astro.props;
+// cardBody lets a piece override its card copy without touching the "is"
+// text used on its own standalone page (see reaction-rate-simulator).
 const bodyText = piece.cardBody ?? piece.is;
-const showDemonstrates = piece.cardShowDemonstrates ?? true;
-const tagsAtBottom = piece.cardTagsPosition === 'bottom';
 ---
 <a
   class="piece-card"
@@ -13,19 +13,10 @@ const tagsAtBottom = piece.cardTagsPosition === 'bottom';
   data-sector={piece.sector}
   data-type={piece.type}
 >
-  {!tagsAtBottom && (
-    <div class="pill-row">
-      <span class="tag-pill">{sectors[piece.sector]}</span>
-      <span class="tag-pill alt">{pieceTypes[piece.type]}</span>
-    </div>
-  )}
   <h3>{piece.title}</h3>
   <p class="is">{bodyText}</p>
-  {showDemonstrates && <p class="demo"><b>Demonstrates:</b> {piece.demonstrates}</p>}
-  {tagsAtBottom && (
-    <div class="pill-row pill-row-bottom">
-      <span class="tag-pill">{sectors[piece.sector]}</span>
-      <span class="tag-pill alt">{pieceTypes[piece.type]}</span>
-    </div>
-  )}
+  <div class="pill-row pill-row-bottom">
+    <span class="tag-pill">{sectors[piece.sector]}</span>
+    <span class="tag-pill alt">{pieceTypes[piece.type]}</span>
+  </div>
 </a>

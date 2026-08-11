@@ -71,6 +71,7 @@ export default function CumulativeAdvantage() {
   const [pulse, setPulse] = useState(null);
   const [ffActive, setFfActive] = useState(false);
   const [autoPlaying, setAutoPlaying] = useState(false);
+  const [lastChosenSong, setLastChosenSong] = useState(null);
   const [completed, setCompleted] = useState([]); // {label, c, hitIndex, hitShare}
   const [revealedQuiz, setRevealedQuiz] = useState(new Set());
   const worldRef = useRef(null);
@@ -118,6 +119,7 @@ export default function CumulativeAdvantage() {
     setActive(world);
     setPlays(new Array(N).fill(0));
     setStepIndex(0);
+    setLastChosenSong(null);
     setPulse(null);
     setFfActive(false);
     setAutoPlaying(false);
@@ -148,6 +150,7 @@ export default function CumulativeAdvantage() {
       p.idx += 1;
       setPlays(p.arr.slice());
       setStepIndex(p.idx);
+      setLastChosenSong(chosen);
       setPulse(chosen);
       clearTimeout(pulseTimer.current);
       pulseTimer.current = setTimeout(() => setPulse(null), Math.min(260, interval * 3));
@@ -174,6 +177,7 @@ export default function CumulativeAdvantage() {
     p.lastTick = performance.now();
     setPlays(p.arr.slice());
     setStepIndex(p.idx);
+    setLastChosenSong(chosen);
     revealPulse(chosen);
 
     if (p.idx >= P) { p.active = false; setAutoPlaying(false); recordCompletion(p.arr, active); setPhase("done"); return; }
@@ -277,6 +281,8 @@ export default function CumulativeAdvantage() {
         .he-pill-tracker.he-pill-hit{background:#FDF3E1;color:#B45309;border:1px solid #F3D9A8;}
         .he-pill-tracker.he-pill-flat{background:#F1F2F4;color:var(--muted);border:1px solid var(--border);}
         .he-hint{font-size:12px;color:var(--muted);}
+        .he-pick-note{font-size:13px;color:var(--ink);margin-top:10px;}
+        .he-pick-note b{font-weight:600;color:var(--accent);}
         .he-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center;}
         .he-btn{appearance:none;border-radius:9px;padding:11px 17px;font-family:inherit;font-weight:600;font-size:13.5px;cursor:pointer;border:1px solid var(--border);background:var(--card);color:var(--ink);transition:border-color .15s,transform .08s;}
         .he-btn:hover{border-color:var(--ink);} .he-btn:active{transform:translateY(1px);}
@@ -320,7 +326,6 @@ export default function CumulativeAdvantage() {
       `}</style>
 
       <div className="he-card he-first">
-        <div className="he-eyebrow">Explorable</div>
         <div className="he-quizhd">The making of a hit</div>
 
         <p className="he-lede">
@@ -481,6 +486,11 @@ export default function CumulativeAdvantage() {
             </button>
           </div>
         )}
+        {active && phase === "building" && stepIndex > 0 && lastChosenSong != null && (
+          <div className="he-pick-note">
+            Listener {stepIndex} selected <b>{SONGS[lastChosenSong]}</b>.
+          </div>
+        )}
         {active && phase === "building" && (
           <div className="he-hint" style={{ marginTop: 8 }}>
             Press and hold the button to fast forward or use Auto-Play to run the simulation automatically.
@@ -599,9 +609,8 @@ export default function CumulativeAdvantage() {
             stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
         <div>
-          <b>The making of a hit</b> — an interactive on cumulative advantage, based on Salganik, Dodds &amp; Watts,
-          "Experimental Study of Inequality and Unpredictability in an Artificial Cultural Market" (<i>Science</i>,
-          2006).
+          Based on Salganik, Dodds &amp; Watts, "Experimental Study of Inequality and Unpredictability in an
+          Artificial Cultural Market" (<i>Science</i>, 2006).
         </div>
       </div>
     </div>

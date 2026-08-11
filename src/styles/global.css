@@ -186,7 +186,7 @@ section + section{border-top:1px solid var(--line);}
   border-top:1px solid var(--line);font-weight:500;
 }
 .piece-card .demo b{font-weight:600;color:var(--text);}
-.piece-card .pill-row-bottom{align-self:stretch;margin-top:auto;padding-top:10px;border-top:1px solid var(--line);}
+.piece-card .pill-row-bottom{align-self:stretch;margin-top:auto;}
 .piece-card.soon{opacity:0.5;cursor:default;pointer-events:none;}
 
 /* PIECE PAGE / MODAL CONTENT */
@@ -234,7 +234,10 @@ section + section{border-top:1px solid var(--line);}
 .modal-close:hover{background:var(--bg-soft);color:var(--text);}
 
 /* CONTACT PICKER — nav Contact link opens this modal; the same options are
-   reused, unstyled by the modal wrapper, inside the footer below. */
+   reused, unstyled by the modal wrapper, inside the footer below. Centered
+   vertically (unlike the piece-preview overlay's top alignment) since its
+   content is short and fixed-height, not long and scrollable. */
+#contact-modal-overlay{align-items:center;}
 .contact-modal-panel{max-width:400px;padding:32px 28px 28px;}
 .contact-modal-panel h3{font-size:19px;margin-bottom:20px;}
 .contact-options{display:flex;flex-direction:column;gap:10px;}

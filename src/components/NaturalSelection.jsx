@@ -313,8 +313,8 @@ export default function NaturalSelection() {
           box-shadow:0 1px 2px rgba(40,45,30,.05);}
         .ns-card.first{margin-top:0;}
         .ns-eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:10px;}
-        .ns-title{font-family:'Fraunces',Georgia,serif;font-size:29px;font-weight:600;letter-spacing:-.01em;line-height:1.05;margin:0 0 12px;color:var(--ink);}
-        .ns-lede{font-size:16px;line-height:1.62;color:#40453A;} .ns-lede i{color:var(--ink);font-style:italic;} .ns-lede b{color:var(--ink);font-weight:600;}
+        .ns-root .ns-title{font-family:'Poppins',sans-serif;font-size:20px;font-weight:600;letter-spacing:-.01em;line-height:1.05;margin:0 0 12px;color:var(--ink);}
+        .ns-lede{font-size:14.5px;line-height:1.62;color:#40453A;} .ns-lede i{color:var(--ink);font-style:italic;} .ns-lede b{color:var(--ink);font-weight:600;}
         .ns-tryit{background:var(--accent-wash);border:1px solid var(--accent-line);border-radius:14px;padding:19px 21px;margin-top:20px;}
         .ns-tryit-h{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-deep);font-weight:700;margin-bottom:15px;}
         .ns-steps{display:flex;flex-direction:column;gap:13px;}
@@ -423,7 +423,7 @@ export default function NaturalSelection() {
         @media(max-width:600px){
           .ns-root{padding:20px 12px 14px;}
           .ns-card{padding:14px;}
-          .ns-title{font-size:24px;} .ns-field{height:300px;}
+          .ns-field{height:300px;}
           .ns-yax{width:40px;flex:0 0 40px;} .ns-xax{margin-left:48px;}
         }
         @media(prefers-reduced-motion:reduce){.ns-moth{transition:none;} .ns-moth.caught{animation-duration:.01s;}}
@@ -431,7 +431,6 @@ export default function NaturalSelection() {
 
       {/* ── Intro ── */}
       <div className="ns-card first">
-        <div className="ns-eyebrow">Explorable</div>
         <h1 className="ns-title">Natural Selection</h1>
         <p className="ns-lede">
           Two hundred years ago, almost every peppered moth in England was pale and speckled. It was perfect camouflage
@@ -466,7 +465,7 @@ export default function NaturalSelection() {
       {/* ── The interactive ── */}
       <div className="ns-card">
         <div className="ns-habitat-h">Habitat</div>
-        <div className="ns-habitat-blurb"><b>{env.label}.</b> {env.blurb}</div>
+        <div className="ns-habitat-blurb">{env.blurb}</div>
 
         <div className="ns-hud">
           <span className="ns-gen">Generation <b>{generation}</b></span>
@@ -666,9 +665,8 @@ export default function NaturalSelection() {
             stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         <div>
-          <b>You are the predator</b>, an interactive on natural selection. The reversing moth is the real story of
-          industrial melanism in the peppered moth (<i>Biston betularia</i>), studied by H. B. D. Kettlewell in the 1950s;
-          the underlying mechanism is Darwin &amp; Wallace's, 1858–59.
+          The reversing moth is the true story of industrial melanism in the peppered moth
+          (<i>Biston betularia</i>), studied by H. B. D. Kettlewell in the 1950s.
         </div>
       </div>
     </div>

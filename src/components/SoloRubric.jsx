@@ -102,7 +102,7 @@ export default function SoloRubric() {
   return (
     <div className="solo-rubric">
       <style>{`
-        .solo-rubric{background:var(--bg);border:1px solid var(--line);padding:36px 34px;
+        .solo-rubric{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:36px 34px;
           font-family:'Inter',sans-serif;color:var(--text);font-size:16px;line-height:1.6;
           container-type:inline-size;}
         .solo-rubric *{box-sizing:border-box;}

@@ -7,19 +7,18 @@ import AlignmentMap from '../../components/AlignmentMap.jsx';
 import ReactionRateSimulator from '../../components/ReactionRateSimulator.jsx';
 import CumulativeAdvantage from '../../components/CumulativeAdvantage.jsx';
 import MetacognitionLab from '../../components/metacognition/MetacognitionLab.jsx';
-import { pieces, categories, getPiece } from '../../data/pieces.js';
+import { pieces, getPiece } from '../../data/pieces.js';
 
 export function getStaticPaths() {
   return pieces.map((piece) => ({ params: { slug: piece.slug }, props: { piece } }));
 }
 
 const { piece } = Astro.props;
-const category = categories[piece.category];
 ---
 <BaseLayout title={`${piece.title} — Dave`}>
   <section class="piece-body">
     <div class="wrap">
-      <a class="piece-back" href={`/${category.file}`}>← Back to {category.label}</a>
+      <a class="piece-back" href="/#portfolio">← Back to Portfolio</a>
 
       <div id="piece-content">
         <span class="tag-pill">{piece.tag}</span>
@@ -59,7 +58,7 @@ const category = categories[piece.category];
           </div>
         ) : piece.island === 'MetacognitionLab' ? (
           <div id="piece-asset" class="asset-mount asset-mount--doc">
-            <MetacognitionLab client:only="react" backHref={`/${category.file}`} />
+            <MetacognitionLab client:only="react" backHref="/#portfolio" />
           </div>
         ) : (
           <div id="piece-asset" class="placeholder-box">Preview coming soon.</div>
