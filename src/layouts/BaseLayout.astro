@@ -11,6 +11,12 @@ const { title, description = '', showModalOverlay = false, hideChrome = false } 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{title}</title>
   {description && <meta name="description" content={description} />}
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  {description && <meta property="og:description" content={description} />}
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content={title} />
+  {description && <meta name="twitter:description" content={description} />}
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 </head>
@@ -24,7 +30,7 @@ const { title, description = '', showModalOverlay = false, hideChrome = false } 
           <li><a href="/#background">About</a></li>
           <li><a href="/#contact" id="contactLink">Contact</a></li>
         </ul>
-        <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">≡</button>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navlinks">≡</button>
       </div>
     </header>
   )}
@@ -55,9 +61,15 @@ const { title, description = '', showModalOverlay = false, hideChrome = false } 
       const toggle = document.getElementById('navToggle');
       const links = document.getElementById('navlinks');
       if (toggle && links) {
-        toggle.addEventListener('click', () => links.classList.toggle('open'));
+        toggle.addEventListener('click', () => {
+          const open = links.classList.toggle('open');
+          toggle.setAttribute('aria-expanded', String(open));
+        });
         links.querySelectorAll('a').forEach((a) =>
-          a.addEventListener('click', () => links.classList.remove('open'))
+          a.addEventListener('click', () => {
+            links.classList.remove('open');
+            toggle.setAttribute('aria-expanded', 'false');
+          })
         );
       }
 
@@ -123,6 +135,7 @@ const { title, description = '', showModalOverlay = false, hideChrome = false } 
       // against window.location instead (which pushState mutates) makes every
       // relative href after the first open/close cycle resolve to the wrong path.
       const categoryUrl = window.location.href;
+      let lastFocused = null;
 
       async function openModal(href, push) {
         const url = new URL(href, categoryUrl).href;
@@ -149,7 +162,9 @@ const { title, description = '', showModalOverlay = false, hideChrome = false } 
           });
           overlay.classList.add('open');
           document.body.style.overflow = 'hidden';
-          document.getElementById('modalClose').addEventListener('click', closeModal);
+          const closeBtn = document.getElementById('modalClose');
+          closeBtn.addEventListener('click', () => closeModal());
+          closeBtn.focus();
           if (push) history.pushState({ modal: url }, '', url);
         } catch (err) {
           // If fetch fails, fall back to a normal page load rather than leaving a dead click.
@@ -161,6 +176,10 @@ const { title, description = '', showModalOverlay = false, hideChrome = false } 
         overlay.classList.remove('open');
         document.body.style.overflow = '';
         if (push !== false) history.pushState({}, '', categoryUrl);
+        if (lastFocused) {
+          lastFocused.focus();
+          lastFocused = null;
+        }
       }
 
       // Below this width, skip the modal shortcut entirely and let the tap
@@ -175,12 +194,17 @@ const { title, description = '', showModalOverlay = false, hideChrome = false } 
         link.addEventListener('click', (e) => {
           if (isMobile()) return;
           e.preventDefault();
+          lastFocused = link;
           openModal(link.getAttribute('href'), true);
         });
       });
 
       overlay.addEventListener('click', (e) => {
         if (e.target === overlay) closeModal();
+      });
+
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal();
       });
 
       window.addEventListener('popstate', (e) => {

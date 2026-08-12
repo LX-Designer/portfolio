@@ -56,6 +56,9 @@ export const pieces = [
     is: 'An interactive literature review for educators, walking through metacognitive theory and its link to self-directed learning via a guided journey: a baseline self-assessment, seven concept-building activities, and a personal action plan generated from your own responses.',
     demonstrates: 'Turning a reference document into a structured learning experience — teaching the underlying five-stage instructional model by having the reader move through it themselves.',
     island: 'MetacognitionLab',
+    // Card-only override: this card's body copy differs from the "is" text
+    // used on its own standalone page.
+    cardBody: "An interactive literature review for educators, walking through metacognitive theory and its link to self-directed learning. Built off the latest literature in the field, it's designed as a quick reference that also models the theory it describes, helping educators grasp the key ideas by experiencing them firsthand.",
     // This piece is a long, full-page guided journey (its own sticky nav,
     // multi-stage flow) that doesn't suit the compact preview modal — send
     // it to its standalone page in a new tab instead, like a normal link.

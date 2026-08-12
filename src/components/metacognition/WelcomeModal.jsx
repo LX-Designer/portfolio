@@ -8,7 +8,7 @@ export default function WelcomeModal({ mode, onModeChange, hasProgress, isComple
       <div className={s.wmBox}>
         <h2>Metacognition &amp; Self-Directed Learning</h2>
         <p className={s.wmSub}>
-          An interactive literature review. Choose how you'd like to engage with the material — you can switch modes at any time using the navigation.
+          An interactive literature review. Choose how you'd like to engage with the material; you can switch modes at any time using the navigation.
         </p>
 
         {hasProgress && (
@@ -16,7 +16,7 @@ export default function WelcomeModal({ mode, onModeChange, hasProgress, isComple
             <div>
               <div className={s.wmResumeTitle}>Welcome back</div>
               <div className={s.wmResumeLabel}>
-                {isComplete ? 'Journey complete — view your summary' : `${activityDoneCount} of 7 activities completed`}
+                {isComplete ? 'Journey complete: view your summary' : `${activityDoneCount} of 7 activities completed`}
               </div>
             </div>
             <button className={s.wmResumeReset} onClick={onReset}>Start fresh</button>

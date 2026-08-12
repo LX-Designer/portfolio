@@ -2,12 +2,12 @@ import { useState } from 'react'
 import s from '../index.module.css'
 
 const ITEMS = [
-  { text: 'Knowing that you concentrate better in the morning than at night', answer: 'K', expl: 'Knowledge of cognition — specifically declarative knowledge about yourself as a learner.' },
-  { text: 'Noticing mid-task that your mind has wandered and deliberately refocusing', answer: 'R', expl: 'Regulation of cognition — specifically monitoring (detecting drift) followed by control (refocusing).' },
-  { text: 'Knowing that concept maps help you connect ideas more than re-reading does', answer: 'K', expl: 'Knowledge of cognition — conditional knowledge about which strategy works best for a particular cognitive goal.' },
-  { text: "Re-reading a paragraph when you realise you didn't absorb it", answer: 'R', expl: "Regulation of cognition — this is \"debugging\" in Brown's terms: detecting a comprehension failure and acting to fix it." },
-  { text: 'Knowing that exams in this subject require application of concepts, not just recall', answer: 'K', expl: "Knowledge of cognition — conditional/procedural knowledge about the nature of the cognitive task." },
-  { text: 'Reviewing your work before submitting to check for gaps', answer: 'R', expl: "Regulation of cognition — specifically evaluation, the final phase of Brown's regulatory process." },
+  { text: 'Knowing that you concentrate better in the morning than at night', answer: 'K', expl: 'Knowledge of cognition, specifically declarative knowledge about yourself as a learner.' },
+  { text: 'Noticing mid-task that your mind has wandered and deliberately refocusing', answer: 'R', expl: 'Regulation of cognition, specifically monitoring (detecting drift) followed by control (refocusing).' },
+  { text: 'Knowing that concept maps help you connect ideas more than re-reading does', answer: 'K', expl: 'Knowledge of cognition, conditional knowledge about which strategy works best for a particular cognitive goal.' },
+  { text: "Re-reading a paragraph when you realise you didn't absorb it", answer: 'R', expl: "Regulation of cognition: this is \"debugging\" in Brown's terms, detecting a comprehension failure and acting to fix it." },
+  { text: 'Knowing that exams in this subject require application of concepts, not just recall', answer: 'K', expl: "Knowledge of cognition, conditional/procedural knowledge about the nature of the cognitive task." },
+  { text: 'Reviewing your work before submitting to check for gaps', answer: 'R', expl: "Regulation of cognition, specifically evaluation, the final phase of Brown's regulatory process." },
 ]
 
 export default function Act2({ onComplete, onClose }) {
@@ -19,8 +19,11 @@ export default function Act2({ onComplete, onClose }) {
     setSelections(prev => ({ ...prev, [i]: val }))
   }
 
+  const answeredCount = Object.keys(selections).length
+  const ready = answeredCount === ITEMS.length
+
   function check() {
-    if (Object.keys(selections).length < ITEMS.length) return
+    if (!ready) return
     setChecked(true)
   }
 
@@ -62,7 +65,8 @@ export default function Act2({ onComplete, onClose }) {
       <div className={s.amFooter}>
         {!checked ? (
           <>
-            <button className={`${s.amBtn} ${s.check}`} onClick={check}>Check Answers</button>
+            {!ready && <span className={s.amHint}>Sort all {ITEMS.length} items to continue.</span>}
+            <button className={`${s.amBtn} ${s.check}`} onClick={check} disabled={!ready}>Check Answers</button>
             <button className={`${s.amBtn} ${s.secondary}`} onClick={onClose}>Close</button>
           </>
         ) : (

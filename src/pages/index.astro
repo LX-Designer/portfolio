@@ -1,18 +1,25 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CatalogueCard from '../components/CatalogueCard.astro';
 import ContactOptions from '../components/ContactOptions.astro';
 import { pieces, getPiece } from '../data/pieces.js';
+import heroImage from '../assets/images/hero.png';
+import profileImage from '../assets/images/profile-pic.jpeg';
 
 const featuredSlugs = ['natural-selection-explorable', 'solo-rubric-explorer', 'build-tool-demo'];
 const featured = featuredSlugs.map(getPiece);
 const rest = pieces.filter((p) => !featuredSlugs.includes(p.slug));
 const allPieces = [...featured, ...rest];
 ---
-<BaseLayout title="David King — Learning Design Specialist" showModalOverlay>
+<BaseLayout
+  title="David King — Learning Design Specialist"
+  description="Portfolio of interactive learning experiences, assessment design, and educational products by David King, a learning design specialist for higher ed, K-12, and L&D."
+  showModalOverlay
+>
   <section class="hero" id="top">
     <div class="hero-media">
-      <img src="/images/hero.png" alt="Dave collaborating with a colleague at a laptop in an office" />
+      <Image src={heroImage} alt="Dave collaborating with a colleague at a laptop in an office" widths={[640, 1200, 1920]} sizes="100vw" loading="eager" fetchpriority="high" />
     </div>
     <div class="wrap">
       <h1 class="headline">Learning Design Specialist</h1>
@@ -36,19 +43,19 @@ const allPieces = [...featured, ...rest];
         <div class="filter-group">
           <span class="filter-label">Sector</span>
           <div class="filter-pills" data-filter="sector">
-            <button class="fpill active" data-value="all">All</button>
-            <button class="fpill" data-value="higher-ed">Higher Ed</button>
-            <button class="fpill" data-value="lnd">Learning &amp; Development</button>
-            <button class="fpill" data-value="k12">K-12</button>
+            <button class="fpill active" data-value="all" aria-pressed="true">All</button>
+            <button class="fpill" data-value="higher-ed" aria-pressed="false">Higher Ed</button>
+            <button class="fpill" data-value="lnd" aria-pressed="false">Learning &amp; Development</button>
+            <button class="fpill" data-value="k12" aria-pressed="false">K-12</button>
           </div>
         </div>
         <div class="filter-group">
           <span class="filter-label">Type</span>
           <div class="filter-pills" data-filter="type">
-            <button class="fpill active" data-value="all">All</button>
-            <button class="fpill" data-value="interactive">Interactive Learning Experience</button>
+            <button class="fpill active" data-value="all" aria-pressed="true">All</button>
+            <button class="fpill" data-value="interactive" aria-pressed="false">Interactive Learning Experience</button>
             <button class="fpill" data-value="assessment">Assessment</button>
-            <button class="fpill" data-value="teacher-resources">Teacher Resources</button>
+            <button class="fpill" data-value="teacher-resources" aria-pressed="false">Teacher Resources</button>
           </div>
         </div>
       </div>
@@ -100,8 +107,12 @@ const allPieces = [...featured, ...rest];
         const dim = group.dataset.filter;
         group.querySelectorAll('.fpill').forEach((btn) => {
           btn.addEventListener('click', () => {
-            group.querySelectorAll('.fpill').forEach((b) => b.classList.remove('active'));
+            group.querySelectorAll('.fpill').forEach((b) => {
+              b.classList.remove('active');
+              b.setAttribute('aria-pressed', 'false');
+            });
             btn.classList.add('active');
+            btn.setAttribute('aria-pressed', 'true');
             filterState[dim] = btn.dataset.value;
             apply();
           });
@@ -124,7 +135,7 @@ const allPieces = [...featured, ...rest];
       </div>
       <div class="about-grid">
         <div class="about-photo">
-          <img src="/images/profile-pic.jpeg" alt="David King" />
+          <Image src={profileImage} alt="David King" width={420} height={560} />
         </div>
         <div class="about-text" id="aboutText">
           <div class="about-body" id="aboutBody">

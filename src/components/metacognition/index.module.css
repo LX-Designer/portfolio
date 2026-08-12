@@ -114,6 +114,20 @@
   padding: 20px;
   cursor: pointer;
   transition: all .2s;
+  /* .modes grid already stretches both cards to equal height; without
+     flex + the CTA's margin-top:auto below, the button would just sit
+     directly under its own card's description text instead of lining up
+     with the other card's — the two descriptions are different lengths. */
+  display: flex;
+  flex-direction: column;
+  /* The taller (Guided Journey) card's natural content height is what the
+     grid stretches *both* cards to match — so by construction it has zero
+     slack relative to itself for margin-top:auto to turn into a gap before
+     the button; the button sat flush against the text. Padding can't fix
+     this (it grows both cards' natural height equally, so the taller one
+     is still exactly as tall as itself). An explicit min-height taller than
+     either card's own natural content forces genuine slack into both. */
+  min-height: 300px;
 }
 .modeCard:hover { background: rgba(255,255,255,.18); transform: translateY(-2px); }
 .modeCard.highlight { background: rgba(255,255,255,.2); border-color: var(--gold); }
@@ -121,10 +135,14 @@
 .mcTitle { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
 .mcDesc { font-size: 13px; opacity: .85; line-height: 1.6; }
 .mcCta {
-  margin-top: 14px;
+  margin-top: auto;
   background: var(--gold);
   color: #1a1a1a;
-  border: none;
+  /* Transparent, not none — .outline below sets the same 2px width with a
+     visible color. Reserving identical border space on both variants keeps
+     their rendered heights (and therefore top edges, since both already
+     share a bottom edge via margin-top:auto) the same. */
+  border: 2px solid transparent;
   border-radius: 6px;
   padding: 9px 18px;
   font-size: 13px;
@@ -226,7 +244,15 @@
 .subheading { font-size: 14px; color: var(--navy); font-weight: 700; margin-bottom: 12px; margin-top: 20px; }
 
 /* ── CARDS ────────────────────────────────────────────────────────────── */
-.cardGrid { display: grid; gap: 14px; align-items: start; }
+/* stretch (not start) so plain, non-expandable card rows match the tallest
+   card's height. ExpandCardGrid overrides this back to start (see
+   .expandable below) — stretch would otherwise tie every card's rendered
+   height to the row's tallest, dragging closed siblings up to match an
+   opened card and leaving empty space in them. */
+.cardGrid { display: grid; gap: 14px; align-items: stretch; }
+/* ExpandCardGrid syncs closed-state height itself via --card-min-h, letting
+   an opened card grow past that baseline without affecting its siblings. */
+.cardGrid.expandable { align-items: start; }
 .cardGrid.cols2 { grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); }
 .cardGrid.cols3 { grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); }
 .cardGrid.cols4 { grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); }
@@ -235,11 +261,20 @@
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 18px;
-  transition: box-shadow .2s, transform .2s;
+  min-height: var(--eh-h, auto);
+  transition: transform .2s ease, box-shadow .2s ease;
   cursor: pointer;
 }
-.card:hover { box-shadow: 0 4px 16px rgba(31,78,121,.12); transform: translateY(-2px); }
-.card.active { border-color: var(--blue); box-shadow: 0 0 0 2px var(--lblue); }
+/* Canonical hover lift, shared verbatim by every expandable element type
+   (.card, .pillar, .stage, .accItem) so the "you can click this" affordance
+   feels the same throughout, regardless of each element's own shape. */
+.card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(31,78,121,.12); }
+.card.active { border-color: var(--blue); box-shadow: 0 0 0 2px var(--lblue); min-height: var(--eh-h-open, auto); }
+/* Plain info cards (no click handler, nothing to expand) shouldn't carry
+   the click-affordance hover lift .card:hover gives the genuinely
+   expandable ones. */
+.card.cardStatic { cursor: default; }
+.card.cardStatic:hover { box-shadow: none; transform: none; }
 .cardIcon { font-size: 24px; margin-bottom: 10px; }
 .cardTitle { font-weight: 700; color: var(--navy); font-size: 14px; margin-bottom: 6px; }
 .cardBody { font-size: 13px; color: var(--muted); line-height: 1.6; }
@@ -297,10 +332,11 @@
   overflow: hidden;
   border: 1px solid var(--border);
   cursor: pointer;
-  transition: transform .2s, box-shadow .2s;
+  min-height: var(--eh-h, auto);
+  transition: transform .2s ease, box-shadow .2s ease;
 }
-.pillar:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(31,78,121,.15); }
-.pillar.active { box-shadow: 0 0 0 3px var(--blue); }
+.pillar:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(31,78,121,.12); }
+.pillar.active { border-color: var(--blue); box-shadow: 0 0 0 2px var(--lblue); min-height: var(--eh-h-open, auto); }
 .pillarHead { padding: 16px; text-align: center; color: #fff; font-weight: 700; }
 .phIcon { font-size: 28px; margin-bottom: 6px; }
 .phNum { font-size: 11px; opacity: .85; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; }
@@ -330,8 +366,8 @@
 
 /* ── STAGES ───────────────────────────────────────────────────────────── */
 .stages { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
-.stage { border-radius: 10px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; transition: box-shadow .2s; }
-.stage:hover { box-shadow: 0 2px 12px rgba(31,78,121,.1); }
+.stage { border-radius: 10px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; transition: transform .2s ease, box-shadow .2s ease; }
+.stage:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(31,78,121,.12); }
 .stageHead { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: var(--card); }
 .stage.active .stageHead { background: var(--navy); color: #fff; }
 .stageNum {
@@ -361,7 +397,8 @@
 
 /* ── ACCORDION ────────────────────────────────────────────────────────── */
 .accordion { display: flex; flex-direction: column; gap: 8px; }
-.accItem { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.accItem { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: transform .2s ease, box-shadow .2s ease; }
+.accItem:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(31,78,121,.12); }
 .accHead {
   display: flex;
   align-items: center;
@@ -377,7 +414,7 @@
   text-align: left;
 }
 .accHead:hover { background: var(--pale); }
-.accArrow { transition: transform .3s; font-size: 12px; color: var(--blue); }
+.accArrow { transition: transform .2s ease; font-size: 12px; color: var(--blue); }
 .accItem.open .accHead { background: var(--pale); }
 .accItem.open .accArrow { transform: rotate(180deg); }
 .accBody { display: none; padding: 14px 18px; font-size: 13.5px; line-height: 1.7; color: var(--text); background: #fafcff; }
@@ -574,6 +611,12 @@
 .amBtn.primary { background: var(--navy); color: #fff; }
 .amBtn.check { background: var(--blue); color: #fff; }
 .amBtn.secondary { background: var(--pale); color: var(--navy); }
+.amBtn:disabled { opacity: .4; cursor: not-allowed; }
+.amBtn:disabled:hover { opacity: .4; }
+/* Shown next to a disabled check/reveal/preview button across every
+   activity, explaining why it isn't clickable yet instead of leaving the
+   click silently do nothing. */
+.amHint { font-size: 12px; color: var(--muted); margin-right: auto; }
 
 /* ── EXIT CONFIRM MODAL ───────────────────────────────────────────────── */
 .exitModal {
@@ -632,8 +675,14 @@
 .siText { flex: 1; font-size: 13px; color: var(--text); }
 .sortBtns { display: flex; gap: 6px; flex-shrink: 0; }
 .sortBtn { border: 2px solid var(--border); background: #fff; border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all .2s; }
-.sortBtn.K:hover, .sortBtn.K.selected { background: var(--navy); color: #fff; border-color: var(--navy); }
-.sortBtn.R:hover, .sortBtn.R.selected { background: var(--green); color: #fff; border-color: var(--green); }
+/* Matches .classifyOpt's pattern (Activity 2): a light hover tint distinct
+   from a solid, filled selected state — previously hover and selected
+   shared the same solid-fill rule here, so there was no lighter "you're
+   hovering this" step before commit. K/R keep their own colour coding. */
+.sortBtn.K:hover { background: rgba(31,78,121,.12); border-color: var(--navy); }
+.sortBtn.R:hover { background: rgba(42,157,143,.12); border-color: var(--green); }
+.sortBtn.K.selected { background: var(--navy); color: #fff; border-color: var(--navy); }
+.sortBtn.R.selected { background: var(--green); color: #fff; border-color: var(--green); }
 .sortBtn.wrongPick { background: #E76F51; color: #fff; border-color: #E76F51; }
 .sortBtn.correctPick { background: #2A9D8F; color: #fff; border-color: #2A9D8F; }
 .siFeedback { font-size: 12px; color: var(--muted); display: none; margin-top: 4px; }

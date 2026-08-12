@@ -10,11 +10,10 @@ export default function Act6({ onComplete, onClose }) {
     if (previewing) setPreviewing(false)
   }
 
+  const ready = Object.values(fields).every(v => v.trim())
+
   function preview() {
-    if (Object.values(fields).some(v => !v.trim())) {
-      alert('Please complete all fields before previewing.')
-      return
-    }
+    if (!ready) return
     setPreviewing(true)
   }
 
@@ -31,27 +30,27 @@ export default function Act6({ onComplete, onClose }) {
         <div className={s.tiItem}>
           <label>Which metacognitive pillar do you most want to develop in your learners?</label>
           <select value={fields.pillar} onChange={e => set('pillar', e.target.value)}>
-            <option value="">— Select —</option>
-            <option>Pillar 1: Metacognitive Knowledge — helping learners understand their own strengths, strategies, and when to use them</option>
-            <option>Pillar 2: Metacognitive Monitoring — helping learners track their understanding accurately in real time</option>
-            <option>Pillar 3: Metacognitive Control — helping learners adjust strategies and evaluate outcomes adaptively</option>
-            <option>All three pillars equally — I want to work across the full framework</option>
+            <option value="">Select…</option>
+            <option>Pillar 1: Metacognitive Knowledge, helping learners understand their own strengths, strategies, and when to use them</option>
+            <option>Pillar 2: Metacognitive Monitoring, helping learners track their understanding accurately in real time</option>
+            <option>Pillar 3: Metacognitive Control, helping learners adjust strategies and evaluate outcomes adaptively</option>
+            <option>All three pillars equally: I want to work across the full framework</option>
           </select>
         </div>
         <div className={s.tiItem}>
           <label>How would you describe your current practice?</label>
           <select value={fields.practice} onChange={e => set('practice', e.target.value)}>
-            <option value="">— Select —</option>
-            <option>Just beginning — metacognitive instruction is new to me</option>
-            <option>Emerging — I occasionally prompt reflection, but it's not systematic</option>
-            <option>Developing — I have some consistent practices, but want to deepen them</option>
-            <option>Established — metacognition is a regular part of my teaching, but I want to refine</option>
+            <option value="">Select…</option>
+            <option>Just beginning: metacognitive instruction is new to me</option>
+            <option>Emerging: I occasionally prompt reflection, but it's not systematic</option>
+            <option>Developing: I have some consistent practices, but want to deepen them</option>
+            <option>Established: metacognition is a regular part of my teaching, but I want to refine</option>
           </select>
         </div>
         <div className={s.tiItem}>
           <label>Which stage of the five-stage model would be most impactful to focus on in the next term?</label>
           <select value={fields.stage} onChange={e => set('stage', e.target.value)}>
-            <option value="">— Select —</option>
+            <option value="">Select…</option>
             <option>Stage 1: Activate &amp; Name</option>
             <option>Stage 2: Model</option>
             <option>Stage 3: Scaffold &amp; Prompt</option>
@@ -92,7 +91,10 @@ export default function Act6({ onComplete, onClose }) {
       )}
       <div className={s.amFooter}>
         {!previewing ? (
-          <button className={`${s.amBtn} ${s.check}`} onClick={preview}>Preview My Plan</button>
+          <>
+            {!ready && <span className={s.amHint}>Complete all fields to preview your plan.</span>}
+            <button className={`${s.amBtn} ${s.check}`} onClick={preview} disabled={!ready}>Preview My Plan</button>
+          </>
         ) : (
           <button className={`${s.amBtn} ${s.primary}`} onClick={() => onComplete(fields)}>Save &amp; Finish →</button>
         )}

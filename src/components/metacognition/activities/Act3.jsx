@@ -3,12 +3,12 @@ import s from '../index.module.css'
 
 const ITEMS = [
   {
-    quote: 'Individuals take the initiative — with or without the help of others — in diagnosing their learning needs, formulating goals, and evaluating their own outcomes.',
+    quote: 'Individuals take the initiative (with or without the help of others) in diagnosing their learning needs, formulating goals, and evaluating their own outcomes.',
     answer: 'Knowles',
     expl: "This is Knowles' (1975) foundational definition of self-directed learning, emphasising learner initiative and the full cycle from diagnosis to evaluation.",
   },
   {
-    quote: 'Self-monitoring — checking whether strategies are working — is the cognitive-metacognitive core that gives self-directed learning its internal compass.',
+    quote: 'Self-monitoring (checking whether strategies are working) is the cognitive-metacognitive core that gives self-directed learning its internal compass.',
     answer: 'Garrison',
     expl: 'Garrison (1997) positioned self-monitoring as the defining internal dimension of SDL, bridging metacognition and self-management.',
   },
@@ -20,7 +20,7 @@ const ITEMS = [
   {
     quote: 'Metacognition involves both what you know about your cognitive processes and how you use that knowledge to regulate those processes in action.',
     answer: 'Brown',
-    expl: "This captures Brown's (1987) essential distinction between knowledge of cognition (stable, stored) and regulation of cognition (dynamic, situation-dependent) — the foundation of most modern metacognition frameworks.",
+    expl: "This captures Brown's (1987) essential distinction between knowledge of cognition (stable, stored) and regulation of cognition (dynamic, situation-dependent), which forms the foundation of most modern metacognition frameworks.",
   },
 ]
 const THEORISTS = ['Flavell', 'Brown', 'Knowles', 'Garrison', 'Zimmerman']
@@ -29,7 +29,11 @@ export default function Act3({ onComplete, onClose }) {
   const [selections, setSelections] = useState({})
   const [checked, setChecked] = useState(false)
 
+  const answeredCount = Object.keys(selections).length
+  const ready = answeredCount === ITEMS.length
+
   function check() {
+    if (!ready) return
     setChecked(true)
   }
 
@@ -58,7 +62,7 @@ export default function Act3({ onComplete, onClose }) {
               value={selections[i] || ''}
               onChange={e => !checked && setSelections(prev => ({ ...prev, [i]: e.target.value }))}
             >
-              <option value="">— Select theorist —</option>
+              <option value="">Select theorist…</option>
               {THEORISTS.map(t => <option key={t}>{t}</option>)}
             </select>
             {checked && selections[i] && (
@@ -69,7 +73,7 @@ export default function Act3({ onComplete, onClose }) {
                   color: selections[i] === m.answer ? '#1a5e56' : '#8B2A1A',
                 }}
               >
-                {selections[i] === m.answer ? `✓ Correct — ` : `✗ This is ${m.answer} — `}{m.expl}
+                {selections[i] === m.answer ? `✓ Correct. ` : `✗ This is ${m.answer}. `}{m.expl}
               </div>
             )}
           </div>
@@ -78,7 +82,8 @@ export default function Act3({ onComplete, onClose }) {
       <div className={s.amFooter}>
         {!checked ? (
           <>
-            <button className={`${s.amBtn} ${s.check}`} onClick={check}>Check Matches</button>
+            {!ready && <span className={s.amHint}>Match all {ITEMS.length} quotes to continue.</span>}
+            <button className={`${s.amBtn} ${s.check}`} onClick={check} disabled={!ready}>Check Matches</button>
             <button className={`${s.amBtn} ${s.secondary}`} onClick={onClose}>Close</button>
           </>
         ) : (

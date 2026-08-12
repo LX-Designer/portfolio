@@ -25,7 +25,7 @@ export default function Act0({ onComplete, onClose }) {
         <span className={s.amStepBadge}>Step 1 of 7</span>
       </div>
       <div className={s.amInstruction}>
-        Rate each statement honestly based on your <strong>current practice</strong> — not your ideal. There are no right answers. This baseline will be shown at the end of the journey so you can compare your thinking.
+        Rate each statement honestly based on your <strong>current practice</strong>, not your ideal. There are no right answers. This baseline will be shown at the end of the journey so you can compare your thinking.
       </div>
       <div className={s.sliderGroup}>
         {QUESTIONS.map((q, i) => (

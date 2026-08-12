@@ -12,11 +12,11 @@ const STEPS = [
 
 const INSTRUCTIONS = [
   "Before reading further, rate your current practice honestly. This creates a baseline you'll return to at the end.",
-  'Read Section 1 — Flavell\'s Four Components. Click each card to expand detail. Then do the activity.',
+  'Read Section 1: Flavell\'s Four Components. Click each card to expand detail. Then do the activity.',
   'Switch to the "Knowledge of Cognition" and "Regulation of Cognition" tabs in Section 1. Then sort the examples.',
-  'Read Section 2 — explore all three theorist tabs. Then match each theorist to their key insight.',
+  'Read Section 2 and explore all three theorist tabs. Then match each theorist to their key insight.',
   'Read Sections 3 and 4. Explore the three pillars. Then apply the framework to a real learner scenario.',
-  'Read Section 5 — expand all five stages. Then diagnose which stage to start with in a teaching scenario.',
+  'Read Section 5 and expand all five stages. Then diagnose which stage to start with in a teaching scenario.',
   "You've built the knowledge. Now synthesise it into a concrete plan for your own practice.",
 ]
 

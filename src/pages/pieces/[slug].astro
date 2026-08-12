@@ -20,13 +20,13 @@ const { piece } = Astro.props;
   // and back link — skip the portfolio's own nav/breadcrumb/framing text and
   // footer entirely so it reads as its own standalone thing to open, not an
   // embed inside a portfolio page.
-  <BaseLayout title={`${piece.title} — Dave`} hideChrome>
+  <BaseLayout title={`${piece.title} — Dave`} description={piece.is} hideChrome>
     <div id="piece-asset">
       <MetacognitionLab client:only="react" backHref="/#portfolio" />
     </div>
   </BaseLayout>
 ) : (
-  <BaseLayout title={`${piece.title} — Dave`}>
+  <BaseLayout title={`${piece.title} — Dave`} description={piece.is}>
     <section class="piece-body">
       <div class="wrap">
         <a class="piece-back" href="/#portfolio">← Back to Portfolio</a>

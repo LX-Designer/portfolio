@@ -169,11 +169,16 @@ section + section{border-top:1px solid var(--line);}
 /* PIECE CARD GRID */
 .piece-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
 .piece-card{
+  position:relative;
   border:1px solid var(--line);border-radius:var(--radius);
   padding:22px 22px 20px;text-decoration:none;color:var(--text);
   display:flex;flex-direction:column;gap:10px;transition:border-color .15s ease, transform .15s ease;
 }
 .piece-card:hover{border-color:var(--blue);}
+.piece-card .new-tab-icon{
+  position:absolute;top:16px;right:16px;width:13px;height:13px;
+  color:var(--text-soft);opacity:.55;
+}
 .tag-pill{
   align-self:flex-start;font-size:11.5px;font-weight:600;
   background:var(--bg-soft);color:var(--text-soft);
