@@ -15,57 +15,65 @@ export function getStaticPaths() {
 
 const { piece } = Astro.props;
 ---
-<BaseLayout title={`${piece.title} — Dave`}>
-  <section class="piece-body">
-    <div class="wrap">
-      <a class="piece-back" href="/#portfolio">← Back to Portfolio</a>
-
-      <div id="piece-content">
-        <span class="tag-pill">{piece.tag}</span>
-        <h1>{piece.title}</h1>
-        <div class="piece-section">
-          <h3>What this is</h3>
-          <p>{piece.is}</p>
-        </div>
-        <div class="piece-section">
-          <h3>What this demonstrates</h3>
-          <p>{piece.demonstrates}</p>
-        </div>
-
-        {piece.island === 'NaturalSelection' ? (
-          <div id="piece-asset" class="asset-mount">
-            {/* client:only — this component's initial state is Math.random()-driven,
-               so server-rendering it would produce different moths than the client
-               and trigger a hydration mismatch. Nothing here is useful without JS
-               anyway, so skipping SSR for it costs nothing. */}
-            <NaturalSelection client:only="react" />
-          </div>
-        ) : piece.island === 'SoloRubric' ? (
-          <div id="piece-asset" class="asset-mount">
-            <SoloRubric client:only="react" />
-          </div>
-        ) : piece.island === 'AlignmentMap' ? (
-          <div id="piece-asset" class="asset-mount">
-            <AlignmentMap client:only="react" />
-          </div>
-        ) : piece.island === 'ReactionRateSimulator' ? (
-          <div id="piece-asset" class="asset-mount">
-            <ReactionRateSimulator client:only="react" />
-          </div>
-        ) : piece.island === 'CumulativeAdvantage' ? (
-          <div id="piece-asset" class="asset-mount">
-            <CumulativeAdvantage client:only="react" />
-          </div>
-        ) : piece.island === 'MetacognitionLab' ? (
-          <div id="piece-asset" class="asset-mount asset-mount--doc">
-            <MetacognitionLab client:only="react" backHref="/#portfolio" />
-          </div>
-        ) : (
-          <div id="piece-asset" class="placeholder-box">Preview coming soon.</div>
-        )}
-      </div>
+{piece.standalonePage ? (
+  // This piece's asset is a self-contained full-page tool with its own nav
+  // and back link — skip the portfolio's own nav/breadcrumb/framing text and
+  // footer entirely so it reads as its own standalone thing to open, not an
+  // embed inside a portfolio page.
+  <BaseLayout title={`${piece.title} — Dave`} hideChrome>
+    <div id="piece-asset">
+      <MetacognitionLab client:only="react" backHref="/#portfolio" />
     </div>
-  </section>
+  </BaseLayout>
+) : (
+  <BaseLayout title={`${piece.title} — Dave`}>
+    <section class="piece-body">
+      <div class="wrap">
+        <a class="piece-back" href="/#portfolio">← Back to Portfolio</a>
 
-  <SubFooter />
-</BaseLayout>
+        <div id="piece-content">
+          <span class="tag-pill">{piece.tag}</span>
+          <h1>{piece.title}</h1>
+          <div class="piece-section">
+            <h3>What this is</h3>
+            <p>{piece.is}</p>
+          </div>
+          <div class="piece-section">
+            <h3>What this demonstrates</h3>
+            <p>{piece.demonstrates}</p>
+          </div>
+
+          {piece.island === 'NaturalSelection' ? (
+            <div id="piece-asset" class="asset-mount">
+              {/* client:only — this component's initial state is Math.random()-driven,
+                 so server-rendering it would produce different moths than the client
+                 and trigger a hydration mismatch. Nothing here is useful without JS
+                 anyway, so skipping SSR for it costs nothing. */}
+              <NaturalSelection client:only="react" />
+            </div>
+          ) : piece.island === 'SoloRubric' ? (
+            <div id="piece-asset" class="asset-mount">
+              <SoloRubric client:only="react" />
+            </div>
+          ) : piece.island === 'AlignmentMap' ? (
+            <div id="piece-asset" class="asset-mount">
+              <AlignmentMap client:only="react" />
+            </div>
+          ) : piece.island === 'ReactionRateSimulator' ? (
+            <div id="piece-asset" class="asset-mount">
+              <ReactionRateSimulator client:only="react" />
+            </div>
+          ) : piece.island === 'CumulativeAdvantage' ? (
+            <div id="piece-asset" class="asset-mount">
+              <CumulativeAdvantage client:only="react" />
+            </div>
+          ) : (
+            <div id="piece-asset" class="placeholder-box">Preview coming soon.</div>
+          )}
+        </div>
+      </div>
+    </section>
+
+    <SubFooter />
+  </BaseLayout>
+)}

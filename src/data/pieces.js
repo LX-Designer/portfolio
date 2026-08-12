@@ -56,6 +56,14 @@ export const pieces = [
     is: 'An interactive literature review for educators, walking through metacognitive theory and its link to self-directed learning via a guided journey: a baseline self-assessment, seven concept-building activities, and a personal action plan generated from your own responses.',
     demonstrates: 'Turning a reference document into a structured learning experience — teaching the underlying five-stage instructional model by having the reader move through it themselves.',
     island: 'MetacognitionLab',
+    // This piece is a long, full-page guided journey (its own sticky nav,
+    // multi-stage flow) that doesn't suit the compact preview modal — send
+    // it to its standalone page in a new tab instead, like a normal link.
+    openInNewTab: true,
+    // The asset has its own full-page chrome (topbar, section nav, back
+    // link) — render it without the portfolio's own nav/breadcrumb/footer
+    // so it reads as its own standalone tool, not an embed in a page.
+    standalonePage: true,
   },
   {
     slug: 'milltown-recession-simulation', category: 'interactive', tag: 'Tertiary Education',

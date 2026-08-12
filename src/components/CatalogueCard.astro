@@ -5,11 +5,14 @@ const { piece } = Astro.props;
 // cardBody lets a piece override its card copy without touching the "is"
 // text used on its own standalone page (see reaction-rate-simulator).
 const bodyText = piece.cardBody ?? piece.is;
+const opensInNewTab = !!piece.openInNewTab;
 ---
 <a
   class="piece-card"
   href={`/pieces/${piece.slug}`}
-  data-modal
+  data-modal={opensInNewTab ? undefined : true}
+  target={opensInNewTab ? '_blank' : undefined}
+  rel={opensInNewTab ? 'noopener noreferrer' : undefined}
   data-sector={piece.sector}
   data-type={piece.type}
 >

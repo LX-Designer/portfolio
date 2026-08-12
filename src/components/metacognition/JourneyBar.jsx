@@ -20,40 +20,47 @@ const INSTRUCTIONS = [
   "You've built the knowledge. Now synthesise it into a concrete plan for your own practice.",
 ]
 
-export default function JourneyBar({ visible, step, activityDone, onActivity, onNext, onExit }) {
+export default function JourneyBar({ visible, step, activityDone, onActivity, onPrev, onNext, onExit }) {
   if (!visible || step < 0 || step >= STEPS.length) return null
 
   const isDone = activityDone.includes(step)
+  const isFirst = step <= 0
   const isLast = step >= STEPS.length - 1
 
   return (
     <div className={`${s.journeyBar} ${s.visible}`}>
-      <div className={s.jbTop}>
-        <div className={s.jbProgress}>
-          {STEPS.map((_, i) => (
-            <div
-              key={i}
-              className={`${s.jbDot} ${i < step ? s.done : i === step ? s.current : ''}`}
-            />
-          ))}
-        </div>
-        <div className={s.jbStepInfo}>
-          <div className={s.jbStepLabel}>Step {step + 1} of {STEPS.length}</div>
-          <div className={s.jbStepTitle}>{STEPS[step]}</div>
-          <div className={s.jbInstruction}>{INSTRUCTIONS[step]}</div>
-        </div>
-        <div className={s.jbBtns}>
-          <button
-            className={`${s.jbBtn} ${s.primary}`}
-            style={{ background: isDone ? '#2A9D8F' : '#E9C46A' }}
-            onClick={onActivity}
-          >
-            {isDone ? '✓ Revisit Activity' : '▶ Activity'}
+      <button className={s.jbExit} onClick={onExit} aria-label="Exit guided journey">✕</button>
+
+      <div className={s.jbProgress}>
+        {STEPS.map((_, i) => (
+          <div
+            key={i}
+            className={`${s.jbDot} ${i < step ? s.done : i === step ? s.current : ''}`}
+          />
+        ))}
+      </div>
+
+      <div className={s.jbStepInfo}>
+        <div className={s.jbStepLabel}>Step {step + 1} of {STEPS.length}</div>
+        <div className={s.jbStepTitle}>{STEPS[step]}</div>
+        <div className={s.jbInstruction}>{INSTRUCTIONS[step]}</div>
+      </div>
+
+      <div className={s.jbBtns}>
+        <button
+          className={`${s.jbBtn} ${s.primary}`}
+          style={{ background: isDone ? '#2A9D8F' : '#E9C46A' }}
+          onClick={onActivity}
+        >
+          {isDone ? '✓ Revisit Activity' : '▶ Activity'}
+        </button>
+        <div className={s.jbNavBtns}>
+          <button className={`${s.jbBtn} ${s.secondary}`} onClick={onPrev} disabled={isFirst}>
+            ← Previous
           </button>
           <button className={`${s.jbBtn} ${s.secondary}`} onClick={onNext}>
             {isLast ? 'Finish ✓' : 'Next step →'}
           </button>
-          <button className={`${s.jbBtn} ${s.exit}`} onClick={onExit}>✕ Exit</button>
         </div>
       </div>
     </div>

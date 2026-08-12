@@ -8,6 +8,7 @@ import s from './index.module.css'
 import WelcomeModal from './WelcomeModal.jsx'
 import JourneyBar from './JourneyBar.jsx'
 import ActivityModal from './ActivityModal.jsx'
+import ExitConfirmModal from './ExitConfirmModal.jsx'
 
 // ── Section nav config ────────────────────────────────────────────────────────
 const NAV_SECTIONS = [
@@ -24,13 +25,10 @@ const NAV_SECTIONS = [
 
 const NUM_STEPS = 7
 
-// +69 accounts for the portfolio's own sticky site header, which sits above
-// this lab's topbar here but doesn't exist in the original InquiryLabs app.
-const SITE_HEADER_HEIGHT = 69
 function navTo(id) {
   const el = document.getElementById(id)
   if (!el) return
-  const navH = (document.querySelector('nav')?.offsetHeight ?? 48) + SITE_HEADER_HEIGHT
+  const navH = document.querySelector('nav')?.offsetHeight ?? 48
   window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - navH - 16, behavior: 'smooth' })
 }
 
@@ -357,6 +355,7 @@ export default function MetacognitionLab({ backHref }) {
   const [journeyActive, setJourneyActive] = useState(false)
   const [activeActivity, setActiveActivity] = useState(null)
   const [activeSection, setActiveSection] = useState('overview')
+  const [showExitConfirm, setShowExitConfirm] = useState(false)
 
   // Scrollspy
   useEffect(() => {
@@ -415,10 +414,24 @@ export default function MetacognitionLab({ backHref }) {
     navTo(stepSection(next))
   }
 
+  function prevStep() {
+    if (step <= 0) return
+    const prev = step - 1
+    setStep(prev)
+    navTo(stepSection(prev))
+  }
+
   function exitJourney() {
-    if (window.confirm('Exit the guided journey? Your progress is saved — you can resume anytime.')) {
-      setJourneyActive(false)
-    }
+    setShowExitConfirm(true)
+  }
+
+  function confirmExit() {
+    setShowExitConfirm(false)
+    setJourneyActive(false)
+  }
+
+  function cancelExit() {
+    setShowExitConfirm(false)
   }
 
   async function handleActivityComplete(data) {
@@ -551,6 +564,7 @@ export default function MetacognitionLab({ backHref }) {
         step={step}
         activityDone={activityDone}
         onActivity={() => setActiveActivity(step)}
+        onPrev={prevStep}
         onNext={nextStep}
         onExit={exitJourney}
       />
@@ -563,10 +577,14 @@ export default function MetacognitionLab({ backHref }) {
         />
       )}
 
+      {showExitConfirm && (
+        <ExitConfirmModal onConfirm={confirmExit} onCancel={cancelExit} />
+      )}
+
       {/* TOP NAV */}
       <nav className={s.topbar}>
         <div className={s.navLeft}>
-          <a href={backHref ?? '/'} className={s.navBack}>← Labs</a>
+          <a href={backHref ?? '/'} className={s.navBack}>← Back to Portfolio</a>
         </div>
         <div className={s.navCenter}>
           {NAV_SECTIONS.map(sec => (
@@ -581,6 +599,7 @@ export default function MetacognitionLab({ backHref }) {
         </div>
       </nav>
 
+      <div className={`${s.pageWrap} ${journeyActive ? s.withSidebar : ''}`}>
       <div className={s.page}>
 
         {/* HOW TO USE */}
@@ -764,6 +783,7 @@ export default function MetacognitionLab({ backHref }) {
           </div>
         </section>
 
+      </div>
       </div>
     </div>
   )

@@ -25,10 +25,10 @@
 /* ── NAV ──────────────────────────────────────────────────────────────── */
 .topbar {
   position: sticky;
-  /* 69px = the portfolio's own site header height — in InquiryLabs this topbar
-     owns row 0 of the page, but here it needs to dock below the site nav
-     instead of stacking on top of it (topbar's z-index otherwise wins). */
-  top: 69px;
+  /* The piece's page renders this asset with the portfolio's own site nav
+     hidden (see [slug].astro's standalonePage branch), so this topbar owns
+     row 0 of the page again, same as it does standalone in InquiryLabs. */
+  top: 0;
   z-index: 100;
   background: var(--navy);
   padding: 0 16px;
@@ -93,7 +93,7 @@
 .page {
   max-width: 960px;
   margin: 0 auto;
-  padding: 24px 16px 120px;
+  padding: 24px 16px 48px;
 }
 
 /* ── HOW TO USE PANEL ─────────────────────────────────────────────────── */
@@ -400,36 +400,67 @@
 /* ── MISC ─────────────────────────────────────────────────────────────── */
 .divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
 
-/* ── JOURNEY BAR ──────────────────────────────────────────────────────── */
+/* ── JOURNEY SIDEBAR ──────────────────────────────────────────────────── */
+/* 36px = .topbar's own rendered height at desktop widths — the sidebar docks
+   below it rather than under it, same reasoning as .topbar's top:0 (see its
+   own comment). Re-checked per breakpoint below since the touch-target rule
+   makes .topbar taller on narrower viewports. */
 .journeyBar {
   position: fixed;
-  bottom: 0;
+  top: 36px;
   left: 0;
-  right: 0;
+  bottom: 0;
+  width: 300px;
   background: var(--navy);
   color: #fff;
-  padding: 12px 20px;
-  z-index: 150;
+  padding: 22px 20px;
+  z-index: 90;
   display: none;
   flex-direction: column;
-  box-shadow: 0 -2px 12px rgba(0,0,0,.3);
+  gap: 20px;
+  overflow-y: auto;
+  box-shadow: 2px 0 12px rgba(0,0,0,.3);
 }
 .journeyBar.visible { display: flex; }
-.jbTop { display: flex; align-items: center; gap: 12px; }
-.jbProgress { display: flex; gap: 4px; margin-right: 4px; }
-.jbDot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.25); transition: background .3s; }
+.jbProgress { display: flex; flex-wrap: wrap; gap: 5px; }
+.jbDot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.25); transition: background .3s; flex-shrink: 0; }
 .jbDot.done { background: var(--gold); }
 .jbDot.current { background: #fff; }
-.jbStepInfo { flex: 1; min-width: 0; }
+.jbStepInfo { display: flex; flex-direction: column; }
 .jbStepLabel { font-size: 11px; opacity: .7; text-transform: uppercase; letter-spacing: .5px; }
-.jbStepTitle { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.jbInstruction { font-size: 12px; opacity: .8; margin-top: 2px; line-height: 1.4; }
-.jbBtns { display: flex; gap: 8px; flex-shrink: 0; }
-.jbBtn { border: none; border-radius: 6px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity .2s; }
+.jbStepTitle { font-size: 17px; font-weight: 700; line-height: 1.3; margin-top: 4px; }
+.jbInstruction { font-size: 13px; opacity: .85; margin-top: 12px; line-height: 1.55; }
+.jbBtns { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
+.jbNavBtns { display: flex; gap: 8px; }
+.jbNavBtns .jbBtn { flex: 1; }
+.jbBtn { border: none; border-radius: 6px; padding: 10px 16px; font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity .2s; }
 .jbBtn:hover { opacity: .85; }
-.jbBtn.primary { background: var(--gold); color: #1a1a1a; }
+.jbBtn:disabled { opacity: .35; cursor: not-allowed; }
+.jbBtn.primary { background: var(--gold); color: #1a1a1a; width: 100%; }
 .jbBtn.secondary { background: rgba(255,255,255,.15); color: #fff; }
-.jbBtn.exit { background: rgba(255,255,255,.1); color: rgba(255,255,255,.7); font-size: 12px; padding: 8px 12px; }
+/* Exit lives apart from the primary step actions — a quiet corner affordance
+   rather than a button competing with Activity/Previous/Next for attention. */
+.jbExit {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,.35);
+  font-size: 13px;
+  line-height: 1;
+  padding: 6px;
+  cursor: pointer;
+  transition: color .2s;
+}
+.jbExit:hover { color: rgba(255,255,255,.85); }
+
+/* ── PAGE / SIDEBAR LAYOUT ────────────────────────────────────────────── */
+/* .page centers itself (max-width + margin:0 auto) within whichever parent
+   contains it — margin-left here reserves the fixed sidebar's width so that
+   centering happens within the remaining viewport space, not the full
+   width the sidebar is covering. */
+.pageWrap.withSidebar { margin-left: 300px; }
 
 /* ── WELCOME MODAL ────────────────────────────────────────────────────── */
 .welcomeModal {
@@ -450,7 +481,16 @@
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
 }
+/* The default OS scrollbar's square arrow buttons clash with this box's
+   rounded corners — a slim thumb-only bar reads as part of the card instead. */
+.wmBox::-webkit-scrollbar { width: 8px; }
+.wmBox::-webkit-scrollbar-track { background: transparent; }
+.wmBox::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+.wmBox::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+.wmBox::-webkit-scrollbar-button { display: none; height: 0; width: 0; }
 .wmBox h2 { font-size: 20px; font-weight: 800; color: var(--navy); margin-bottom: 6px; }
 .wmSub { color: var(--muted); font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
 .wmResume {
@@ -516,7 +556,14 @@
   width: 100%;
   max-height: 88vh;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
 }
+.amBox::-webkit-scrollbar { width: 8px; }
+.amBox::-webkit-scrollbar-track { background: transparent; }
+.amBox::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+.amBox::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+.amBox::-webkit-scrollbar-button { display: none; height: 0; width: 0; }
 .amHeader { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; gap: 12px; }
 .amHeader h3 { font-size: 17px; font-weight: 800; color: var(--navy); line-height: 1.3; }
 .amStepBadge { background: var(--pale); color: var(--blue); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
@@ -527,6 +574,32 @@
 .amBtn.primary { background: var(--navy); color: #fff; }
 .amBtn.check { background: var(--blue); color: #fff; }
 .amBtn.secondary { background: var(--pale); color: var(--navy); }
+
+/* ── EXIT CONFIRM MODAL ───────────────────────────────────────────────── */
+.exitModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,20,40,.8);
+  z-index: 350;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.exitBox {
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px;
+  max-width: 380px;
+  width: 100%;
+}
+.exitBox h3 { font-size: 17px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+.exitBox p { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+.exitFooter { display: flex; gap: 10px; margin-top: 22px; justify-content: flex-end; flex-wrap: wrap; }
+.exitBtn { border: none; border-radius: 8px; padding: 10px 20px; font-size: 13.5px; font-weight: 700; cursor: pointer; transition: opacity .2s; }
+.exitBtn:hover { opacity: .85; }
+.exitBtn.primary { background: var(--coral); color: #fff; }
+.exitBtn.secondary { background: var(--pale); color: var(--navy); }
 
 /* ── CLASSIFY ACTIVITY ────────────────────────────────────────────────── */
 .classifyGrid { display: grid; gap: 12px; }
@@ -696,7 +769,10 @@
 
 /* ── RESPONSIVE: TABLET ───────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .page { padding: 20px 14px 140px; }
+  .page { padding: 20px 14px 48px; }
+  .journeyBar { top: 36px; width: 260px; padding: 18px 16px; }
+  .pageWrap.withSidebar { margin-left: 260px; }
+  .jbStepTitle { font-size: 15px; }
   .hero { padding: 28px 22px; }
   .hero h1 { font-size: 21px; }
   .howToUse { padding: 24px 20px; }
@@ -783,15 +859,17 @@
   .synGrid { grid-template-columns: 1fr; }
   .ref { font-size: 12px; padding: 10px 12px; }
 
-  .journeyBar { padding: 8px 12px 10px; }
-  .jbTop { gap: 8px; }
-  .jbInstruction { display: none; }
+  /* Below this width there's no room to sit a sidebar beside the content, so
+     it becomes a full-width overlay instead — .page needs no reserved
+     margin since it's simply covered while the journey sidebar is open. */
+  .journeyBar { top: 42px; width: 100%; padding: 16px 16px 20px; gap: 14px; }
+  .pageWrap.withSidebar { margin-left: 0; }
   .jbStepLabel { font-size: 10px; }
-  .jbStepTitle { font-size: 13px; }
+  .jbStepTitle { font-size: 15px; }
   .jbDot { width: 6px; height: 6px; }
-  .jbProgress { gap: 3px; margin-right: 2px; }
+  .jbProgress { gap: 3px; }
   .jbBtn { padding: 8px 10px; font-size: 12px; }
-  .jbBtn.exit { padding: 8px 8px; font-size: 11px; }
+  .jbExit { top: 10px; right: 10px; padding: 8px; }
   .jbBtns { gap: 5px; }
 }
 
