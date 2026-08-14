@@ -39,7 +39,7 @@ export default function ActivityForm({ activity, initialAnswers, onSubmit, onSav
     <>
       {activity.extraInstruction && (
         <div className={s.instruction}>
-          <span className={s.instructionLabel}>Your task — {activity.title}</span>
+          <span className={s.instructionLabel}>Your task: {activity.title}</span>
           {activity.extraInstruction.lead}
           <ol>
             {activity.extraInstruction.items.map(item => <li key={item}>{item}</li>)}

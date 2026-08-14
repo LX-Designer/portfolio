@@ -16,7 +16,7 @@ export default function CaseDocument({ responses, openSections, onToggleSection,
         <div className={s.coverCard}>
           <div className={s.docClassification}>Official Record · Inquiry Tribunal · Restricted Distribution</div>
           <h1 className={s.docTitle}>The Bridge That Shouldn't Have Failed</h1>
-          <p className={s.docSubtitle}>Engineering Incident Report — Tacoma Narrows Bridge, 1940</p>
+          <p className={s.docSubtitle}>Engineering Incident Report: Tacoma Narrows Bridge, 1940</p>
 
           <div className={s.coverInset}>
             <div className={s.coverFields}>
@@ -33,7 +33,7 @@ export default function CaseDocument({ responses, openSections, onToggleSection,
               <div className={s.coverField}>
                 <span className={s.coverFieldLabel}>Classification</span>
                 <span className={s.coverFieldDots} />
-                <span className={s.coverFieldValue}>Structural Collapse — Total Loss</span>
+                <span className={s.coverFieldValue}>Structural Collapse: Total Loss</span>
               </div>
               <div className={s.coverField}>
                 <span className={s.coverFieldLabel}>File reference</span>
@@ -59,7 +59,7 @@ export default function CaseDocument({ responses, openSections, onToggleSection,
             </div>
 
             <details className={s.beforeDetails}>
-              <summary className={s.beforeSummary}>ⓘ Before you begin — assumptions and learning goals</summary>
+              <summary className={s.beforeSummary}>ⓘ Before you begin: assumptions and learning goals</summary>
               <div className={s.beforeContent}>
                 <div className={s.beforeGroup}>
                   <span className={s.beforeGroupTitle}>These physics concepts underpin this investigation</span>
@@ -69,7 +69,7 @@ export default function CaseDocument({ responses, openSections, onToggleSection,
                     <li>Newton's laws of motion</li>
                     <li>Concept of damping</li>
                     <li>Reading and interpreting data tables</li>
-                    <li>Basic structural forces — tension and compression</li>
+                    <li>Basic structural forces: tension and compression</li>
                   </ul>
                 </div>
                 <div className={s.beforeGroup}>
@@ -102,16 +102,16 @@ export default function CaseDocument({ responses, openSections, onToggleSection,
         <FileSection id="tn-overview" code="§ 01" title="Incident Overview" italic isOpen={isOpen('tn-overview')} onToggle={toggle('tn-overview')}>
           <p>At 11:10 a.m. on the morning of 7 November 1940, approximately 600 feet of the central span of the Tacoma Narrows Bridge broke free from its suspender cables and fell 190 feet into the cold waters of Puget Sound below. The bridge had been open to traffic for exactly 128 days.</p>
 
-          <p>The wind speed recorded at midspan was 42 miles per hour — a moderate autumn storm, by the standards of the Pacific Northwest. The bridge had been designed to withstand static wind loads far in excess of this figure. On paper, the structure should have been safe.</p>
+          <p>The wind speed recorded at midspan was 42 miles per hour, a moderate autumn storm by the standards of the Pacific Northwest. The bridge had been designed to withstand static wind loads far in excess of this figure. On paper, the structure should have been safe.</p>
 
-          <p>The collapse was filmed by University of Washington engineer F.B. Farquharson, who had been stationed at the bridge as part of an ongoing investigation into its unusual behaviour. His footage — still widely circulated today — shows the bridge twisting violently along its length, one side of the roadway rising while the other falls, before sections of the deck tear themselves apart.</p>
+          <p>The collapse was filmed by University of Washington engineer F.B. Farquharson, who had been stationed at the bridge as part of an ongoing investigation into its unusual behaviour. His footage, still widely circulated today, shows the bridge twisting violently along its length, one side of the roadway rising while the other falls, before sections of the deck tear themselves apart.</p>
 
           <figure className={s.diagram}>
             <img src={bridgePhoto} alt="The Tacoma Narrows Bridge oscillating in the wind, 1940." />
             <figcaption className={s.diagramCaption}>Tacoma Narrows Bridge, 1940. Library of Congress / Wikimedia Commons. Public domain.</figcaption>
           </figure>
 
-          <p>The collapse shocked the engineering world. Tacoma Narrows was not an experimental structure — it had been reviewed by eminent engineers and approved by federal funding authorities. It was the third-longest suspension bridge in the world. Its collapse represented not merely a structural failure, but a failure of the profession's models and assumptions.</p>
+          <p>The collapse shocked the engineering world. Tacoma Narrows was not an experimental structure; it had been reviewed by eminent engineers and approved by federal funding authorities. It was the third-longest suspension bridge in the world. Its collapse represented not merely a structural failure, but a failure of the profession's models and assumptions.</p>
         </FileSection>
 
         <FileSection id="tn-specifications" code="§ 02" title="Bridge Specifications" isOpen={isOpen('tn-specifications')} onToggle={toggle('tn-specifications')}>
@@ -122,7 +122,7 @@ export default function CaseDocument({ responses, openSections, onToggleSection,
             <tbody>
               <tr><td>Total bridge length</td><td>1,810 m</td><td>Including approach spans</td></tr>
               <tr className={s.highlightRow}><td>Main span length</td><td>853 m</td><td>Third longest in world at time of construction</td></tr>
-              <tr className={s.highlightRow}><td>Deck width</td><td>12 m</td><td>Two lanes only — unusually narrow for span length</td></tr>
+              <tr className={s.highlightRow}><td>Deck width</td><td>12 m</td><td>Two lanes only: unusually narrow for span length</td></tr>
               <tr><td>Span-to-width ratio</td><td>72 : 1</td><td>Compare Golden Gate: ~47:1</td></tr>
               <tr className={s.highlightRow}><td>Stiffening girder depth</td><td>2.4 m (solid plate)</td><td>Original design called for 7.6 m open trusses</td></tr>
               <tr><td>Tower height</td><td>130 m</td><td>Above water level</td></tr>
@@ -138,7 +138,7 @@ export default function CaseDocument({ responses, openSections, onToggleSection,
 
           <div className={s.callout}>
             <span className={s.calloutLabel}>Design note</span>
-            The original Washington State design, prepared by engineer Clark Eldridge, specified 7.6-metre open-lattice trusses beneath the roadway. This design was overruled by federal funding authorities, who engaged New York engineer Leon Moisseiff to produce a less expensive alternative. Moisseiff's design used 2.4-metre solid plate girders — elegant, slender, and, as Moisseiff described it, "the most beautiful bridge in the world."
+            The original Washington State design, prepared by engineer Clark Eldridge, specified 7.6-metre open-lattice trusses beneath the roadway. This design was overruled by federal funding authorities, who engaged New York engineer Leon Moisseiff to produce a less expensive alternative. Moisseiff's design used 2.4-metre solid plate girders: elegant, slender, and, as Moisseiff described it, "the most beautiful bridge in the world."
           </div>
         </FileSection>
 
@@ -150,11 +150,11 @@ export default function CaseDocument({ responses, openSections, onToggleSection,
             <tbody>
               <tr><td>~07:00</td><td>35 mph (56 km/h)</td><td>Vertical (transverse)</td><td>~0.6 Hz</td><td>~0.5 m</td></tr>
               <tr><td>~08:30</td><td>38 mph (61 km/h)</td><td>Vertical (transverse)</td><td>~0.6 Hz</td><td>~1.2 m</td></tr>
-              <tr><td>~10:00</td><td>42 mph (68 km/h)</td><td>Mixed — transition</td><td>Irregular</td><td>Increasing</td></tr>
+              <tr><td>~10:00</td><td>42 mph (68 km/h)</td><td>Mixed: transition</td><td>Irregular</td><td>Increasing</td></tr>
               <tr className={s.highlightRow}><td>~10:15</td><td>42 mph (68 km/h)</td><td>Torsional (twisting)</td><td>0.2 Hz</td><td>~4 m, growing</td></tr>
-              <tr className={s.highlightRow}><td>~10:45</td><td>42 mph (68 km/h)</td><td>Torsional (twisting)</td><td>0.2 Hz</td><td>~8.5 m — deck at 45°</td></tr>
-              <tr><td>11:02</td><td>42 mph (68 km/h)</td><td>Collapse initiating</td><td>—</td><td>Cable failure begins</td></tr>
-              <tr><td>11:10</td><td>42 mph (68 km/h)</td><td>—</td><td>—</td><td>Central span collapses</td></tr>
+              <tr className={s.highlightRow}><td>~10:45</td><td>42 mph (68 km/h)</td><td>Torsional (twisting)</td><td>0.2 Hz</td><td>~8.5 m (deck at 45°)</td></tr>
+              <tr><td>11:02</td><td>42 mph (68 km/h)</td><td>Collapse initiating</td><td>N/A</td><td>Cable failure begins</td></tr>
+              <tr><td>11:10</td><td>42 mph (68 km/h)</td><td>N/A</td><td>N/A</td><td>Central span collapses</td></tr>
             </tbody>
           </table>
 
@@ -179,19 +179,19 @@ export default function CaseDocument({ responses, openSections, onToggleSection,
           <p>The following is an excerpt from the structural engineering assessment prepared by Moisseiff's team, submitted to the Federal Works Agency on 12 April 1938 in support of the design proposal. This document was approved by the reviewing board.</p>
 
           <div className={s.witnessBlock}>
-            <div className={s.witnessTag}>Exhibit A — Engineering Assessment (excerpt)</div>
+            <div className={s.witnessTag}>Exhibit A: Engineering Assessment (excerpt)</div>
             <div className={s.witnessName}>Moisseiff &amp; Lienhard, Consulting Engineers</div>
             <div className={s.witnessRole}>Structural assessment, April 1938</div>
             <div className={s.witnessText}>
-              <p>"The proposed structure has been analysed using the deflection theory, which accounts for the contribution of the main cables in resisting lateral wind loads. Under this method, the stiffness provided by the cable system — acting through the suspenders — absorbs approximately one-half of any applied static wind pressure, transmitting the remainder to the anchorages and towers.</p>
-              <p>The proposed plate girder section, at 8 feet in depth, provides adequate stiffness for all anticipated design loads. The structure has been found to be safe under wind forces equivalent to a uniform static pressure of 30 lb/ft² applied to the exposed surface area — corresponding to wind velocities well in excess of any recorded at the Narrows.</p>
+              <p>"The proposed structure has been analysed using the deflection theory, which accounts for the contribution of the main cables in resisting lateral wind loads. Under this method, the stiffness provided by the cable system, acting through the suspenders, absorbs approximately one-half of any applied static wind pressure, transmitting the remainder to the anchorages and towers.</p>
+              <p>The proposed plate girder section, at 8 feet in depth, provides adequate stiffness for all anticipated design loads. The structure has been found to be safe under wind forces equivalent to a uniform static pressure of 30 lb/ft² applied to the exposed surface area, corresponding to wind velocities well in excess of any recorded at the Narrows.</p>
               <p>We are satisfied that the proposed design meets or exceeds all applicable safety standards and that no further analysis is required prior to construction approval."</p>
             </div>
           </div>
 
           <div className={s.callout}>
             <span className={s.calloutLabel}>Tribunal context</span>
-            The assessment above is technically accurate within its stated assumptions — it correctly applies the deflection theory for static wind loads.
+            The assessment above is technically accurate within its stated assumptions; it correctly applies the deflection theory for static wind loads.
           </div>
         </FileSection>
 
@@ -212,14 +212,14 @@ export default function CaseDocument({ responses, openSections, onToggleSection,
             <div className={s.witnessName}>Dr. Amara Osei-Mensah</div>
             <div className={s.witnessRole}>Specialist in Aeroelastic Systems, National Research Laboratory</div>
             <div className={s.witnessText}>
-              <p>"With respect to my colleague, the resonance explanation is demonstrably incomplete — and the data in this case file is sufficient to show why. The torsional mode of the Tacoma Narrows Bridge oscillated at 0.2 Hz at the time of collapse. The calculated vortex shedding frequency at 42 mph wind speed is approximately 1.0 Hz. These figures are not equal. The resonance model cannot explain the torsional collapse.</p>
-              <p>What actually occurred is a phenomenon called aeroelastic flutter. The collapse-phase motion was triggered by an asymmetric loading condition — a midspan stay cable that slipped at approximately 10:00. Once torsional oscillation began, the aerodynamic properties of the solid plate girder produced forces that amplified rather than opposed the motion. The structure's own movement, not an external periodic force, drove the collapse."</p>
+              <p>"With respect to my colleague, the resonance explanation is demonstrably incomplete, and the data in this case file is sufficient to show why. The torsional mode of the Tacoma Narrows Bridge oscillated at 0.2 Hz at the time of collapse. The calculated vortex shedding frequency at 42 mph wind speed is approximately 1.0 Hz. These figures are not equal. The resonance model cannot explain the torsional collapse.</p>
+              <p>What actually occurred is a phenomenon called aeroelastic flutter. The collapse-phase motion was triggered by an asymmetric loading condition: a midspan stay cable that slipped at approximately 10:00. Once torsional oscillation began, the aerodynamic properties of the solid plate girder produced forces that amplified rather than opposed the motion. The structure's own movement, not an external periodic force, drove the collapse."</p>
             </div>
           </div>
 
           <figure className={s.diagram}>
             <img src={flutterDiagram} alt="Diagram of the aeroelastic flutter feedback loop: twist changes aerodynamic force, which amplifies the twist" />
-            <figcaption className={s.diagramCaption}>The aeroelastic flutter feedback loop described by Dr. Osei-Mensah. Unlike resonance, flutter is self-sustaining — the structure's own motion generates the forces that destroy it.</figcaption>
+            <figcaption className={s.diagramCaption}>The aeroelastic flutter feedback loop described by Dr. Osei-Mensah. Unlike resonance, flutter is self-sustaining: the structure's own motion generates the forces that destroy it.</figcaption>
           </figure>
         </FileSection>
 
@@ -232,15 +232,15 @@ export default function CaseDocument({ responses, openSections, onToggleSection,
             </div>
           ) : (
             <>
-              <p>In March 1941, the Carmody Board — a panel of senior engineers convened by the Federal Works Agency — published its findings. Three conclusions stood out:</p>
+              <p>In March 1941, the Carmody Board, a panel of senior engineers convened by the Federal Works Agency, published its findings. Three conclusions stood out:</p>
 
               <p><strong>1.</strong> The principal cause of failure was the bridge's extreme flexibility, resulting from its shallow and narrow design.</p>
-              <p><strong>2.</strong> The solid plate girder and deck section acted aerodynamically — generating lift and drag forces that the original model had not accounted for.</p>
+              <p><strong>2.</strong> The solid plate girder and deck section acted aerodynamically, generating lift and drag forces that the original model had not accounted for.</p>
               <p><strong>3.</strong> Aerodynamic forces on large flexible structures were poorly understood. Wind tunnel testing of dynamic models should be required for all future long-span bridge designs.</p>
 
               <div className={s.callout}>
                 <span className={s.calloutLabel}>Historical note</span>
-                The Carmody Board declined to assign individual blame. Leon Moisseiff — whose career was effectively ended by the collapse — was exonerated. The board concluded that the entire engineering profession had operated at the limits of available knowledge. The science of aeroelasticity, as applied to large structures, was born in the aftermath of this failure. The replacement bridge, opened in 1950, was built with open-lattice trusses and has stood without incident ever since.
+                The Carmody Board declined to assign individual blame. Leon Moisseiff, whose career was effectively ended by the collapse, was exonerated. The board concluded that the entire engineering profession had operated at the limits of available knowledge. The science of aeroelasticity, as applied to large structures, was born in the aftermath of this failure. The replacement bridge, opened in 1950, was built with open-lattice trusses and has stood without incident ever since.
               </div>
 
               <p>It later emerged that the PWA field engineer, David L. Glenn, had formally objected to the design and refused to sign off on the bridge before opening. He was overruled by federal officials. He was dismissed from his post approximately two weeks later.</p>

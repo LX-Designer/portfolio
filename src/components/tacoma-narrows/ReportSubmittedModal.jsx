@@ -14,7 +14,7 @@ export default function ReportSubmittedModal({ onViewFindings, onClose }) {
         <div className={s.briefingBody}>
           <p className={s.briefingText}>
             Your tribunal report has been filed. The Post-Collapse Investigation findings are now
-            unlocked in §06 of the case file — read them to see how your conclusions compare to
+            unlocked in §06 of the case file: read them to see how your conclusions compare to
             the historical record.
           </p>
         </div>

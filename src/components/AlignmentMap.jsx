@@ -109,17 +109,15 @@ const ChevronDown = () => (
 
 export default function AlignmentMap() {
   const [currentId, setCurrentId] = useState(null);
-  const [reveal, setReveal] = useState(() => {
-    const init = {};
-    OUTCOMES.forEach((o) => (init[o.id] = { activities: false, content: false }));
-    return init;
-  });
+  // Not keyed by outcome id — the reveal sequence (activities → content →
+  // plan) is meant to replay from the start each time a new outcome is
+  // selected, not accumulate independently per outcome.
+  const [state, setState] = useState({ activities: false, content: false });
   const [syllabusRevealed, setSyllabusRevealed] = useState(false);
   const taskRef = useRef(null);
 
   const current = currentId ? OUTCOMES.find((o) => o.id === currentId) : null;
-  const state = current ? reveal[current.id] : null;
-  const hasFullyExploredAny = OUTCOMES.some((o) => reveal[o.id].activities && reveal[o.id].content);
+  const readyForPlan = state.activities && state.content;
   const groups = groupLessons();
 
   // After React commits the DOM update for a newly-selected outcome, bring the
@@ -128,13 +126,19 @@ export default function AlignmentMap() {
     if (currentId) taskRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [currentId]);
 
-  const revealActivities = (id) => setReveal((r) => ({ ...r, [id]: { ...r[id], activities: true } }));
-  const revealContent = (id) => setReveal((r) => ({ ...r, [id]: { ...r[id], content: true } }));
+  function selectOutcome(id) {
+    setCurrentId(id);
+    setState({ activities: false, content: false });
+    setSyllabusRevealed(false);
+  }
+
+  const revealActivities = () => setState((s) => ({ ...s, activities: true }));
+  const revealContent = () => setState((s) => ({ ...s, content: true }));
 
   return (
     <div className="alignment-map">
       <style>{`
-        .alignment-map{background:var(--bg);border:1px solid var(--line);padding:36px 34px;
+        .alignment-map{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:36px 34px;
           font-family:'Inter',sans-serif;color:var(--text);font-size:16px;line-height:1.6;
           container-type:inline-size;}
         .alignment-map *{box-sizing:border-box;}
@@ -250,7 +254,7 @@ export default function AlignmentMap() {
         }
       `}</style>
 
-      <h2 className="iam-h2">Interactive alignment map</h2>
+      <h2 className="iam-h2">Constructive Alignment Map</h2>
       <p className="iam-intro">
         Select a learning outcome to see how it is built into the assessment task and used to inform the course learning activities and content.
       </p>
@@ -262,7 +266,7 @@ export default function AlignmentMap() {
             key={o.id}
             type="button"
             className={`iam-outcome${currentId === o.id ? " selected" : ""}`}
-            onClick={() => setCurrentId(o.id)}
+            onClick={() => selectOutcome(o.id)}
           >
             <span className="num">{o.label}</span>
             <p>{o.outcomeHtml}</p>
@@ -304,7 +308,7 @@ export default function AlignmentMap() {
             </span>
           </span>
         ) : !state.activities ? (
-          <button type="button" className="iam-reveal" onClick={() => revealActivities(current.id)}>
+          <button type="button" className="iam-reveal" onClick={revealActivities}>
             Show the supporting activities <ChevronDown />
           </button>
         ) : (
@@ -326,7 +330,7 @@ export default function AlignmentMap() {
                 type="button"
                 className="iam-reveal"
                 style={{ marginTop: "14px" }}
-                onClick={() => revealContent(current.id)}
+                onClick={revealContent}
               >
                 Show the learning content <ChevronDown />
               </button>
@@ -352,7 +356,7 @@ export default function AlignmentMap() {
         )}
       </div>
 
-      {hasFullyExploredAny && (
+      {readyForPlan && (
         <div className="iam-syllabus">
           {!syllabusRevealed ? (
             <button type="button" className="iam-reveal" onClick={() => setSyllabusRevealed(true)}>

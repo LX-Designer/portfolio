@@ -335,7 +335,7 @@ export default function CumulativeAdvantage() {
           downloaded songs by unknown bands. One group made choices independently, based purely on personal taste,
           while others were shown dynamic charts detailing the download popularity of each song before making their
           selections. This explorable simulates the outcome of that experiment, and demonstrates how an initial
-          advantage — a lead in the charts — can produce a snowball effect, causing a moderately good song to
+          advantage (a lead in the charts) can produce a snowball effect, causing a moderately good song to
           monopolise the market simply because it gained an accidental head start.
         </p>
 
@@ -384,8 +384,8 @@ export default function CumulativeAdvantage() {
           <div className="he-stagehd">
             <span className="t">
               {!active ? "Choose a world above"
-                : phase === "done" ? `Chart complete — ${active.label}`
-                : `Building the chart — listener ${stepIndex} of ${P}`}
+                : phase === "done" ? `Chart complete: ${active.label}`
+                : `Building the chart, listener ${stepIndex} of ${P}`}
             </span>
             {stepIndex > 0 && (
               <div className="he-readout">
@@ -445,14 +445,14 @@ export default function CumulativeAdvantage() {
             <div className="he-eyebrow">What happened</div>
             {active.c === 0 ? (
               <p>
-                <b>{SONGS[leader]}</b> narrowly finished on top with {pc(leaderShare)}% of plays — but since nobody
+                <b>{SONGS[leader]}</b> narrowly finished on top with {pc(leaderShare)}% of plays, but since nobody
                 could see anyone else's choices, no early lead had a chance to snowball. Any of the sixteen tracks
                 was just as likely to end up here.
               </p>
             ) : (
               <p>
                 <b>{SONGS[leader]}</b> won with {pc(leaderShare)}% of all plays. It didn't start out as the best
-                song — it just picked up a few extra plays early on. As its count grew, later listeners saw it near
+                song; it just picked up a few extra plays early on. As its count grew, later listeners saw it near
                 the top of the chart, assumed it must be good, and picked it too, widening its lead until it
                 snowballed into a runaway hit.
               </p>
@@ -475,14 +475,14 @@ export default function CumulativeAdvantage() {
               }}
               onKeyUp={(e) => { if (e.key === "Enter" || e.key === " ") stopHold(); }}
             >
-              {ffActive ? `Fast-forwarding — listener ${stepIndex} of ${P}` : `Next Selection → (listener ${stepIndex + 1} of ${P})`}
+              {ffActive ? `Fast-forwarding, listener ${stepIndex} of ${P}` : `Next Selection → (listener ${stepIndex + 1} of ${P})`}
             </button>
             <button
               className="he-btn"
               disabled={ffActive}
               onClick={autoPlaying ? stopPlayer : startAutoPlay}
             >
-              {autoPlaying ? `Stop — listener ${stepIndex} of ${P}` : "Auto-Play"}
+              {autoPlaying ? `Stop, listener ${stepIndex} of ${P}` : "Auto-Play"}
             </button>
           </div>
         )}
@@ -521,7 +521,7 @@ export default function CumulativeAdvantage() {
           <div className="he-insight">
             <div className="he-eyebrow">The takeaway</div>
             <blockquote className="he-pullquote">
-              The same song can become a runaway #1 hit in one world and completely flop in another — and nothing
+              The same song can become a runaway #1 hit in one world and completely flop in another, and nothing
               about the song changed. Its success depended entirely on who got lucky first.
             </blockquote>
             <p>
@@ -535,8 +535,8 @@ export default function CumulativeAdvantage() {
                 </svg>
               </span>
               <div className="he-concept-body">
-                <span className="he-concept-term">Cumulative Advantage</span> — often called the{" "}
-                <span className="he-concept-term">Matthew Effect</span> — is a simple rule: the rich get richer,
+                <span className="he-concept-term">Cumulative Advantage</span>, often called the{" "}
+                <span className="he-concept-term">Matthew Effect</span>, is a simple rule: the rich get richer,
                 and the popular get more popular.
               </div>
             </div>
@@ -567,7 +567,7 @@ export default function CumulativeAdvantage() {
                 <div className="he-quizreveal">
                   {q.key === "app" && (
                     <p><b>Correct, but there is more!</b> A new app doesn't just grow because it is useful; it
-                    grows because everyone else is on it. In tech, this is called the "network effect" — a
+                    grows because everyone else is on it. In tech, this is called the "network effect", a
                     classic form of cumulative advantage where early user growth makes the platform exponentially
                     more valuable to the next person, locking out competitors.</p>
                   )}

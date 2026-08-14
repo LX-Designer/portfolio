@@ -46,7 +46,7 @@ function ActivitiesTab({ responses, activeActivityId, onOpenActivity }) {
             <button
               className={s.sbItemBtn}
               onClick={() => onOpenActivity(act.id)}
-              aria-label={`Activity ${i + 1}: ${act.title} — ${status === 'complete' ? 'Complete' : status === 'inprogress' ? 'In progress' : 'Not started'}`}
+              aria-label={`Activity ${i + 1}: ${act.title}, ${status === 'complete' ? 'Complete' : status === 'inprogress' ? 'In progress' : 'Not started'}`}
             >
               <span className={`${s.sbDot} ${status === 'complete' ? s.sbDotComplete : status === 'inprogress' ? s.sbDotProgress : ''}`} aria-hidden="true" />
               <span className={s.sbItemMeta}>

@@ -7,7 +7,7 @@ export const activities = [
     id: 'act-1',
     title: 'Initial hypothesis',
     thinkingMove: 'Hypothesise',
-    prompt: 'Before examining any data, write a single sentence explaining why you think the Tacoma Narrows Bridge collapsed on 7 November 1940 — this is your starting position, so you can track how your thinking changes across the inquiry.',
+    prompt: 'Before examining any data, write a single sentence explaining why you think the Tacoma Narrows Bridge collapsed on 7 November 1940. This is your starting position, so you can track how your thinking changes across the inquiry.',
     conceptLinks: [],
     evidenceSections: [],
     responseKey: 'hypothesis',
@@ -21,7 +21,7 @@ export const activities = [
     id: 'act-2',
     title: 'Frequency analysis',
     thinkingMove: 'Analyse',
-    prompt: 'Use the data in §03 to evaluate whether the resonance explanation is consistent with what was recorded on the day of the collapse — it stands or falls on whether the frequencies actually match.',
+    prompt: 'Use the data in §03 to evaluate whether the resonance explanation is consistent with what was recorded on the day of the collapse. It stands or falls on whether the frequencies actually match.',
     sentenceStarters: [
       'The resonance explanation predicts that… however, the data in §03 shows…',
       'The recorded [wind / oscillation / natural] frequency [supports / contradicts] the resonance explanation because…',
@@ -41,7 +41,7 @@ export const activities = [
     id: 'act-3',
     title: 'Timeline reconstruction',
     thinkingMove: 'Analyse',
-    prompt: 'The incident data reveals two distinct phases on the day of collapse — identify what changed between them, and consider whether a single explanation can account for both.',
+    prompt: 'The incident data reveals two distinct phases on the day of collapse. Identify what changed between them, and consider whether a single explanation can account for both.',
     sentenceStarters: [
       'In the first phase, the bridge was exhibiting… In the second phase, this changed to…',
       'The shift between phases suggests that a single explanation [can / cannot] account for both because…',
@@ -61,7 +61,7 @@ export const activities = [
     id: 'act-4',
     title: 'Design analysis',
     thinkingMove: 'Diagnose',
-    prompt: 'Explain the physical consequences of replacing the 7.6m open-lattice trusses with 2.4m solid plate girders — trace how this one decision created the aerodynamic conditions that led to collapse.',
+    prompt: 'Explain the physical consequences of replacing the 7.6m open-lattice trusses with 2.4m solid plate girders, and trace how this one decision created the aerodynamic conditions that led to collapse.',
     sentenceStarters: [
       'Replacing the open-lattice trusses with solid plate girders increased aerodynamic drag because…',
       'This design change affected the bridge\'s behaviour by… which made it vulnerable to…',
@@ -83,7 +83,7 @@ export const activities = [
     id: 'act-5',
     title: 'Expert evaluation',
     thinkingMove: 'Evaluate',
-    prompt: 'Evaluate the statements of Dr. Brandt and Dr. Osei-Mensah — one is correct, and one relies on a claim the data directly contradicts. Identify which account is better supported by the evidence, and name the specific claim that undermines the weaker argument.',
+    prompt: 'Evaluate the statements of Dr. Brandt and Dr. Osei-Mensah: one is correct, and one relies on a claim the data directly contradicts. Identify which account is better supported by the evidence, and name the specific claim that undermines the weaker argument.',
     sentenceStarters: [
       'Dr. [X]\'s account is better supported by the evidence because…',
       'The specific claim in Dr. [X]\'s statement that is directly contradicted by the data is…',
@@ -107,7 +107,7 @@ export const activities = [
     id: 'act-6',
     title: 'Tribunal report',
     thinkingMove: 'Synthesise',
-    prompt: 'Bring your full analysis together into a structured, roughly 200-word report for the inquiry tribunal — the three things it must address are set out below.',
+    prompt: 'Bring your full analysis together into a structured, roughly 200-word report for the inquiry tribunal. The three things it must address are set out below.',
     // Synthesises everything else — submitting before the earlier analysis
     // exists would just produce an unsupported report.
     requiresActivities: ['act-1', 'act-2', 'act-3', 'act-4', 'act-5'],
@@ -117,7 +117,7 @@ export const activities = [
       'To prevent a recurrence, the bridge should have been designed to… because…',
     ],
     responseKey: 'report',
-    inputLabel: 'Tribunal Report — Case 1940-TN-001',
+    inputLabel: 'Tribunal Report, Case 1940-TN-001',
     rows: 10,
     large: true,
     submitLabel: 'Submit',
@@ -125,7 +125,7 @@ export const activities = [
     extraInstruction: {
       lead: 'You have examined all the evidence in this case file. Now write your report for the inquiry tribunal. Your report should be approximately 200 words and must address three things:',
       items: [
-        'What was the actual mechanism of failure? (Not what was assumed — what the evidence shows.)',
+        'What was the actual mechanism of failure? (Not what was assumed, but what the evidence shows.)',
         "Where was the engineers' model incomplete? What did it fail to account for?",
         'What single design change would you recommend to prevent a recurrence?',
       ],
