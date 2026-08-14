@@ -15,7 +15,7 @@ const CRITERIA = [
       1: "Names a single effect of the rate rise, without linking it to spending overall.",
       2: "Names several separate effects on households, but treats each as independent.",
       3: "Links the effects together, showing how they act on spending at the same time.",
-      4: "Identifies conditions — such as fixed-rate lending — under which the causal link would weaken or change.",
+      4: "Identifies conditions, such as fixed-rate lending, under which the causal link would weaken or change.",
     },
   },
   {
@@ -26,7 +26,7 @@ const CRITERIA = [
       1: "Names one economic term, without applying it to the mechanism at work.",
       2: "Uses several terms correctly, each explained separately from the others.",
       3: "Uses the terms together to explain how the mechanism actually works.",
-      4: "Uses the terms to question the underlying model — whether it holds in all conditions.",
+      4: "Uses the terms to question the underlying model, asking whether it holds in all conditions.",
     },
   },
   {
@@ -60,7 +60,7 @@ const RESPONSES = [
   },
   {
     id: "r4",
-    text: "Higher repayments and stronger savings returns work together to reduce spending, since falling disposable income raises the opportunity cost of spending at the same moment — the two pull in one direction. But this assumes borrowers feel the rise immediately. Where most mortgages are fixed-rate, existing borrowers are shielded until renewal, so the same rise could act far more slowly. An unexpected rise might even lift spending briefly.",
+    text: "Higher repayments and stronger savings returns work together to reduce spending, since falling disposable income raises the opportunity cost of spending at the same moment; the two pull in one direction. But this assumes borrowers feel the rise immediately. Where most mortgages are fixed-rate, existing borrowers are shielded until renewal, so the same rise could act far more slowly. An unexpected rise might even lift spending briefly.",
     levels: { cause: 4, terms: 3, structure: 4 },
   },
   {
@@ -107,9 +107,13 @@ export default function SoloRubric() {
           container-type:inline-size;}
         .solo-rubric *{box-sizing:border-box;}
         .sr-h2{font-family:'Poppins',sans-serif;font-weight:600;font-size:20px;margin:0 0 20px;color:var(--text);}
-        .sr-task-label{font-size:13px;color:var(--text-soft);margin:0 0 4px;}
-        .sr-task{font-size:16px;font-weight:600;margin:0 0 8px;}
+        .sr-task-callout{background:var(--blue-bg);border:1px solid var(--line);border-left:3px solid var(--blue);
+          border-radius:var(--radius);padding:16px 18px;margin:0 0 20px;}
+        .sr-task-label{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+          color:var(--blue);margin:0 0 6px;}
+        .sr-task{font-size:15.5px;font-weight:600;line-height:1.5;margin:0;color:var(--text);}
         .sr-instruct{font-size:14px;color:var(--text-soft);margin:0 0 20px;}
+        .sr-reselect-hint{font-size:13.5px;color:var(--text-soft);font-style:italic;margin:18px 0 0;}
         .sr-option{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--line);
           border-radius:var(--radius);padding:16px 18px;margin-bottom:10px;cursor:pointer;
           font-family:'Inter',sans-serif;font-size:14.5px;line-height:1.65;color:var(--text);
@@ -161,11 +165,14 @@ export default function SoloRubric() {
         }
       `}</style>
 
-      <h2 className="sr-h2">SOLO rubric — table view</h2>
+      <h2 className="sr-h2">Interactive Assessment Rubric</h2>
 
-      <p className="sr-task-label">Task</p>
-      <p className="sr-task">Explain the effects of a rise in interest rates on consumer spending.</p>
-      <p className="sr-instruct">Select a student response below. Each one is graded separately against all three criteria.</p>
+      <p className="sr-instruct">Select an example student response to the task to see how it scores on the assessment rubric. Each response is graded separately against all three criteria.</p>
+
+      <div className="sr-task-callout">
+        <p className="sr-task-label">Task</p>
+        <p className="sr-task">Explain the effects of a rise in interest rates on consumer spending.</p>
+      </div>
 
       <div>
         {responses.map((r) => (
@@ -185,7 +192,7 @@ export default function SoloRubric() {
         <p className="sr-results-sub">
           {selected
             ? "The highlighted cell in each row is where this response lands. Select a different response to compare."
-            : "Select a response above — the matching cell in each row will highlight."}
+            : "Select a response above: the matching cell in each row will highlight."}
         </p>
 
         <div className="sr-table-wrap">
@@ -240,6 +247,10 @@ export default function SoloRubric() {
             );
           })}
         </div>
+
+        {selected && (
+          <p className="sr-reselect-hint">Select a different example response to see how it scores on the rubric.</p>
+        )}
       </div>
     </div>
   );

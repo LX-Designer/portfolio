@@ -139,8 +139,8 @@ export const pieces = [
   {
     slug: 'solo-rubric-explorer', category: 'assessment', tag: 'Tertiary Education',
     sector: 'higher-ed', type: 'assessment',
-    title: 'SOLO Rubric Explorer',
-    is: 'Select one of five student responses to an economics task and see it graded live against three criteria, each written along the SOLO taxonomy’s progression from a single disconnected idea through to a fully integrated, self-questioning argument.',
+    title: 'Interactive Assessment Rubric',
+    is: 'An interactive rubric that grades a sample response against three criteria. Built on SOLO taxonomy\'s five levels, with plain-language achievement labels adapted from TEQSA\'s assessment design guidance.',
     demonstrates: 'Criterion-writing expertise paired directly with interaction design.',
     island: 'SoloRubric',
   },
