@@ -69,6 +69,25 @@ export const pieces = [
     standalonePage: true,
   },
   {
+    slug: 'tacoma-narrows-inquiry-lab', category: 'interactive', tag: 'Tertiary Education',
+    sector: 'higher-ed', type: 'interactive',
+    title: 'Tacoma Narrows: The Bridge That Shouldn\'t Have Failed',
+    is: 'An inquiry-based case file on the 1940 Tacoma Narrows Bridge collapse, for undergraduate physics and engineering. Examine wind and oscillation data, weigh two competing expert accounts, and use a built-in physics toolkit to write a tribunal report explaining the actual failure mechanism.',
+    demonstrates: 'Structuring a case investigation so the "right answer" is discoverable but not given: competing expert claims that sound equally plausible until the learner tests them against the data themselves.',
+    island: 'TacomaNarrowsLab',
+    // Card-only override: this card's body copy differs from the "is" text
+    // used on its own standalone page.
+    cardBody: 'This inquiry lab demonstrates a case-based approach to conceptual understanding. Learners work through a primary-source case file — data tables, an engineering sign-off, and two conflicting expert witness statements — using a physics toolkit to test each claim. Six embedded activities build toward a written tribunal report explaining the actual failure mechanism.',
+    // This piece is a long, full-page case investigation (its own nav, activity
+    // sidebar) that doesn't suit the compact preview modal — send it to its
+    // standalone page in a new tab instead, like a normal link.
+    openInNewTab: true,
+    // The asset has its own full-page chrome (topbar, activity sidebar) —
+    // render it without the portfolio's own nav/breadcrumb/footer so it reads
+    // as its own standalone tool, not an embed in a page.
+    standalonePage: true,
+  },
+  {
     slug: 'milltown-recession-simulation', category: 'interactive', tag: 'Tertiary Education',
     sector: 'higher-ed', type: 'interactive',
     title: 'Milltown Recession Simulation',

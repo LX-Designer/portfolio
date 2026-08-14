@@ -1,0 +1,64 @@
+<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono','Courier New',monospace">
+
+  <rect width="560" height="220" fill="#f5f0e8"/>
+
+  <!-- Axes -->
+  <line x1="60" y1="170" x2="520" y2="170" stroke="#4a4640" stroke-width="1.5"/>
+  <line x1="60" y1="20"  x2="60"  y2="176" stroke="#4a4640" stroke-width="1.5"/>
+  <polygon points="516,166 524,170 516,174" fill="#4a4640"/>
+
+  <!-- Axis labels -->
+  <text x="526" y="174" font-size="9" fill="#4a4640">frequency</text>
+  <text x="28" y="100" font-size="9" fill="#4a4640" text-anchor="middle" transform="rotate(-90,28,100)">amplitude</text>
+
+  <!-- f₀ tick and label -->
+  <line x1="290" y1="166" x2="290" y2="174" stroke="#4a4640" stroke-width="1.5"/>
+  <text x="290" y="186" font-size="10" fill="#4a4640" text-anchor="middle">f₀</text>
+  <text x="290" y="198" font-size="8" fill="#4a4640" text-anchor="middle" letter-spacing="0.06em">natural frequency</text>
+
+  <!-- Resonance curve — Lorentzian-like peak at x=290 -->
+  <!-- Baseline at y=155 (low amplitude), peak at y=28 (high amplitude) -->
+  <path d="
+    M 60,156
+    C 80,156 100,155 130,154
+    C 160,153 190,150 220,144
+    C 240,138 260,120 270,100
+    C 275,88 280,62 285,40
+    C 287,30 289,24 290,22
+    C 291,24 293,30 295,40
+    C 300,62 305,88 310,100
+    C 320,120 340,138 360,144
+    C 390,150 420,153 450,154
+    C 480,155 500,156 520,156
+  " fill="none" stroke="#1a1814" stroke-width="2.5"/>
+
+  <!-- Shaded area under peak to show resonance region -->
+  <path d="
+    M 260,170
+    L 260,120
+    C 270,100 280,62 285,40
+    C 287,30 289,24 290,22
+    C 291,24 293,30 295,40
+    C 300,62 310,100 320,120
+    L 320,170
+    Z
+  " fill="rgba(139,26,26,0.06)"/>
+
+  <!-- Dashed vertical at f₀ -->
+  <line x1="290" y1="22" x2="290" y2="170" stroke="#8b1a1a" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Peak annotation -->
+  <text x="330" y="36" font-size="9" fill="#8b1a1a" letter-spacing="0.06em">maximum amplitude</text>
+  <text x="330" y="48" font-size="9" fill="#8b1a1a" letter-spacing="0.06em">at resonance</text>
+  <line x1="328" y1="34" x2="298" y2="28" stroke="#8b1a1a" stroke-width="1"/>
+
+  <!-- Off-resonance annotation -->
+  <text x="420" y="140" font-size="9" fill="#4a4640" letter-spacing="0.06em">small amplitude</text>
+  <text x="420" y="152" font-size="9" fill="#4a4640" letter-spacing="0.06em">when frequencies</text>
+  <text x="420" y="164" font-size="9" fill="#4a4640" letter-spacing="0.06em">do not match</text>
+
+  <!-- Caption -->
+  <line x1="60" y1="208" x2="500" y2="208" stroke="rgba(26,24,20,0.1)" stroke-width="1"/>
+  <text x="280" y="218" font-size="9" fill="#4a4640" text-anchor="middle" letter-spacing="0.04em">Amplitude peaks sharply when the driving frequency equals the natural frequency (f₀).</text>
+
+</svg>

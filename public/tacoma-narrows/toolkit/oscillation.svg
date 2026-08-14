@@ -1,0 +1,44 @@
+<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono','Courier New',monospace">
+
+  <rect width="560" height="200" fill="#f5f0e8"/>
+
+  <!-- Axes -->
+  <line x1="50" y1="100" x2="520" y2="100" stroke="#4a4640" stroke-width="1.5"/>
+  <line x1="50" y1="20"  x2="50"  y2="180" stroke="#4a4640" stroke-width="1.5"/>
+  <text x="526" y="104" font-size="9" fill="#4a4640">time</text>
+  <text x="30" y="24" font-size="9" fill="#4a4640" text-anchor="middle" transform="rotate(-90,30,100)">displacement</text>
+
+  <!-- Sine wave — two complete cycles -->
+  <!-- Amplitude = 60px, period = 220px, centred at y=100 -->
+  <!-- From x=50 to x=490 -->
+  <path d="
+    M 50,100
+    C 50,100 77,40 105,40
+    C 133,40 160,100 160,100
+    C 160,100 187,160 215,160
+    C 243,160 270,100 270,100
+    C 270,100 297,40 325,40
+    C 353,40 380,100 380,100
+    C 380,100 407,160 435,160
+    C 463,160 490,100 490,100
+  " fill="none" stroke="#1a1814" stroke-width="2.5"/>
+
+  <!-- Amplitude annotation — first peak -->
+  <line x1="105" y1="40" x2="105" y2="100" stroke="#8b1a1a" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="100" y1="40"  x2="110" y2="40"  stroke="#8b1a1a" stroke-width="1"/>
+  <line x1="100" y1="100" x2="110" y2="100" stroke="#8b1a1a" stroke-width="1"/>
+  <text x="116" y="74" font-size="9" fill="#8b1a1a" letter-spacing="0.06em">amplitude</text>
+
+  <!-- Period annotation — first full cycle -->
+  <line x1="50"  y1="172" x2="270" y2="172" stroke="#b8860b" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="50"  y1="167" x2="50"  y2="177" stroke="#b8860b" stroke-width="1"/>
+  <line x1="270" y1="167" x2="270" y2="177" stroke="#b8860b" stroke-width="1"/>
+  <text x="160" y="188" font-size="9" fill="#b8860b" text-anchor="middle" letter-spacing="0.06em">one period (= 1 ÷ frequency)</text>
+
+  <!-- Frequency label -->
+  <text x="490" y="72" font-size="9" fill="#4a4640" text-anchor="end" letter-spacing="0.06em">frequency = cycles per second (Hz)</text>
+
+  <!-- Zero line label -->
+  <text x="42" y="104" font-size="9" fill="#8a8480" text-anchor="end">0</text>
+
+</svg>

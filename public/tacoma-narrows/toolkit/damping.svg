@@ -1,0 +1,89 @@
+<svg viewBox="0 0 600 210" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono','Courier New',monospace">
+
+  <rect width="600" height="210" fill="#f5f0e8"/>
+
+  <!-- ── PANEL 1: Positive damping ── x=20-195 -->
+
+  <text x="108" y="18" text-anchor="middle" font-size="8" fill="#2d5a3d" letter-spacing="0.12em">POSITIVE DAMPING</text>
+
+  <!-- Axes -->
+  <line x1="30" y1="110" x2="186" y2="110" stroke="#4a4640" stroke-width="1"/>
+  <line x1="30" y1="34"  x2="30"  y2="116" stroke="#4a4640" stroke-width="1"/>
+
+  <!-- Decaying sine wave -->
+  <path d="
+    M 30,110
+    C 30,110 40,62 54,62
+    C 68,62 78,110 78,110
+    C 78,110 88,136 102,136
+    C 116,136 126,110 126,110
+    C 126,110 136,94 147,94
+    C 158,94 165,110 165,110
+    C 165,110 170,118 176,118
+    C 182,118 186,110 186,110
+  " fill="none" stroke="#2d5a3d" stroke-width="2.5"/>
+
+  <text x="108" y="164" text-anchor="middle" font-size="8" fill="#2d5a3d" letter-spacing="0.06em">amplitude decays</text>
+  <text x="108" y="175" text-anchor="middle" font-size="8" fill="#2d5a3d" letter-spacing="0.06em">over time — safe</text>
+
+  <!-- ── PANEL 2: Zero damping ── x=205-385 -->
+
+  <text x="295" y="18" text-anchor="middle" font-size="8" fill="#b8860b" letter-spacing="0.12em">ZERO DAMPING</text>
+
+  <!-- Axes -->
+  <line x1="215" y1="110" x2="376" y2="110" stroke="#4a4640" stroke-width="1"/>
+  <line x1="215" y1="34"  x2="215" y2="116" stroke="#4a4640" stroke-width="1"/>
+
+  <!-- Constant sine wave -->
+  <path d="
+    M 215,110
+    C 215,110 225,58 239,58
+    C 253,58 263,110 263,110
+    C 263,110 273,162 287,162
+    C 301,162 311,110 311,110
+    C 311,110 321,58 335,58
+    C 349,58 359,110 359,110
+    C 359,110 365,140 371,140
+  " fill="none" stroke="#b8860b" stroke-width="2.5"/>
+
+  <text x="295" y="164" text-anchor="middle" font-size="8" fill="#b8860b" letter-spacing="0.06em">amplitude constant</text>
+  <text x="295" y="175" text-anchor="middle" font-size="8" fill="#b8860b" letter-spacing="0.06em">over time</text>
+
+  <!-- ── PANEL 3: Negative damping ── x=395-580 -->
+
+  <text x="488" y="18" text-anchor="middle" font-size="8" fill="#8b1a1a" letter-spacing="0.12em">NEGATIVE DAMPING</text>
+
+  <!-- Axes -->
+  <line x1="400" y1="110" x2="572" y2="110" stroke="#4a4640" stroke-width="1"/>
+  <line x1="400" y1="34"  x2="400" y2="116" stroke="#4a4640" stroke-width="1"/>
+
+  <!-- Growing sine wave -->
+  <path d="
+    M 400,110
+    C 400,110 408,96 416,96
+    C 424,96 432,110 432,110
+    C 432,110 440,130 452,130
+    C 464,130 472,110 472,110
+    C 472,110 480,82 495,82
+    C 510,82 518,110 518,110
+    C 518,110 526,146 543,146
+    C 560,146 568,110 568,110
+  " fill="none" stroke="#8b1a1a" stroke-width="2.5"/>
+
+  <!-- Growing amplitude indicators -->
+  <line x1="416" y1="96"  x2="416" y2="110" stroke="#8b1a1a" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>
+  <line x1="495" y1="82"  x2="495" y2="110" stroke="#8b1a1a" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>
+  <line x1="543" y1="146" x2="543" y2="110" stroke="#8b1a1a" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>
+
+  <text x="488" y="164" text-anchor="middle" font-size="8" fill="#8b1a1a" letter-spacing="0.06em">amplitude grows</text>
+  <text x="488" y="175" text-anchor="middle" font-size="8" fill="#8b1a1a" letter-spacing="0.06em">each cycle — destructive</text>
+
+  <!-- Panel dividers -->
+  <line x1="198" y1="10" x2="198" y2="185" stroke="rgba(26,24,20,0.12)" stroke-width="1"/>
+  <line x1="392" y1="10" x2="392" y2="185" stroke="rgba(26,24,20,0.12)" stroke-width="1"/>
+
+  <!-- Caption -->
+  <line x1="20" y1="192" x2="580" y2="192" stroke="rgba(26,24,20,0.1)" stroke-width="1"/>
+  <text x="300" y="204" font-size="9" fill="#4a4640" text-anchor="middle" letter-spacing="0.04em">Damping determines whether oscillations die out (positive), persist (zero), or grow (negative).</text>
+
+</svg>

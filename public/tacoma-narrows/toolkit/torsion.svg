@@ -1,0 +1,56 @@
+<svg viewBox="0 0 560 210" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono','Courier New',monospace">
+
+  <rect width="560" height="210" fill="#f5f0e8"/>
+
+  <!-- Panel divider -->
+  <line x1="280" y1="14" x2="280" y2="186" stroke="rgba(26,24,20,0.12)" stroke-width="1"/>
+
+  <!-- ── LEFT: Bending (vertical) mode ── -->
+  <text x="140" y="26" text-anchor="middle" font-size="8" fill="#4a4640" letter-spacing="0.12em">BENDING MODE</text>
+  <text x="140" y="37" text-anchor="middle" font-size="8" fill="#4a4640" letter-spacing="0.06em">(vertical oscillation)</text>
+
+  <!-- Bridge deck cross-section — neutral position (ghost) -->
+  <rect x="60" y="96" width="160" height="28" rx="2" fill="none" stroke="rgba(26,24,20,0.15)" stroke-width="1.5" stroke-dasharray="5,3"/>
+
+  <!-- Bridge deck — displaced upward -->
+  <rect x="60" y="66" width="160" height="28" rx="2" fill="#ede8dc" stroke="#1a1814" stroke-width="2"/>
+
+  <!-- Vertical arrows showing uniform upward movement -->
+  <line x1="100" y1="96"  x2="100" y2="72"  stroke="#b8860b" stroke-width="1.8"/>
+  <polygon points="96,72 100,62 104,72" fill="#b8860b"/>
+  <line x1="140" y1="96"  x2="140" y2="72"  stroke="#b8860b" stroke-width="1.8"/>
+  <polygon points="136,72 140,62 144,72" fill="#b8860b"/>
+  <line x1="180" y1="96"  x2="180" y2="72"  stroke="#b8860b" stroke-width="1.8"/>
+  <polygon points="176,72 180,62 184,72" fill="#b8860b"/>
+
+  <text x="140" y="136" text-anchor="middle" font-size="9" fill="#4a4640">Whole deck moves</text>
+  <text x="140" y="149" text-anchor="middle" font-size="9" fill="#4a4640">up and down uniformly</text>
+
+  <!-- ── RIGHT: Torsional mode ── -->
+  <text x="420" y="26" text-anchor="middle" font-size="8" fill="#8b1a1a" letter-spacing="0.12em">TORSIONAL MODE</text>
+  <text x="420" y="37" text-anchor="middle" font-size="8" fill="#8b1a1a" letter-spacing="0.06em">(twisting oscillation)</text>
+
+  <!-- Bridge deck cross-section — neutral position (ghost) -->
+  <rect x="340" y="96" width="160" height="28" rx="2" fill="none" stroke="rgba(26,24,20,0.15)" stroke-width="1.5" stroke-dasharray="5,3"/>
+
+  <!-- Bridge deck — tilted/twisted: left side up, right side down -->
+  <polygon points="340,70 500,122 500,136 340,84" fill="#ede8dc" stroke="#8b1a1a" stroke-width="2" rx="2"/>
+
+  <!-- Left side up arrow -->
+  <line x1="356" y1="94"  x2="356" y2="72"  stroke="#8b1a1a" stroke-width="1.8"/>
+  <polygon points="352,72 356,62 360,72" fill="#8b1a1a"/>
+  <text x="348" y="58" font-size="8" fill="#8b1a1a" text-anchor="middle">up</text>
+
+  <!-- Right side down arrow -->
+  <line x1="484" y1="118" x2="484" y2="140" stroke="#8b1a1a" stroke-width="1.8"/>
+  <polygon points="480,140 484,150 488,140" fill="#8b1a1a"/>
+  <text x="492" y="158" font-size="8" fill="#8b1a1a" text-anchor="middle">down</text>
+
+  <text x="420" y="173" text-anchor="middle" font-size="9" fill="#8b1a1a">Deck rotates — one side</text>
+  <text x="420" y="186" text-anchor="middle" font-size="9" fill="#8b1a1a">rises as the other falls</text>
+
+  <!-- Caption -->
+  <line x1="30" y1="196" x2="530" y2="196" stroke="rgba(26,24,20,0.1)" stroke-width="1"/>
+  <text x="280" y="207" font-size="9" fill="#4a4640" text-anchor="middle" letter-spacing="0.04em">Bending and torsional oscillation are distinct modes with different natural frequencies.</text>
+
+</svg>

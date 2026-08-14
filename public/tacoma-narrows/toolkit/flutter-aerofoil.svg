@@ -1,0 +1,72 @@
+<svg viewBox="0 0 580 230" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono','Courier New',monospace">
+
+  <rect width="580" height="230" fill="#f5f0e8"/>
+
+  <!-- Panel divider -->
+  <line x1="290" y1="14" x2="290" y2="200" stroke="rgba(26,24,20,0.12)" stroke-width="1"/>
+
+  <!-- ── LEFT PANEL: Small angle of attack ── -->
+  <text x="145" y="24" text-anchor="middle" font-size="8" fill="#4a4640" letter-spacing="0.1em">SMALL ANGLE OF ATTACK</text>
+
+  <!-- Wind arrows -->
+  <line x1="14" y1="90"  x2="54" y2="90"  stroke="#b8860b" stroke-width="1.8"/>
+  <polygon points="54,86 62,90 54,94" fill="#b8860b"/>
+  <line x1="14" y1="110" x2="54" y2="110" stroke="#b8860b" stroke-width="1.8"/>
+  <polygon points="54,106 62,110 54,114" fill="#b8860b"/>
+  <line x1="14" y1="130" x2="54" y2="130" stroke="#b8860b" stroke-width="1.8"/>
+  <polygon points="54,126 62,130 54,134" fill="#b8860b"/>
+
+  <!-- Flat plate cross-section — near horizontal, slight positive tilt -->
+  <polygon points="66,106 204,94 204,100 66,112" fill="#ede8dc" stroke="#1a1814" stroke-width="2"/>
+
+  <!-- Small angle label -->
+  <path d="M 80,106 A 18,18 0 0,1 88,94" fill="none" stroke="#4a4640" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="98" y="90" font-size="8" fill="#4a4640">small angle</text>
+
+  <!-- Lift arrow — small, upward -->
+  <line x1="135" y1="100" x2="135" y2="76" stroke="#8b1a1a" stroke-width="2"/>
+  <polygon points="131,76 135,66 139,76" fill="#8b1a1a"/>
+  <text x="148" y="78" font-size="8" fill="#8b1a1a">small lift</text>
+
+  <!-- Flow lines after plate — relatively straight -->
+  <path d="M 204,97 C 224,94 250,92 270,92" fill="none" stroke="#b8860b" stroke-width="1.5"/>
+  <path d="M 204,110 C 224,110 250,110 270,110" fill="none" stroke="#b8860b" stroke-width="1.5"/>
+  <polygon points="266,88 274,92 266,96" fill="#b8860b"/>
+  <polygon points="266,106 274,110 266,114" fill="#b8860b"/>
+
+  <!-- ── RIGHT PANEL: Increased angle of attack ── -->
+  <text x="435" y="24" text-anchor="middle" font-size="8" fill="#8b1a1a" letter-spacing="0.1em">INCREASED ANGLE OF ATTACK</text>
+
+  <!-- Wind arrows -->
+  <line x1="302" y1="90"  x2="342" y2="90"  stroke="#b8860b" stroke-width="1.8"/>
+  <polygon points="342,86 350,90 342,94" fill="#b8860b"/>
+  <line x1="302" y1="110" x2="342" y2="110" stroke="#b8860b" stroke-width="1.8"/>
+  <polygon points="342,106 350,110 342,114" fill="#b8860b"/>
+  <line x1="302" y1="130" x2="342" y2="130" stroke="#b8860b" stroke-width="1.8"/>
+  <polygon points="342,126 350,130 342,134" fill="#b8860b"/>
+
+  <!-- Flat plate — larger tilt (more twisted) -->
+  <polygon points="352,118 492,82 492,90 352,126" fill="#ede8dc" stroke="#8b1a1a" stroke-width="2"/>
+
+  <!-- Larger angle label -->
+  <path d="M 368,116 A 22,22 0 0,1 380,96" fill="none" stroke="#8b1a1a" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="388" y="90" font-size="8" fill="#8b1a1a">larger angle</text>
+
+  <!-- Lift arrow — larger, upward (same direction as twist) -->
+  <line x1="422" y1="100" x2="422" y2="62" stroke="#8b1a1a" stroke-width="2.5"/>
+  <polygon points="417,62 422,50 427,62" fill="#8b1a1a"/>
+  <text x="436" y="58" font-size="9" fill="#8b1a1a" font-weight="600">larger lift</text>
+  <text x="436" y="70" font-size="8" fill="#8b1a1a">in same direction</text>
+  <text x="436" y="82" font-size="8" fill="#8b1a1a">as the twist</text>
+
+  <!-- Self-reinforcing arrow -->
+  <path d="M 510,80 C 530,80 540,100 530,116 C 524,126 510,130 496,126" fill="none" stroke="#8b1a1a" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="494,122 492,130 500,128" fill="#8b1a1a"/>
+  <text x="536" y="104" font-size="8" fill="#8b1a1a" text-anchor="middle">self-</text>
+  <text x="536" y="115" font-size="8" fill="#8b1a1a" text-anchor="middle">reinforcing</text>
+
+  <!-- Caption -->
+  <line x1="20" y1="208" x2="560" y2="208" stroke="rgba(26,24,20,0.1)" stroke-width="1"/>
+  <text x="290" y="220" font-size="9" fill="#4a4640" text-anchor="middle" letter-spacing="0.04em">As twist increases, the lift force grows and acts in the same direction — amplifying the twist further.</text>
+
+</svg>

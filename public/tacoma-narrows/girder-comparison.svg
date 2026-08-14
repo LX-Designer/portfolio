@@ -1,0 +1,69 @@
+<svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono','Courier New',monospace">
+
+  <rect width="720" height="320" fill="#f5f0e8"/>
+
+  <!-- Panel divider -->
+  <line x1="360" y1="20" x2="360" y2="298" stroke="rgba(26,24,20,0.12)" stroke-width="1"/>
+
+  <!-- ════════════════════════════════════════════
+       LEFT PANEL — Open-lattice truss
+  ════════════════════════════════════════════ -->
+
+  <line x1="18" y1="118" x2="342" y2="118" stroke="#b8860b" stroke-width="2"/>
+  <line x1="18" y1="156" x2="342" y2="156" stroke="#b8860b" stroke-width="2"/>
+
+  <rect x="68" y="94" width="224" height="80" fill="none" stroke="#1a1814" stroke-width="2.5"/>
+  <line x1="124" y1="94"  x2="124" y2="174" stroke="#1a1814" stroke-width="2.5"/>
+  <line x1="180" y1="94"  x2="180" y2="174" stroke="#1a1814" stroke-width="2.5"/>
+  <line x1="236" y1="94"  x2="236" y2="174" stroke="#1a1814" stroke-width="2.5"/>
+
+  <polygon points="62,114 70,118 62,122"  fill="#b8860b"/>
+  <polygon points="296,114 304,118 296,122" fill="#b8860b"/>
+  <polygon points="62,152 70,156 62,160"  fill="#b8860b"/>
+  <polygon points="296,152 304,156 296,160" fill="#b8860b"/>
+
+  <text x="180" y="210" text-anchor="middle" font-size="10" fill="#b8860b" letter-spacing="0.06em">wind passes through</text>
+
+  <!-- Depth annotation — left of truss -->
+  <line x1="50" y1="94" x2="50" y2="174" stroke="rgba(26,24,20,0.3)" stroke-width="1"/>
+  <line x1="44" y1="94"  x2="56" y2="94"  stroke="rgba(26,24,20,0.3)" stroke-width="1"/>
+  <line x1="44" y1="174" x2="56" y2="174" stroke="rgba(26,24,20,0.3)" stroke-width="1"/>
+  <text x="38" y="134" text-anchor="middle" font-size="9" fill="#4a4640" transform="rotate(-90,38,134)">7.6 m</text>
+
+  <text x="180" y="236" text-anchor="middle" font-size="11" fill="#1a1814" font-weight="600" letter-spacing="0.04em">Open-lattice truss</text>
+  <text x="180" y="254" text-anchor="middle" font-size="10" fill="#4a4640">Original design — 7.6 m deep</text>
+
+  <!-- ════════════════════════════════════════════
+       RIGHT PANEL — Solid plate girder
+  ════════════════════════════════════════════ -->
+
+  <rect x="418" y="118" width="224" height="30" fill="#ede8dc" stroke="#1a1814" stroke-width="2.5"/>
+
+  <!-- Approach arrow -->
+  <line x1="374" y1="133" x2="414" y2="133" stroke="#b8860b" stroke-width="2"/>
+  <polygon points="414,129 422,133 414,137" fill="#b8860b"/>
+
+  <!-- Upper deflection -->
+  <path d="M 422,120 C 450,88 590,85 644,104" fill="none" stroke="#b8860b" stroke-width="2"/>
+  <polygon points="639,99 648,104 640,110" fill="#b8860b"/>
+
+  <!-- Lower deflection — mirrors upper -->
+  <path d="M 422,146 C 450,178 590,181 644,162" fill="none" stroke="#b8860b" stroke-width="2"/>
+  <polygon points="639,158 648,162 640,168" fill="#b8860b"/>
+
+  <!-- Depth annotation — right side of girder -->
+  <line x1="656" y1="118" x2="656" y2="148" stroke="rgba(26,24,20,0.3)" stroke-width="1"/>
+  <line x1="650" y1="118" x2="662" y2="118" stroke="rgba(26,24,20,0.3)" stroke-width="1"/>
+  <line x1="650" y1="148" x2="662" y2="148" stroke="rgba(26,24,20,0.3)" stroke-width="1"/>
+  <text x="668" y="133" text-anchor="middle" font-size="9" fill="#4a4640" transform="rotate(-90,668,133)">2.4 m</text>
+
+  <text x="540" y="210" text-anchor="middle" font-size="10" fill="#b8860b" letter-spacing="0.06em">wind passes above and below</text>
+
+  <text x="540" y="236" text-anchor="middle" font-size="11" fill="#1a1814" font-weight="600" letter-spacing="0.04em">Solid plate girder</text>
+  <text x="540" y="254" text-anchor="middle" font-size="10" fill="#4a4640">As built — 2.4 m deep, solid construction</text>
+
+  <!-- Caption -->
+  <line x1="40" y1="274" x2="680" y2="274" stroke="rgba(26,24,20,0.1)" stroke-width="1"/>
+  <text x="360" y="292" text-anchor="middle" font-size="10" fill="#4a4640">Cross-section comparison: original open-lattice truss design (left) versus solid plate girder as built (right).</text>
+
+</svg>

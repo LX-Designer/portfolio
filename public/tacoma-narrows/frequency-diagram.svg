@@ -1,0 +1,54 @@
+<svg viewBox="0 0 720 248" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono','Courier New',monospace">
+
+  <rect width="720" height="248" fill="#f5f0e8"/>
+
+  <!-- ── AXIS ── -->
+  <line x1="60" y1="130" x2="670" y2="130" stroke="#4a4640" stroke-width="1.5"/>
+  <polygon points="670,126 680,130 670,134" fill="#4a4640"/>
+  <text x="690" y="134" font-size="10" fill="#4a4640">Hz</text>
+
+  <!-- Scale: x=60 → 0.0 Hz; x=560 → 1.0 Hz; 1 Hz = 500px; 0.2 Hz = 100px -->
+  <line x1="60"  y1="126" x2="60"  y2="134" stroke="#4a4640" stroke-width="1.5"/>
+  <text x="60"  y="148" text-anchor="middle" font-size="9" fill="#8a8480">0.0</text>
+  <line x1="160" y1="127" x2="160" y2="133" stroke="#4a4640" stroke-width="1"/>
+  <text x="160" y="148" text-anchor="middle" font-size="9" fill="#8a8480">0.2</text>
+  <line x1="260" y1="127" x2="260" y2="133" stroke="#4a4640" stroke-width="1"/>
+  <text x="260" y="148" text-anchor="middle" font-size="9" fill="#8a8480">0.4</text>
+  <line x1="360" y1="127" x2="360" y2="133" stroke="#4a4640" stroke-width="1"/>
+  <text x="360" y="148" text-anchor="middle" font-size="9" fill="#8a8480">0.6</text>
+  <line x1="460" y1="127" x2="460" y2="133" stroke="#4a4640" stroke-width="1"/>
+  <text x="460" y="148" text-anchor="middle" font-size="9" fill="#8a8480">0.8</text>
+  <line x1="560" y1="127" x2="560" y2="133" stroke="#4a4640" stroke-width="1"/>
+  <text x="560" y="148" text-anchor="middle" font-size="9" fill="#8a8480">1.0</text>
+
+  <!-- ── MARKERS — equal stem heights; colour carries the hierarchy ── -->
+
+  <!-- 0.2 Hz — torsional oscillation at collapse (accent red) -->
+  <line x1="160" y1="74" x2="160" y2="128" stroke="#8b1a1a" stroke-width="2"/>
+  <circle cx="160" cy="130" r="5" fill="#8b1a1a"/>
+  <text x="160" y="68" text-anchor="middle" font-size="12" fill="#8b1a1a" font-weight="600">0.2 Hz</text>
+  <text x="160" y="56" text-anchor="middle" font-size="8" fill="#8b1a1a" letter-spacing="0.1em">TORSIONAL — COLLAPSE PHASE</text>
+
+  <!-- 0.6 Hz — natural vertical frequency (gold) -->
+  <line x1="360" y1="74" x2="360" y2="128" stroke="#b8860b" stroke-width="2"/>
+  <circle cx="360" cy="130" r="5" fill="#b8860b"/>
+  <text x="360" y="68" text-anchor="middle" font-size="12" fill="#b8860b" font-weight="600">0.6 Hz</text>
+  <text x="360" y="56" text-anchor="middle" font-size="8" fill="#b8860b" letter-spacing="0.1em">NATURAL VERTICAL FREQUENCY</text>
+
+  <!-- 1.0 Hz — vortex shedding (dark ink) -->
+  <line x1="560" y1="74" x2="560" y2="128" stroke="#1a1814" stroke-width="2"/>
+  <circle cx="560" cy="130" r="5" fill="#1a1814"/>
+  <text x="560" y="68" text-anchor="middle" font-size="12" fill="#1a1814" font-weight="600">1.0 Hz</text>
+  <text x="560" y="56" text-anchor="middle" font-size="8" fill="#4a4640" letter-spacing="0.1em">VORTEX SHEDDING (42 mph WIND)</text>
+
+  <!-- ── GAP BRACKET: 0.2 → 1.0 Hz — no interpretive label ── -->
+  <line x1="160" y1="163" x2="560" y2="163" stroke="#8b1a1a" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <line x1="160" y1="158" x2="160" y2="168" stroke="#8b1a1a" stroke-width="1.5"/>
+  <line x1="560" y1="158" x2="560" y2="168" stroke="#8b1a1a" stroke-width="1.5"/>
+
+  <!-- ── CAPTION ── -->
+  <line x1="60" y1="190" x2="660" y2="190" stroke="rgba(26,24,20,0.1)" stroke-width="1"/>
+  <text x="360" y="207" text-anchor="middle" font-size="10" fill="#4a4640">Frequencies recorded on the day of the collapse: torsional oscillation at collapse (0.2 Hz),</text>
+  <text x="360" y="223" text-anchor="middle" font-size="10" fill="#4a4640">natural vertical frequency of the bridge (0.6 Hz), and vortex shedding frequency at 42 mph wind (1.0 Hz).</text>
+
+</svg>

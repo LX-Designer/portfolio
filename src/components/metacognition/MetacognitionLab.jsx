@@ -284,7 +284,7 @@ function Pillars() {
 }
 
 // ── Synthesis section ─────────────────────────────────────────────────────────
-function SynthesisSection({ baseline, actionPlan, isComplete, onStartJourney }) {
+function SynthesisSection({ baseline, actionPlan, isComplete, hasStarted, onStartJourney }) {
   const blLabels = ['Plan strategies', 'Notice gaps', 'Adjust approach', 'Know best strategies', 'Reflect after tasks']
 
   function printSummary() {
@@ -317,8 +317,8 @@ function SynthesisSection({ baseline, actionPlan, isComplete, onStartJourney }) 
           <br /><br />
           Complete the Guided Journey to unlock your personal synthesis, including your baseline self-assessment and your personal action plan.
           <br /><br />
-          <button onClick={onStartJourney} style={{ background: '#E9C46A', color: '#1a1a1a', border: 'none', borderRadius: 8, padding: '10px 22px', fontSize: 14, fontWeight: 700, cursor: 'pointer', marginTop: 4 }}>
-            Start Guided Journey →
+          <button className={s.synCta} onClick={onStartJourney}>
+            {hasStarted ? 'Continue Guided Journey →' : 'Start Guided Journey →'}
           </button>
         </div>
       ) : (
@@ -439,11 +439,19 @@ export default function MetacognitionLab({ backHref }) {
       navTo('synthesis')
       return
     }
+    resumeOrStartJourney()
+  }
+
+  // Shared by the welcome modal and the synthesis section's CTA: picks up
+  // where the learner left off if any activities are done, otherwise starts
+  // fresh from step 0.
+  function resumeOrStartJourney() {
+    setShowWelcome(false)
     if (activityDone.length > 0) {
-      const resumeStep = activityDone[activityDone.length - 1] + 1
-      setStep(Math.min(resumeStep, NUM_STEPS - 1))
+      const resumeStep = Math.min(activityDone[activityDone.length - 1] + 1, NUM_STEPS - 1)
+      setStep(resumeStep)
       setJourneyActive(true)
-      navTo(stepSection(Math.min(resumeStep, NUM_STEPS - 1)))
+      navTo(stepSection(resumeStep))
     } else {
       startJourney()
     }
@@ -452,6 +460,12 @@ export default function MetacognitionLab({ backHref }) {
   function stepSection(i) {
     const map = ['overview', 'metacognition', 'browns-distinction', 'sdl', 'evidence', 'cultivating', 'synthesis']
     return map[i] ?? 'overview'
+  }
+
+  function goToStep(i) {
+    if (i === step) return
+    setStep(i)
+    navTo(stepSection(i))
   }
 
   function nextStep() {
@@ -619,6 +633,7 @@ export default function MetacognitionLab({ backHref }) {
         onPrev={prevStep}
         onNext={nextStep}
         onExit={exitJourney}
+        onGoToStep={goToStep}
       />
 
       {activeActivity !== null && (
@@ -808,7 +823,8 @@ export default function MetacognitionLab({ backHref }) {
           baseline={baseline}
           actionPlan={actionPlan}
           isComplete={isJourneyComplete}
-          onStartJourney={startJourney}
+          hasStarted={activityDone.length > 0}
+          onStartJourney={resumeOrStartJourney}
         />
 
         <hr className={s.divider} />

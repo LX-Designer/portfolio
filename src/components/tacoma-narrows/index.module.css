@@ -1,0 +1,710 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   TACOMA NARROWS — standalone portfolio port.
+   Case-file aesthetic: cream paper content on a dark-ink chrome, deep red
+   accent, gold/green status colours, serif body / mono labels / display
+   headings — ported from the InquiryLabs asset's design tokens.
+───────────────────────────────────────────────────────────────────────── */
+
+.shell {
+  --tn-ink:          #1a1814;
+  --tn-ink-mid:      #4a4640;
+  --tn-ink-light:    #8a8480;
+  --tn-paper:        #f5f0e8;
+  --tn-paper-dark:   #ede8dc;
+  --tn-paper-darker: #e0d9cc;
+  --tn-accent:       #8b1a1a;
+  --tn-accent-lt:    #c4392a;
+  --tn-gold:         #b8860b;
+  --tn-green:        #2d5a3d;
+  --tn-border:       rgba(26,24,20,0.15);
+  --tn-border-s:     rgba(26,24,20,0.3);
+  --tn-mono:         'IBM Plex Mono', monospace;
+  --tn-serif:        'Source Serif 4', Georgia, serif;
+  --tn-display:      'DM Serif Display', Georgia, serif;
+
+  font-family: var(--tn-serif);
+  background: var(--tn-paper);
+  color: var(--tn-ink);
+  font-size: 15px;
+  line-height: 1.6;
+  color-scheme: light;
+}
+
+/* ── NAV ─────────────────────────────────────────────────────────────── */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--tn-ink);
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  height: 44px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.navLeft { display: flex; align-items: center; flex-shrink: 0; z-index: 1; }
+.navBack {
+  font-family: var(--tn-mono);
+  color: rgba(245,240,232,.65);
+  font-size: 11px;
+  padding: 8px 10px 8px 2px;
+  text-decoration: none;
+  border-right: 1px solid rgba(245,240,232,.2);
+  margin-right: 4px;
+  white-space: nowrap;
+  transition: color .2s;
+  flex-shrink: 0;
+}
+.navBack:hover { color: var(--tn-paper); }
+.navCenter {
+  position: absolute;
+  left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  overflow: hidden;
+  gap: 2px;
+}
+.navCenter > * { pointer-events: auto; }
+.navBtn {
+  background: none;
+  border: none;
+  font-family: var(--tn-mono);
+  color: rgba(245,240,232,.7);
+  font-size: 11px;
+  letter-spacing: .04em;
+  padding: 8px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.navBtn:hover { background: rgba(245,240,232,.1); color: var(--tn-paper); }
+.navBtnActive { background: var(--tn-paper); color: var(--tn-ink); font-weight: 600; }
+
+/* ── SIDEBAR ─────────────────────────────────────────────────────────── */
+
+.sidebar {
+  position: fixed;
+  top: 44px;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  background: var(--tn-ink);
+  color: var(--tn-paper);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 12px rgba(0,0,0,.3);
+  transform: translateX(-100%);
+  transition: transform .25s ease;
+}
+.sidebarOpen { transform: translateX(0); }
+.sidebarClose {
+  display: block; position: absolute; top: 14px; right: 14px; background: none; border: none;
+  color: rgba(245,240,232,.6); font-size: 22px; cursor: pointer; padding: 6px; z-index: 1;
+  transition: color .2s ease;
+}
+.sidebarClose:hover { color: rgba(245,240,232,.95); }
+
+.sbHeader { padding: 22px 20px 16px; border-bottom: 1px solid rgba(245,240,232,.1); }
+.sbEyebrow {
+  font-family: var(--tn-mono);
+  font-size: 9px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--tn-gold);
+  margin-bottom: 8px;
+}
+.sbTitle { font-family: var(--tn-display); font-size: 18px; line-height: 1.3; margin-bottom: 4px; }
+.sbSubtitle { font-family: var(--tn-mono); font-size: 10px; color: rgba(245,240,232,.55); margin-bottom: 16px; }
+.sbProgressRow { font-size: 11px; color: rgba(245,240,232,.75); display: flex; flex-direction: column; gap: 6px; }
+.sbProgressTrack { display: block; height: 4px; background: rgba(245,240,232,.15); border-radius: 4px; overflow: hidden; }
+.sbProgressFill { display: block; height: 100%; background: var(--tn-gold); transition: width .4s ease; }
+
+.sbTabs { display: flex; border-bottom: 1px solid rgba(245,240,232,.1); flex-shrink: 0; }
+.sbTab {
+  flex: 1;
+  background: none;
+  border: none;
+  font-family: var(--tn-mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,.5);
+  padding: 12px 8px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color .2s, border-color .2s;
+}
+.sbTab:hover { color: rgba(245,240,232,.8); }
+.sbTabActive { color: var(--tn-paper); border-bottom-color: var(--tn-gold); }
+
+.sbBody {
+  flex: 1; overflow-y: auto; padding: 8px 0;
+  scrollbar-width: thin; scrollbar-color: rgba(245,240,232,.25) transparent;
+}
+.sbBody::-webkit-scrollbar { width: 8px; }
+.sbBody::-webkit-scrollbar-track { background: transparent; }
+.sbBody::-webkit-scrollbar-thumb { background: rgba(245,240,232,.25); border-radius: 999px; }
+.sbBody::-webkit-scrollbar-thumb:hover { background: rgba(245,240,232,.4); }
+.sbFooter { padding: 14px 20px; border-top: 1px solid rgba(245,240,232,.1); flex-shrink: 0; }
+.sbFooterBtn {
+  width: 100%;
+  background: rgba(245,240,232,.1);
+  border: none;
+  color: var(--tn-paper);
+  font-family: var(--tn-mono);
+  font-size: 11px;
+  letter-spacing: .06em;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background .2s;
+}
+.sbFooterBtn:hover { background: rgba(245,240,232,.18); }
+.sbResetConfirm { display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: rgba(245,240,232,.85); }
+.sbResetBtns { display: flex; gap: 8px; }
+.sbResetBtns button {
+  flex: 1;
+  font-family: var(--tn-mono);
+  font-size: 10px;
+  padding: 8px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  background: rgba(245,240,232,.12);
+  color: var(--tn-paper);
+}
+.sbResetBtns button:last-child { background: var(--tn-accent); }
+
+.sbList { list-style: none; margin: 0; padding: 0; }
+.sbItem { border-bottom: 1px solid rgba(245,240,232,.06); }
+.sbItemBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  font-family: var(--tn-mono);
+  color: var(--tn-paper);
+  padding: 12px 20px;
+  cursor: pointer;
+  text-align: left;
+  transition: background .15s;
+}
+.sbItemBtn:hover { background: rgba(245,240,232,.06); }
+.sbItemActive .sbItemBtn { background: rgba(245,240,232,.1); }
+.sbDot { width: 7px; height: 7px; border-radius: 50%; background: rgba(245,240,232,.25); flex-shrink: 0; }
+.sbDotComplete { background: var(--tn-green); }
+.sbDotProgress { background: var(--tn-gold); }
+.sbItemMeta { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.sbItemLabel { font-family: var(--tn-mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: rgba(245,240,232,.4); }
+.sbItemTitle { font-size: 13px; line-height: 1.35; }
+/* Compact status pill — sized to its own text (align-self overrides the
+   column's default stretch) rather than spanning the row full width. */
+.sbStatusText {
+  align-self: flex-start;
+  font-family: var(--tn-mono); font-size: 9px; letter-spacing: .06em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 999px;
+  transition: background .2s ease, color .2s ease;
+}
+.sbStatusPending { background: rgba(245,240,232,.08); color: rgba(245,240,232,.5); }
+/* Text brightened past --tn-green/--tn-gold's own values — those are tuned
+   for use on cream paper and are too dark to read reliably at 9px on the
+   sidebar's near-black surface. */
+.sbStatusComplete { background: rgba(45,90,61,.35); color: #6fcf97; }
+.sbStatusProgress { background: rgba(184,134,11,.3); color: #e0b74d; }
+.sbChevron { color: rgba(245,240,232,.3); flex-shrink: 0; }
+.sbExcerpt { width: 100%; background: none; border: none; padding: 0 20px 12px 37px; cursor: pointer; text-align: left; }
+.sbExcerptText {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: rgba(245,240,232,.55);
+  font-style: italic;
+}
+.sbExcerptExpanded { -webkit-line-clamp: unset; }
+
+.sbConceptsWrap { padding: 0 20px; }
+.sbConceptsIntro { font-size: 12px; line-height: 1.6; color: rgba(245,240,232,.6); margin-bottom: 14px; }
+.sbConceptBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(245,240,232,.05);
+  border: 1px solid rgba(245,240,232,.1);
+  font-family: var(--tn-serif);
+  color: var(--tn-paper);
+  padding: 11px 14px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  text-align: left;
+  transition: background .15s;
+}
+.sbConceptBtn:hover { background: rgba(245,240,232,.1); }
+
+/* ── SIDEBAR TRIGGER / BACKDROP ─────────────────────────────────────── */
+
+.sidebarTrigger {
+  position: fixed; bottom: 20px; right: 20px; z-index: 150;
+  background: var(--tn-ink); color: var(--tn-paper); border: none; border-radius: 24px;
+  padding: 12px 20px; font-family: var(--tn-mono); font-size: 12px; letter-spacing: .04em;
+  box-shadow: 0 4px 16px rgba(0,0,0,.3); cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.sidebarTrigger:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.35); }
+/* Only meaningful once the sidebar can overlay content instead of pushing
+   it — on desktop the sidebar shares the row with .main instead. */
+.sidebarBackdrop { display: none; }
+
+/* ── MAIN LAYOUT ─────────────────────────────────────────────────────── */
+
+.main { margin-left: 0; transition: margin-left .25s ease; }
+.mainShifted { margin-left: 280px; }
+.content { max-width: 960px; margin: 0 auto; }
+
+/* ── DOCUMENT HEADER / COVER PAGE ───────────────────────────────────────
+   The intro reads as a loose case-file cover sheet sitting on top of the
+   stack below it: a bordered card, slightly askew, with fill-in-style
+   fields and a classification checklist — echoing a real restricted-
+   document cover sheet rather than a plain page banner. */
+
+.docHeader {
+  padding: 40px 40px 8px;
+}
+
+/* Full width — matches the file cards below it exactly, since both live in
+   a container with the same horizontal padding. */
+.coverCard {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  background: var(--tn-paper);
+  border: 2px solid var(--tn-accent);
+  border-radius: 4px;
+  padding: 36px 40px 34px;
+  box-shadow: 0 10px 30px rgba(26,24,20,.2);
+  text-align: center;
+  transform: rotate(-0.25deg);
+}
+.coverCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(26,24,20,0.035) 30px, rgba(26,24,20,0.035) 31px);
+  pointer-events: none;
+}
+
+.docClassification { font-family: var(--tn-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--tn-accent); margin-bottom: 18px; }
+.docTitle { font-family: var(--tn-display); font-size: 42px; line-height: 1.15; margin-bottom: 8px; font-style: italic; color: var(--tn-ink); }
+.docSubtitle { font-size: 15px; color: var(--tn-ink-mid); font-weight: 300; margin-bottom: 28px; }
+
+/* Fields/checklist/button sit in a comfortably-proportioned inset block
+   rather than stretching edge-to-edge across the now-full-width cover. */
+.coverInset { max-width: 480px; margin: 0 auto; }
+
+.coverFields { border: 1px solid var(--tn-border-s); border-radius: 3px; padding: 4px 18px; margin-bottom: 18px; text-align: left; }
+.coverField { display: flex; align-items: baseline; gap: 8px; padding: 8px 0; font-family: var(--tn-mono); font-size: 12px; border-bottom: 1px solid var(--tn-border); }
+.coverField:last-child { border-bottom: none; }
+.coverFieldLabel { color: var(--tn-ink-mid); white-space: nowrap; }
+.coverFieldDots { flex: 1; align-self: center; height: 0; margin: 0 2px; border-bottom: 1px dotted var(--tn-ink-light); }
+.coverFieldValue { color: var(--tn-ink); font-weight: 600; white-space: nowrap; }
+
+.coverChecklist { border: 1px solid var(--tn-border-s); border-radius: 3px; padding: 14px 18px; margin-bottom: 24px; text-align: left; }
+.coverChecklistTitle {
+  font-family: var(--tn-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--tn-ink-mid); margin-bottom: 10px;
+  text-decoration: underline; text-decoration-color: var(--tn-border-s); text-underline-offset: 3px;
+}
+.coverChecklistItem { display: flex; align-items: center; gap: 10px; font-family: var(--tn-mono); font-size: 12px; letter-spacing: 0.03em; padding: 4px 0; color: var(--tn-ink-mid); }
+.coverCheckbox {
+  width: 14px; height: 14px; flex-shrink: 0;
+  border: 1.5px solid var(--tn-ink-mid); border-radius: 2px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 10px; line-height: 1; color: var(--tn-paper);
+}
+.coverCheckboxChecked { background: var(--tn-accent); border-color: var(--tn-accent); }
+
+.openFileBtn {
+  font-family: var(--tn-mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase;
+  background: var(--tn-ink); color: var(--tn-paper); border: none; border-radius: 4px;
+  padding: 14px 0; width: 100%; cursor: pointer;
+  transition: background .2s ease, transform .15s ease;
+}
+.openFileBtn:hover { background: #2a2620; transform: translateY(-1px); }
+.openFileBtnOpen { background: var(--tn-paper-darker); color: var(--tn-ink-mid); }
+.openFileBtnOpen:hover { background: var(--tn-paper-dark); }
+
+/* ── BRIEFING MODAL (first-visit welcome) ──────────────────────────────
+   Shares .tnModal's overlay chrome but owns its own box — the activity/
+   concept modals' two-column body layout doesn't apply here. */
+
+.briefingBox {
+  background: var(--tn-paper);
+  border-radius: 6px;
+  max-width: 560px;
+  width: 100%;
+  overflow: hidden;
+  box-shadow: 0 12px 48px rgba(0,0,0,.4);
+}
+.briefingHeader { background: var(--tn-ink); color: var(--tn-paper); padding: 22px 28px 18px; }
+.briefingEyebrow { font-family: var(--tn-mono); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--tn-gold); margin-bottom: 8px; }
+.briefingTitle { font-family: var(--tn-display); font-size: 24px; font-style: italic; }
+.briefingBody { padding: 24px 28px; }
+.briefingText { font-size: 15px; line-height: 1.75; color: var(--tn-ink); }
+.briefingSteps { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; counter-reset: briefing-step; }
+.briefingSteps li {
+  counter-increment: briefing-step;
+  display: flex; align-items: baseline; gap: 12px;
+  font-size: 14px; line-height: 1.55; color: var(--tn-ink-mid);
+  padding: 10px 14px; border: 1px solid var(--tn-border); border-radius: 3px; background: var(--tn-paper-dark);
+}
+.briefingSteps li::before {
+  content: counter(briefing-step);
+  flex-shrink: 0;
+  font-family: var(--tn-mono); font-size: 11px; font-weight: 600;
+  width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--tn-accent); color: var(--tn-paper);
+}
+.briefingFooter { padding: 0 28px 26px; text-align: center; }
+.briefingBtn {
+  font-family: var(--tn-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase;
+  background: var(--tn-accent); color: var(--tn-paper); border: none; border-radius: 4px;
+  padding: 14px 30px; cursor: pointer; transition: background .2s ease, transform .15s ease;
+}
+.briefingBtn:hover { background: var(--tn-accent-lt); transform: translateY(-1px); }
+
+/* ── CONTENT SECTIONS ────────────────────────────────────────────────── */
+
+.contentWrap { padding: 40px 40px 80px; color: var(--tn-ink); display: flex; flex-direction: column; gap: 16px; }
+.contentWrap p { margin-bottom: 1.1em; }
+.contentWrap p:last-child { margin-bottom: 0; }
+/* Applied only for the instant just after "Open Case File" — every card's
+   height jumps straight to its open state in the same paint instead of
+   over the usual 0.45s, so the page is already full height (and the scroll
+   target is immediately reachable) with no artificial wait. Individual
+   per-card toggles never get this class, so they keep the normal animation. */
+.contentWrapInstant .fileContent { transition: none; }
+
+/* ── FILE CARDS ──────────────────────────────────────────────────────────
+   Each case-file section is a manila-folder-style tab that expands in
+   place, full width whether open or closed. The CSS grid 0fr→1fr trick
+   animates height without ever having to measure or guess a max-height —
+   content stays mounted and just clips. */
+
+.fileCard { scroll-margin-top: 60px; }
+
+.fileTab {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  background: var(--tn-paper-dark);
+  border: 1px solid var(--tn-border-s);
+  border-radius: 4px 4px 0 0;
+  padding: 16px 22px;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--tn-serif);
+  color: var(--tn-ink);
+  box-shadow: 0 2px 6px rgba(26,24,20,.12);
+  transition: background .25s ease, color .25s ease, box-shadow .2s ease, transform .2s ease;
+}
+.fileCard:not(.fileCardOpen) .fileTab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(26,24,20,.22);
+  background: var(--tn-paper-darker);
+}
+.fileCardOpen .fileTab {
+  background: var(--tn-accent);
+  border-color: var(--tn-accent);
+  box-shadow: 0 4px 14px rgba(26,24,20,.3);
+}
+
+.fileTabCode {
+  font-family: var(--tn-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--tn-accent);
+  flex-shrink: 0;
+  transition: color .25s ease;
+}
+.fileCardOpen .fileTabCode { color: var(--tn-gold); }
+
+.fileTabTitle {
+  flex: 1;
+  font-family: var(--tn-display);
+  font-size: 20px;
+  line-height: 1.2;
+  color: var(--tn-ink);
+  transition: color .25s ease;
+}
+.fileTabTitleItalic { font-style: italic; }
+.fileCardOpen .fileTabTitle { color: var(--tn-paper); }
+
+.fileTabIcon {
+  width: 20px;
+  flex-shrink: 0;
+  font-family: var(--tn-mono);
+  font-size: 20px;
+  line-height: 1;
+  text-align: center;
+  color: var(--tn-ink-light);
+  transition: color .25s ease;
+}
+.fileCardOpen .fileTabIcon { color: var(--tn-paper); }
+
+.fileContent {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .45s cubic-bezier(.4,0,.2,1);
+}
+.fileCardOpen .fileContent { grid-template-rows: 1fr; }
+.fileContentClip { overflow: hidden; min-height: 0; }
+.fileCardOpen .fileContentClip {
+  background: var(--tn-paper);
+  border: 1px solid var(--tn-border-s);
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+}
+.fileContentBody { padding: 28px 32px 36px; }
+
+/* ── TABLES ──────────────────────────────────────────────────────────── */
+
+.dataTable { width: 100%; border-collapse: collapse; font-family: var(--tn-mono); font-size: 12px; margin: 24px 0; }
+.dataTable th { text-align: left; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tn-ink-light); padding: 8px 12px; border-bottom: 1px solid var(--tn-border-s); background: var(--tn-paper-dark); }
+.dataTable td { padding: 9px 12px; border-bottom: 1px solid var(--tn-border); vertical-align: top; }
+.dataTable tr:last-child td { border-bottom: none; }
+.dataTable tbody tr:hover td { background: var(--tn-paper-dark); }
+.highlightRow td { background: rgba(139,26,26,0.06); font-weight: 500; }
+
+/* ── CALLOUTS ────────────────────────────────────────────────────────── */
+
+.callout { border-left: 3px solid var(--tn-gold); background: rgba(184,134,11,0.06); padding: 16px 20px; margin: 24px 0; font-size: 15px; }
+.calloutDanger { border-left-color: var(--tn-accent); background: rgba(139,26,26,0.05); }
+.calloutLabel { font-family: var(--tn-mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--tn-gold); margin-bottom: 6px; display: block; }
+.calloutDanger .calloutLabel { color: var(--tn-accent); }
+
+/* ── WITNESS BLOCKS ──────────────────────────────────────────────────── */
+
+.witnessBlock { background: var(--tn-paper-dark); border: 1px solid var(--tn-border); border-radius: 4px; padding: 24px 28px; margin: 24px 0; }
+.witnessTag { font-family: var(--tn-mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--tn-ink-light); margin-bottom: 4px; }
+.witnessName { font-family: var(--tn-display); font-size: 18px; margin-bottom: 4px; }
+.witnessRole { font-size: 13px; color: var(--tn-ink-mid); margin-bottom: 16px; font-style: italic; }
+.witnessText { font-size: 15px; line-height: 1.75; border-top: 1px solid var(--tn-border); padding-top: 16px; }
+.witnessText p { margin-bottom: 1em; }
+.witnessText p:last-child { margin-bottom: 0; }
+
+/* ── BEFORE YOU BEGIN ────────────────────────────────────────────────── */
+
+/* Nested inside .coverInset, just above the Open Case File button — styled
+   as one more bordered box in the cover sheet's own family (fields/
+   checklist/this), single column since the inset is only ~480px wide. */
+.beforeDetails { text-align: left; margin-bottom: 18px; border: 1px solid var(--tn-border-s); border-radius: 3px; overflow: hidden; }
+.beforeSummary {
+  font-family: var(--tn-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--tn-ink-mid); padding: 12px 18px; cursor: pointer; list-style: none;
+  display: flex; align-items: center; gap: 8px; user-select: none; transition: background .15s, color .15s;
+}
+.beforeSummary::-webkit-details-marker { display: none; }
+.beforeSummary:hover { background: var(--tn-paper-dark); color: var(--tn-ink); }
+.beforeDetails[open] .beforeSummary { border-bottom: 1px solid var(--tn-border-s); background: var(--tn-paper-dark); }
+.beforeContent { padding: 14px 18px 16px; display: flex; flex-direction: column; gap: 16px; }
+.beforeGroupTitle { font-family: var(--tn-mono); font-size: 9px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--tn-accent); margin-bottom: 8px; display: block; }
+.beforeList { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.beforeList li { font-size: 12.5px; line-height: 1.5; color: var(--tn-ink-mid); padding-left: 13px; position: relative; }
+.beforeList li::before { content: '–'; position: absolute; left: 0; color: var(--tn-ink-light); }
+
+/* ── DIAGRAM FIGURES ─────────────────────────────────────────────────── */
+
+.diagram { width: 100%; margin: 24px 0; display: block; }
+.diagram img, .diagram svg { width: 100%; height: auto; display: block; }
+.diagramCaption { font-family: var(--tn-mono); font-size: 10px; color: var(--tn-ink-light); letter-spacing: 0.06em; margin-top: 8px; text-align: center; }
+
+/* ── INSTRUCTION / SENTENCE STARTERS / INPUTS (used inside modals) ────── */
+
+.instruction { background: var(--tn-paper-dark); border: 1px solid var(--tn-border); border-radius: 3px; padding: 16px 20px; font-size: 15px; line-height: 1.65; margin-bottom: 20px; }
+.instructionLabel { font-family: var(--tn-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; display: block; color: var(--tn-accent); margin-bottom: 8px; }
+.instruction ol { margin-top: 10px; padding-left: 20px; line-height: 1.8; }
+
+.scSection { margin-bottom: 12px; }
+.scLabel { font-family: var(--tn-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--tn-ink-light); margin-bottom: 8px; }
+.scChips { display: flex; flex-wrap: wrap; gap: 6px; }
+.scChip {
+  font-family: var(--tn-serif); font-size: 12.5px; text-align: left; background: var(--tn-paper-dark);
+  border: 1px solid var(--tn-border); border-radius: 14px; padding: 6px 12px; cursor: pointer; color: var(--tn-ink-mid);
+  transition: background .15s, border-color .15s;
+}
+.scChip:hover { background: var(--tn-paper-darker); border-color: var(--tn-border-s); }
+
+.textarea {
+  width: 100%; border: 1px solid var(--tn-border-s); border-radius: 3px; padding: 14px 16px;
+  font-family: var(--tn-serif); font-size: 15px; line-height: 1.6; background: #fff; resize: vertical;
+  min-height: 100px; color: var(--tn-ink); margin-top: 8px;
+}
+.textarea:focus { outline: 2px solid var(--tn-accent); outline-offset: 1px; }
+.textareaLg { min-height: 200px; line-height: 1.75; }
+.inputLabel { font-size: 13px; font-family: var(--tn-mono); letter-spacing: 0.06em; color: var(--tn-ink-mid); display: block; margin-bottom: 4px; }
+
+/* margin-top:auto anchors this to the bottom of .tnModalFull (a flex
+   column) — on short activities this keeps Submit at the foot of the
+   panel instead of stranded right under a small textarea. */
+.actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-top: auto; padding-top: 16px; border-top: 1px solid var(--tn-border); }
+/* margin-right:auto pushes this to the opposite end of the flex row from
+   the button, so it reads as an inline caption rather than a callout. */
+.actionHint { font-size: 12px; color: var(--tn-ink-light); margin-right: auto; }
+.btn {
+  font-family: var(--tn-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 10px 20px; border-radius: 3px; cursor: pointer; border: 1px solid var(--tn-border-s);
+  background: none; color: var(--tn-ink); transition: background 0.15s;
+}
+.btn:hover { background: var(--tn-paper-dark); }
+.btnPrimary { background: var(--tn-ink); color: var(--tn-paper); border-color: var(--tn-ink); }
+.btnPrimary:hover { background: #2a2620; }
+.btnPrimary:disabled { opacity: 0.5; cursor: not-allowed; }
+.btnDanger { background: var(--tn-accent); color: var(--tn-paper); border-color: var(--tn-accent); }
+.btnDanger:hover { background: var(--tn-accent-lt); }
+.btnDanger:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ── CONCEPT CARD (rendered inside ConceptModal) ────────────────────── */
+
+.ccCard { color: var(--tn-ink); }
+.ccTagline { font-family: var(--tn-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tn-ink-mid); margin-bottom: 16px; line-height: 1.5; }
+.ccIntro { font-size: 15px; line-height: 1.75; margin-bottom: 20px; }
+.ccDiagram { width: 100%; height: auto; display: block; margin: 20px 0; border-radius: 2px; }
+.ccSection { margin-bottom: 18px; }
+.ccSectionHeading { font-family: var(--tn-mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--tn-ink-light); margin-bottom: 6px; font-weight: normal; }
+.ccSectionBody { font-size: 14px; line-height: 1.7; margin: 0; }
+.ccKeyTerms { background: var(--tn-paper); border: 1px solid var(--tn-border); border-radius: 3px; padding: 14px 16px; margin: 20px 0; display: flex; flex-direction: column; gap: 10px; }
+.ccKeyTerm { display: grid; grid-template-columns: minmax(130px, auto) 1fr; gap: 12px; align-items: baseline; }
+.ccTerm { font-family: var(--tn-mono); font-size: 11px; letter-spacing: 0.04em; font-weight: 600; color: var(--tn-ink); flex-shrink: 0; }
+.ccDefinition { font-size: 13px; line-height: 1.5; color: var(--tn-ink-mid); }
+.ccApplyTo { border-left: 3px solid var(--tn-accent); background: rgba(139, 26, 26, 0.04); padding: 14px 16px; border-radius: 0 3px 3px 0; margin-top: 4px; }
+.ccApplyLabel { font-family: var(--tn-mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--tn-accent); display: block; margin-bottom: 8px; }
+.ccApplyTo p { font-size: 14px; line-height: 1.65; margin: 0; color: var(--tn-ink); }
+
+/* ── ACTIVITY / CONCEPT MODALS ──────────────────────────────────────── */
+
+.tnModal {
+  position: fixed; inset: 0; background: rgba(26,24,20,.7); z-index: 250;
+  display: none; align-items: center; justify-content: center; padding: 16px;
+}
+.tnModal.visible { display: flex; }
+.tnModalBox {
+  background: var(--tn-paper); border-radius: 6px; max-width: 880px; width: 100%;
+  /* Fixed, not capped — every activity/concept modal takes the same
+     footprint regardless of how much content it holds, so switching
+     between them (Prev/Next) doesn't jump-resize the box. Short content
+     just leaves breathing room instead of shrinking the box to fit. */
+  height: 88vh; display: flex; flex-direction: column; overflow: hidden;
+  box-shadow: 0 12px 48px rgba(0,0,0,.4);
+}
+.tnConceptBox { max-width: 640px; }
+
+.tnModalHeader { position: relative; background: var(--tn-ink); color: var(--tn-paper); padding: 22px 56px 20px 32px; flex-shrink: 0; }
+.tnModalSubtitle { font-family: var(--tn-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tn-gold); margin-bottom: 6px; }
+.tnModalTitle { font-family: var(--tn-display); font-size: 22px; line-height: 1.25; }
+.tnModalClose {
+  position: absolute; top: 14px; right: 14px; background: none; border: none;
+  color: rgba(245,240,232,.6); font-size: 22px; line-height: 1; cursor: pointer; padding: 6px;
+  transition: color .2s;
+}
+.tnModalClose:hover { color: var(--tn-paper); }
+
+/* Plain block, not flex — it only ever wraps one child now (.tnModalFull,
+   or the concept card). A flex row here previously stretched that child to
+   a fixed cross-axis height with no protection against its content
+   overflowing past the box, which is what was eating the bottom padding.
+   Block layout has no such issue: the child just grows to its natural
+   height and normal scrolling includes the trailing padding correctly. */
+.tnModalBody {
+  flex: 1; min-height: 0;
+  overflow-y: auto; padding: 32px; padding-bottom: 0;
+  scrollbar-width: thin; scrollbar-color: var(--tn-border-s) transparent;
+}
+.tnModalBody::-webkit-scrollbar { width: 8px; }
+.tnModalBody::-webkit-scrollbar-track { background: transparent; }
+.tnModalBody::-webkit-scrollbar-thumb { background: var(--tn-border-s); border-radius: 999px; }
+.tnConceptBox .tnModalBody { padding-bottom: 32px; }
+
+/* Prompt, evidence/concept pills, and the form all stack in one full-width
+   column — every activity uses this now, whether or not it has pills.
+   min-height (a floor, not a stretch) fills the fixed-height modal on short
+   activities so Submit still anchors to the bottom via margin-top:auto,
+   while staying free to grow taller than that on long ones. */
+.tnModalFull { display: flex; flex-direction: column; min-height: 100%; padding-bottom: 32px; }
+.tnPrompt { font-size: 15px; font-weight: 600; line-height: 1.55; margin-top: 0; margin-bottom: 14px; }
+
+.linkGroup { margin-bottom: 16px; }
+.linkGroupLabel { font-family: var(--tn-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tn-ink-light); margin-bottom: 8px; }
+.linkBtns { display: flex; flex-direction: row; flex-wrap: wrap; gap: 6px; }
+.linkBtn {
+  background: var(--tn-paper-dark); border: 1px solid var(--tn-border);
+  font-family: var(--tn-serif); white-space: nowrap;
+  border-radius: 999px; padding: 6px 14px; font-size: 12px; color: var(--tn-ink); cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.linkBtn:hover { background: var(--tn-paper-darker); border-color: var(--tn-border-s); }
+
+.tnModalFooter {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 16px 32px; border-top: 1px solid var(--tn-border); flex-shrink: 0; flex-wrap: wrap;
+}
+.tnNavBtn {
+  font-family: var(--tn-mono); font-size: 11px; letter-spacing: 0.06em; background: none;
+  border: 1px solid var(--tn-border-s); border-radius: 3px; padding: 9px 16px; color: var(--tn-ink); cursor: pointer;
+  transition: background .15s;
+}
+.tnNavBtn:hover { background: var(--tn-paper-dark); }
+.tnNavBtn:disabled { opacity: .4; cursor: not-allowed; }
+.tnClearBtn { font-family: var(--tn-mono); font-size: 10px; background: none; border: none; color: var(--tn-ink-light); cursor: pointer; text-decoration: underline; }
+.tnClearBtn:hover { color: var(--tn-accent); }
+.clearConfirm { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--tn-ink-mid); }
+.clearConfirm button { font-family: var(--tn-mono); font-size: 10px; padding: 5px 10px; border-radius: 3px; border: 1px solid var(--tn-border-s); background: none; cursor: pointer; }
+.clearConfirm button:last-child { background: var(--tn-accent); color: var(--tn-paper); border-color: var(--tn-accent); }
+
+/* ── RESPONSIVE ──────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .docHeader { padding: 32px 20px 8px; }
+  .coverCard { padding: 28px 24px 24px; }
+  .docTitle  { font-size: 33px; }
+  .contentWrap { padding: 40px 24px 64px; }
+
+  /* Below this width the sidebar overlays content (with a backdrop) instead
+     of sharing the row with it, since there's no room to push .main over. */
+  .sidebar { top: 0; width: 300px; max-width: 84vw; }
+  .sidebarBackdrop { display: block; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 190; }
+  .mainShifted { margin-left: 0; }
+}
+
+@media (max-width: 600px) {
+  .docTitle { font-size: 26px; }
+  .coverCard { padding: 24px 18px 20px; transform: none; }
+  .coverField { flex-wrap: wrap; }
+  .briefingHeader { padding: 18px 20px 16px; }
+  .briefingBody { padding: 20px; }
+  .briefingFooter { padding: 0 20px 22px; }
+  .tnModalBox { height: 94vh; }
+  .tnModalHeader { padding: 16px 48px 14px 18px; }
+  .tnModalBody { padding: 18px 18px 0; }
+  .tnModalFull { padding-bottom: 18px; }
+  .tnConceptBox .tnModalBody { padding-bottom: 18px; }
+  .tnModalFooter { padding: 12px 18px; }
+
+  .fileTab { padding: 14px 16px; gap: 10px; }
+  .fileTabTitle { font-size: 17px; }
+  .fileContentBody { padding: 20px 18px 28px; }
+}

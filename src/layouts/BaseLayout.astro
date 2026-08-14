@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import ContactOptions from '../components/ContactOptions.astro';
 
-const { title, description = '', showModalOverlay = false, hideChrome = false } = Astro.props;
+const { title, description = '', showModalOverlay = false, hideChrome = false, extraFontsHref = null } = Astro.props;
 ---
 <!doctype html>
 <html lang="en">
@@ -18,7 +18,13 @@ const { title, description = '', showModalOverlay = false, hideChrome = false } 
   <meta name="twitter:title" content={title} />
   {description && <meta name="twitter:description" content={description} />}
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  {!hideChrome && (
+    // Only the portfolio's own chrome (nav/footer) uses Poppins/Inter — pages
+    // that hide it (standalone assets) define their own complete font stack,
+    // so loading these here would just be unused weight.
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  )}
+  {extraFontsHref && <link href={extraFontsHref} rel="stylesheet" />}
 </head>
 <body>
   {!hideChrome && (

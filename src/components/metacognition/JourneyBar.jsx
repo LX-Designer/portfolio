@@ -20,7 +20,7 @@ const INSTRUCTIONS = [
   "You've built the knowledge. Now synthesise it into a concrete plan for your own practice.",
 ]
 
-export default function JourneyBar({ visible, step, activityDone, onActivity, onPrev, onNext, onExit }) {
+export default function JourneyBar({ visible, step, activityDone, onActivity, onPrev, onNext, onExit, onGoToStep }) {
   if (!visible || step < 0 || step >= STEPS.length) return null
 
   const isDone = activityDone.includes(step)
@@ -33,9 +33,12 @@ export default function JourneyBar({ visible, step, activityDone, onActivity, on
 
       <div className={s.jbProgress}>
         {STEPS.map((_, i) => (
-          <div
+          <button
             key={i}
+            type="button"
             className={`${s.jbDot} ${i < step ? s.done : i === step ? s.current : ''}`}
+            onClick={() => onGoToStep(i)}
+            aria-label={`Go to step ${i + 1}: ${STEPS[i]}`}
           />
         ))}
       </div>
