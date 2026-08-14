@@ -1,8 +1,15 @@
+import { useEffect, useRef } from 'react'
 import s from './index.module.css'
 import ConceptCard from './ConceptCard.jsx'
 import { toolkitConcepts } from './concepts.js'
 
 export default function ConceptModal({ conceptId, onNavigate, onClose }) {
+  const bodyRef = useRef(null)
+
+  useEffect(() => {
+    if (bodyRef.current) bodyRef.current.scrollTop = 0
+  }, [conceptId])
+
   if (!conceptId) return null
   const index = toolkitConcepts.findIndex(c => c.id === conceptId)
   const concept = toolkitConcepts[index]
@@ -20,7 +27,7 @@ export default function ConceptModal({ conceptId, onNavigate, onClose }) {
           <button className={s.tnModalClose} onClick={onClose} aria-label="Close concept">×</button>
         </div>
 
-        <div className={s.tnModalBody}>
+        <div className={s.tnModalBody} ref={bodyRef}>
           <ConceptCard concept={concept} />
         </div>
 

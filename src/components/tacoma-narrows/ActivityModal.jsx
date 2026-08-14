@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import s from './index.module.css'
 import ActivityForm from './ActivityForm.jsx'
 import { activities, getActivityStatus } from './activitiesConfig.js'
@@ -14,6 +14,11 @@ export default function ActivityModal({
   onActivitySubmitted,
 }) {
   const [showClearConfirm, setShowClearConfirm] = useState(false)
+  const bodyRef = useRef(null)
+
+  useEffect(() => {
+    if (bodyRef.current) bodyRef.current.scrollTop = 0
+  }, [activityId])
   // ActivityForm keeps its own draft/submitted state locally and only reads
   // initialAnswers on mount — clearing a response updates `responses` in the
   // parent, but without a key change the form never remounts to pick that
@@ -61,7 +66,7 @@ export default function ActivityModal({
           <button className={s.tnModalClose} onClick={onClose} aria-label="Close activity">×</button>
         </div>
 
-        <div className={s.tnModalBody}>
+        <div className={s.tnModalBody} ref={bodyRef}>
           <div className={s.tnModalFull}>
             {activity.prompt && <p className={s.tnPrompt}>{activity.prompt}</p>}
 

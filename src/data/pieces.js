@@ -71,13 +71,13 @@ export const pieces = [
   {
     slug: 'tacoma-narrows-inquiry-lab', category: 'interactive', tag: 'Tertiary Education',
     sector: 'higher-ed', type: 'interactive',
-    title: 'Tacoma Narrows: The Bridge That Shouldn\'t Have Failed',
+    title: 'Physics Investigation: Tacoma Narrows Bridge Collapse',
     is: 'An inquiry-based case file on the 1940 Tacoma Narrows Bridge collapse, for undergraduate physics and engineering. Examine wind and oscillation data, weigh two competing expert accounts, and use a built-in physics toolkit to write a tribunal report explaining the actual failure mechanism.',
     demonstrates: 'Structuring a case investigation so the "right answer" is discoverable but not given: competing expert claims that sound equally plausible until the learner tests them against the data themselves.',
     island: 'TacomaNarrowsLab',
     // Card-only override: this card's body copy differs from the "is" text
     // used on its own standalone page.
-    cardBody: 'This inquiry lab demonstrates a case-based approach to conceptual understanding. Learners work through a primary-source case file — data tables, an engineering sign-off, and two conflicting expert witness statements — using a physics toolkit to test each claim. Six embedded activities build toward a written tribunal report explaining the actual failure mechanism.',
+    cardBody: 'An immersive learning experience using authentic context. As learners read through the case file, they must apply their understanding of key physics principles to solve the case of the Tacoma Narrows Bridge collapse and present their findings to a tribunal.',
     // This piece is a long, full-page case investigation (its own nav, activity
     // sidebar) that doesn't suit the compact preview modal — send it to its
     // standalone page in a new tab instead, like a normal link.
