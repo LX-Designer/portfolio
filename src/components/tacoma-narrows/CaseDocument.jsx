@@ -117,20 +117,22 @@ export default function CaseDocument({ responses, openSections, onToggleSection,
         <FileSection id="tn-specifications" code="§ 02" title="Bridge Specifications" isOpen={isOpen('tn-specifications')} onToggle={toggle('tn-specifications')}>
           <p>The following technical specifications are drawn from the original engineering records submitted to the Federal Works Agency prior to construction. These figures were publicly available and were reviewed by the engineering board at approval.</p>
 
-          <table className={s.dataTable}>
-            <thead><tr><th>Parameter</th><th>Value</th><th>Notes</th></tr></thead>
-            <tbody>
-              <tr><td>Total bridge length</td><td>1,810 m</td><td>Including approach spans</td></tr>
-              <tr className={s.highlightRow}><td>Main span length</td><td>853 m</td><td>Third longest in world at time of construction</td></tr>
-              <tr className={s.highlightRow}><td>Deck width</td><td>12 m</td><td>Two lanes only: unusually narrow for span length</td></tr>
-              <tr><td>Span-to-width ratio</td><td>72 : 1</td><td>Compare Golden Gate: ~47:1</td></tr>
-              <tr className={s.highlightRow}><td>Stiffening girder depth</td><td>2.4 m (solid plate)</td><td>Original design called for 7.6 m open trusses</td></tr>
-              <tr><td>Tower height</td><td>130 m</td><td>Above water level</td></tr>
-              <tr><td>Dead load (self-weight)</td><td>~7,000 kN/m</td><td>Significantly lighter than conventional designs</td></tr>
-              <tr><td>Design static wind load</td><td>Rated to 100+ mph</td><td>Static force calculation; dynamic behaviour not modelled</td></tr>
-              <tr><td>Construction cost</td><td>$6.4 million USD</td><td>Approximately 40% less than original conservative estimate</td></tr>
-            </tbody>
-          </table>
+          <div className={s.dataTableWrap}>
+            <table className={s.dataTable}>
+              <thead><tr><th>Parameter</th><th>Value</th><th>Notes</th></tr></thead>
+              <tbody>
+                <tr><td>Total bridge length</td><td>1,810 m</td><td>Including approach spans</td></tr>
+                <tr className={s.highlightRow}><td>Main span length</td><td>853 m</td><td>Third longest in world at time of construction</td></tr>
+                <tr className={s.highlightRow}><td>Deck width</td><td>12 m</td><td>Two lanes only: unusually narrow for span length</td></tr>
+                <tr><td>Span-to-width ratio</td><td>72 : 1</td><td>Compare Golden Gate: ~47:1</td></tr>
+                <tr className={s.highlightRow}><td>Stiffening girder depth</td><td>2.4 m (solid plate)</td><td>Original design called for 7.6 m open trusses</td></tr>
+                <tr><td>Tower height</td><td>130 m</td><td>Above water level</td></tr>
+                <tr><td>Dead load (self-weight)</td><td>~7,000 kN/m</td><td>Significantly lighter than conventional designs</td></tr>
+                <tr><td>Design static wind load</td><td>Rated to 100+ mph</td><td>Static force calculation; dynamic behaviour not modelled</td></tr>
+                <tr><td>Construction cost</td><td>$6.4 million USD</td><td>Approximately 40% less than original conservative estimate</td></tr>
+              </tbody>
+            </table>
+          </div>
 
           <figure className={s.diagram}>
             <img src={girderDiagram} alt="Cross-section comparison: open-lattice truss (original design, 7.6 m deep) versus solid plate girder (as built, 2.4 m deep), with wind flow shown in each case." />
@@ -145,30 +147,34 @@ export default function CaseDocument({ responses, openSections, onToggleSection,
         <FileSection id="tn-data" code="§ 03" title="Wind and Oscillation Data" isOpen={isOpen('tn-data')} onToggle={toggle('tn-data')}>
           <p>The following data was recorded by instruments and observers on the day of the collapse, and reconstructed from film footage and engineering records in the weeks following. All times are Pacific Standard Time.</p>
 
-          <table className={s.dataTable}>
-            <thead><tr><th>Time</th><th>Wind speed</th><th>Oscillation type</th><th>Frequency</th><th>Amplitude</th></tr></thead>
-            <tbody>
-              <tr><td>~07:00</td><td>35 mph (56 km/h)</td><td>Vertical (transverse)</td><td>~0.6 Hz</td><td>~0.5 m</td></tr>
-              <tr><td>~08:30</td><td>38 mph (61 km/h)</td><td>Vertical (transverse)</td><td>~0.6 Hz</td><td>~1.2 m</td></tr>
-              <tr><td>~10:00</td><td>42 mph (68 km/h)</td><td>Mixed: transition</td><td>Irregular</td><td>Increasing</td></tr>
-              <tr className={s.highlightRow}><td>~10:15</td><td>42 mph (68 km/h)</td><td>Torsional (twisting)</td><td>0.2 Hz</td><td>~4 m, growing</td></tr>
-              <tr className={s.highlightRow}><td>~10:45</td><td>42 mph (68 km/h)</td><td>Torsional (twisting)</td><td>0.2 Hz</td><td>~8.5 m (deck at 45°)</td></tr>
-              <tr><td>11:02</td><td>42 mph (68 km/h)</td><td>Collapse initiating</td><td>N/A</td><td>Cable failure begins</td></tr>
-              <tr><td>11:10</td><td>42 mph (68 km/h)</td><td>N/A</td><td>N/A</td><td>Central span collapses</td></tr>
-            </tbody>
-          </table>
+          <div className={s.dataTableWrap}>
+            <table className={s.dataTable}>
+              <thead><tr><th>Time</th><th>Wind speed</th><th>Oscillation type</th><th>Frequency</th><th>Amplitude</th></tr></thead>
+              <tbody>
+                <tr><td>~07:00</td><td>35 mph (56 km/h)</td><td>Vertical (transverse)</td><td>~0.6 Hz</td><td>~0.5 m</td></tr>
+                <tr><td>~08:30</td><td>38 mph (61 km/h)</td><td>Vertical (transverse)</td><td>~0.6 Hz</td><td>~1.2 m</td></tr>
+                <tr><td>~10:00</td><td>42 mph (68 km/h)</td><td>Mixed: transition</td><td>Irregular</td><td>Increasing</td></tr>
+                <tr className={s.highlightRow}><td>~10:15</td><td>42 mph (68 km/h)</td><td>Torsional (twisting)</td><td>0.2 Hz</td><td>~4 m, growing</td></tr>
+                <tr className={s.highlightRow}><td>~10:45</td><td>42 mph (68 km/h)</td><td>Torsional (twisting)</td><td>0.2 Hz</td><td>~8.5 m (deck at 45°)</td></tr>
+                <tr><td>11:02</td><td>42 mph (68 km/h)</td><td>Collapse initiating</td><td>N/A</td><td>Cable failure begins</td></tr>
+                <tr><td>11:10</td><td>42 mph (68 km/h)</td><td>N/A</td><td>N/A</td><td>Central span collapses</td></tr>
+              </tbody>
+            </table>
+          </div>
 
           <p>Additional instrument data recovered from the site after the collapse:</p>
 
-          <table className={s.dataTable}>
-            <thead><tr><th>Measurement</th><th>Value</th></tr></thead>
-            <tbody>
-              <tr><td>Estimated natural vertical frequency of bridge</td><td>~0.6 Hz (matches early oscillation data)</td></tr>
-              <tr className={s.highlightRow}><td>Calculated vortex shedding frequency at 42 mph wind</td><td>~1.0 Hz</td></tr>
-              <tr className={s.highlightRow}><td>Observed torsional oscillation frequency at collapse</td><td>0.2 Hz</td></tr>
-              <tr><td>Trigger event at ~10:00</td><td>A midspan stay cable slipped, creating asymmetric loading</td></tr>
-            </tbody>
-          </table>
+          <div className={s.dataTableWrap}>
+            <table className={s.dataTable}>
+              <thead><tr><th>Measurement</th><th>Value</th></tr></thead>
+              <tbody>
+                <tr><td>Estimated natural vertical frequency of bridge</td><td>~0.6 Hz (matches early oscillation data)</td></tr>
+                <tr className={s.highlightRow}><td>Calculated vortex shedding frequency at 42 mph wind</td><td>~1.0 Hz</td></tr>
+                <tr className={s.highlightRow}><td>Observed torsional oscillation frequency at collapse</td><td>0.2 Hz</td></tr>
+                <tr><td>Trigger event at ~10:00</td><td>A midspan stay cable slipped, creating asymmetric loading</td></tr>
+              </tbody>
+            </table>
+          </div>
 
           <figure className={s.diagram}>
             <img src={frequencyDiagram} alt="Frequency diagram showing three values on a horizontal axis: torsional oscillation at collapse (0.2 Hz), natural vertical frequency (0.6 Hz), and vortex shedding frequency at 42 mph wind (1.0 Hz)." />

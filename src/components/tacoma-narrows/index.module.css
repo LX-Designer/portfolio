@@ -483,6 +483,12 @@
 
 /* ── TABLES ──────────────────────────────────────────────────────────── */
 
+/* Below a phone width the widest table's own content (5 columns in §03)
+   can't shrink to fit without wrapping every cell illegibly, so it scrolls
+   horizontally within its own wrapper instead of overflowing the card.
+   Narrower tables (2–3 columns) never hit this — width:100% just keeps them
+   filling the card as before, with nothing to scroll. */
+.dataTableWrap { overflow-x: auto; }
 .dataTable { width: 100%; border-collapse: collapse; font-family: var(--tn-mono); font-size: 12px; margin: 24px 0; }
 .dataTable th { text-align: left; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tn-ink-light); padding: 8px 12px; border-bottom: 1px solid var(--tn-border-s); background: var(--tn-paper-dark); }
 .dataTable td { padding: 9px 12px; border-bottom: 1px solid var(--tn-border); vertical-align: top; }
@@ -707,4 +713,25 @@
   .fileTab { padding: 14px 16px; gap: 10px; }
   .fileTabTitle { font-size: 17px; }
   .fileContentBody { padding: 20px 18px 28px; }
+
+  /* .navCenter is absolutely positioned edge-to-edge and centred so the six
+     section links stay centred regardless of .navLeft's width — but with
+     overflow:hidden, on a phone the links that don't fit (all six need
+     ~418px) are just silently clipped, not merely visually tight: there's
+     no way to reach them at all. Below this width it drops out of that
+     absolute/centred layout into the topbar's own flex row instead, taking
+     the remaining space next to the back link and scrolling horizontally,
+     so every section stays reachable by swipe. */
+  .navCenter {
+    position: static;
+    flex: 1;
+    min-width: 0;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    mask-image: linear-gradient(to right, transparent, black 12px, black calc(100% - 12px), transparent);
+  }
+  .navCenter::-webkit-scrollbar { display: none; }
+  .navBtn { flex-shrink: 0; }
 }
