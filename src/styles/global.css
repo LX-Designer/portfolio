@@ -70,12 +70,18 @@ h1.headline{font-size:clamp(30px,4.4vw,48px);line-height:1.2;max-width:min(520px
 .btn.ghost:hover{background:var(--line);}
 @media (max-width:600px){
   .hero{padding:120px 0 80px;min-height:380px;}
-  /* .wrap's left padding (28px) is a flat value, so it eats a bigger share
-     of a narrow viewport than of a wide one — the vw-only cap above isn't
-     tight enough to keep clear of the face once the padding is factored in
-     this close to the edge. This formula keeps ~60px clearance at any width
-     in this range instead of shrinking toward zero at the narrowest phones. */
-  h1.headline,.hero-sub{max-width:calc(55vw - 90px);}
+  /* The desktop/tablet face-clearance formula (55vw - 90px) was only ever
+     tuned around the top of this range — it goes negative-adjacent well
+     before phone widths (just 116px wide at a 375px viewport, wrapping the
+     headline to one word per line). Below 480px the face is barely visible
+     anyway under the low-opacity photo and its gradient wash, so text just
+     uses the full column instead of dodging it; the 480–600px band keeps a
+     lighter version of the same clearance idea since there's more room to
+     spare there. */
+  h1.headline,.hero-sub{max-width:none;}
+}
+@media (min-width:480px) and (max-width:600px){
+  h1.headline,.hero-sub{max-width:calc(85vw - 90px);}
 }
 
 section{padding:60px 0;}
@@ -152,7 +158,19 @@ section + section{border-top:1px solid var(--line);}
 .read-more-btn:hover{text-decoration:underline;}
 @media (max-width:700px){
   .about-grid{grid-template-columns:1fr;}
-  .about-photo{aspect-ratio:16/9;max-width:420px;}
+  /* The source photo is a tall portrait (350×591). Forcing it into a 16:9
+     landscape crop here left only ~33% of its height on screen — enough to
+     cut the face out of frame. Keeping the same 3:4 portrait ratio as the
+     desktop column (already tuned via object-position) shows the whole
+     headshot instead. It's since been narrowed to run full width (matching
+     the text column below it, instead of a centered, capped-width block)
+     and, at 15:16, made 20% taller again than the briefly-shrunk 9:8 crop —
+     both changes shift the cover-fit scale and the total crop overflow, so
+     the object-position value is re-derived each time (as a fraction of the
+     source photo, not the previous rendered pixels) to keep the same top
+     edge in frame while the newly-freed height reveals more below it. */
+  .about-photo{aspect-ratio:15/16;}
+  .about-photo img{object-position:center 31%;}
 }
 
 /* BREADCRUMB (category + piece pages) */
@@ -259,7 +277,6 @@ section + section{border-top:1px solid var(--line);}
   background:var(--blue-bg);color:var(--blue);
 }
 .contact-icon svg{width:19px;height:19px;}
-.contact-icon.whatsapp{background:rgba(37,211,102,.14);color:#1da851;}
 .contact-icon.linkedin{background:rgba(10,102,194,.12);color:#0a66c2;
   font-weight:700;font-size:15px;letter-spacing:-0.02em;}
 .contact-text{display:flex;flex-direction:column;gap:2px;min-width:0;}
@@ -301,10 +318,31 @@ footer p.lead{color:var(--text-soft);margin-top:12px;}
   .nav ul.open{display:flex;}
   .nav ul a{padding:12px 6px;border-radius:0;}
   .nav-toggle{display:block;}
+  /* The gap between sections is each side's own padding stacked together
+     (e.g. portfolio's bottom 60px + about's top 60px = 120px) — on a phone
+     screen, where there's far less vertical room to spare than on desktop,
+     that reads as an oversized empty gap. ~25% off each side. */
+  section{padding:45px 0;}
+  footer{padding:45px 0 44px;}
+}
+/* Some piece pages (Natural Selection, Cumulative Advantage) carry their own
+   tinted background — BaseLayout sets --mobile-bg inline via its optional
+   mobileBodyBg prop, only for those pages. Falling back to --bg (white) when
+   it isn't set means this rule is a no-op everywhere else. Scoped to mobile
+   only: on desktop the asset's own box already fully covers the page with
+   that same tint at full padding, so the body colour is never visible there
+   anyway — this only matters once that box's own padding shrinks to 0. */
+@media (max-width:600px){
+  body{background:var(--mobile-bg, var(--bg));}
 }
 @media (max-width:560px){
   .do-grid{grid-template-columns:1fr;}
   .piece-grid{grid-template-columns:1fr;}
   .modal-panel{padding:32px 22px 26px;}
+  /* flex-basis follows the main axis, so the 220px meant to set each
+     card's *width* in the row layout above becomes a 220px *height* once
+     flex-direction flips to column here, ballooning every button — reset
+     it back to a content-sized height at full width. */
   .contact-row.contact-options{flex-direction:column;}
+  .contact-row.contact-options .contact-option{flex:none;width:100%;}
 }

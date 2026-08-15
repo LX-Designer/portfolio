@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import ContactOptions from '../components/ContactOptions.astro';
 
-const { title, description = '', showModalOverlay = false, hideChrome = false, extraFontsHref = null } = Astro.props;
+const { title, description = '', showModalOverlay = false, hideChrome = false, extraFontsHref = null, mobileBodyBg = null } = Astro.props;
 ---
 <!doctype html>
 <html lang="en">
@@ -26,7 +26,7 @@ const { title, description = '', showModalOverlay = false, hideChrome = false, e
   )}
   {extraFontsHref && <link href={extraFontsHref} rel="stylesheet" />}
 </head>
-<body>
+<body style={mobileBodyBg ? `--mobile-bg:${mobileBodyBg}` : undefined}>
   {!hideChrome && (
     <header class="nav">
       <div class="wrap">
@@ -34,7 +34,7 @@ const { title, description = '', showModalOverlay = false, hideChrome = false, e
         <ul id="navlinks">
           <li><a href="/#portfolio">Portfolio</a></li>
           <li><a href="/#background">About</a></li>
-          <li><a href="/#contact" id="contactLink">Contact</a></li>
+          <li><a href="/#contact" data-contact-trigger>Contact</a></li>
         </ul>
         <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navlinks">≡</button>
       </div>
@@ -81,10 +81,14 @@ const { title, description = '', showModalOverlay = false, hideChrome = false, e
 
       // Contact picker — present on every page via BaseLayout, unlike the
       // piece-preview modal below which only exists on pages that opt in.
-      const contactTrigger = document.getElementById('contactLink');
+      // [data-contact-trigger] matches both the nav's "Contact" link and the
+      // footer's "Get in touch" link, so either one opens the same modal
+      // instead of the footer link falling through to a dead #contact
+      // anchor on pages (like a piece's own page) that have no contact section.
+      const contactTriggers = document.querySelectorAll('[data-contact-trigger]');
       const contactOverlay = document.getElementById('contact-modal-overlay');
       const contactClose = document.getElementById('contactModalClose');
-      if (contactTrigger && contactOverlay) {
+      if (contactTriggers.length && contactOverlay) {
         const openContact = (e) => {
           e.preventDefault();
           contactOverlay.classList.add('open');
@@ -94,7 +98,7 @@ const { title, description = '', showModalOverlay = false, hideChrome = false, e
           contactOverlay.classList.remove('open');
           document.body.style.overflow = '';
         };
-        contactTrigger.addEventListener('click', openContact);
+        contactTriggers.forEach((el) => el.addEventListener('click', openContact));
         contactClose.addEventListener('click', closeContact);
         contactOverlay.addEventListener('click', (e) => {
           if (e.target === contactOverlay) closeContact();

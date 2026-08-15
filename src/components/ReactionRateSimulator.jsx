@@ -347,9 +347,16 @@ export default function ReactionRateSimulator() {
         }
         /* A container can't query its own size — only its descendants can
            query it — so the padding reduction below uses a viewport media
-           query instead of @container. */
+           query instead of @container. The border and radius are dropped
+           here too — on a phone screen there's no surrounding page chrome
+           this card needs to visually separate from, so it's just a second
+           frame squeezed inside the piece page's own margin, taking width
+           away from the simulation itself. Horizontal padding goes to
+           near-zero rather than just shrinking — the canvas and controls
+           below already carry their own background/border, so they read
+           fine sitting flush against the page's own margin. */
         @media (max-width:600px){
-          .reaction-sim{padding:26px 20px;}
+          .reaction-sim{padding:16px 2px;border:none;border-radius:0;}
         }
       `}</style>
 

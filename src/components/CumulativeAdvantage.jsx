@@ -322,6 +322,28 @@ export default function CumulativeAdvantage() {
         .he-footer{margin-top:24px;padding:15px 2px 6px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);line-height:1.6;display:flex;gap:10px;align-items:flex-start;} .he-footer b{color:var(--ink);}
         .he-footer-icon{flex:0 0 auto;margin-top:2px;color:var(--muted);}
         @media(max-width:620px){.he-sid{width:76px;flex:0 0 76px;}}
+        /* he-root's padding goes to zero on every side, not just
+           horizontally — the asset-mount wrapper around this component clips
+           to a 16px rounded corner, so any leftover top/bottom padding here
+           left a tinted, separately-rounded strip poking out above he-first
+           (whose own margin-top is already 0). At 0 padding, he-first's own
+           rounded top sits flush with asset-mount's, so there's a single
+           corner instead of two stacked ones — and the tint still reads as
+           a page tone in the gaps between the cards below it. */
+        @media(max-width:600px){
+          .he-root{padding:0;}
+          .he-card{padding:14px;}
+          .he-stage{padding:12px 10px 10px;}
+        }
+        /* The bar track is the whole point of the visualisation, but its
+           width is whatever's left after the song-label and play-count
+           columns — on the narrowest phones that left as little as ~75px
+           for the actual bars, barely enough to compare two songs by eye.
+           Narrowing both side columns further reclaims most of that back. */
+        @media(max-width:480px){
+          .he-sid{width:64px;flex:0 0 64px;font-size:9.5px;}
+          .he-pv{width:26px;flex:0 0 26px;font-size:10px;}
+        }
         @media(prefers-reduced-motion:reduce){*{transition:none!important;}}
       `}</style>
 

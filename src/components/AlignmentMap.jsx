@@ -19,8 +19,8 @@ const OUTCOMES = [
       </>
     ),
     activities: [
-      { title: "Labelling exercise", text: "Students label the key components (guide RNA, Cas9 enzyme, target DNA sequence) on a diagram of the CRISPR mechanism.", tag: "Builds: identifying the components" },
-      { title: "Sequencing task", text: "Students arrange the steps of the CRISPR-Cas9 process into the correct order, describing what happens at each stage.", tag: "Builds: describing the full process accurately" },
+      { title: "Labelling exercise", text: "Students label the key components (guide RNA, Cas9 enzyme, target DNA sequence) on a diagram of the CRISPR mechanism." },
+      { title: "Sequencing task", text: "Students arrange the steps of the CRISPR-Cas9 process into the correct order, describing what happens at each stage." },
     ],
     content: [
       { label: "Key terms", text: "guide RNA, Cas9 enzyme, target DNA sequence, PAM site" },
@@ -39,9 +39,9 @@ const OUTCOMES = [
       </>
     ),
     activities: [
-      { title: "Sequence comparison", text: "Students compare a target DNA sequence with near-matching sequences elsewhere in the genome, identifying where Cas9 might bind incorrectly.", tag: "Builds: recognising where errors can arise" },
-      { title: "Modelled explanation", text: "The teacher walks through one instance of off-target cutting using the full causal chain, thinking aloud, before students see a second worked example.", tag: "Builds: seeing the causal chain modelled" },
-      { title: "Cause-and-effect mapping", text: "Students independently connect guide RNA specificity, sequence similarity, and binding conditions into one explanation of why off-target cutting occurs.", tag: "Builds: connecting causes into one explanation independently" },
+      { title: "Sequence comparison", text: "Students compare a target DNA sequence with near-matching sequences elsewhere in the genome, identifying where Cas9 might bind incorrectly." },
+      { title: "Modelled explanation", text: "The teacher walks through one instance of off-target cutting using the full causal chain, thinking aloud, before students see a second worked example." },
+      { title: "Cause-and-effect mapping", text: "Students independently connect guide RNA specificity, sequence similarity, and binding conditions into one explanation of why off-target cutting occurs." },
     ],
     content: [
       { label: "Key terms", text: "off-target effect, sequence specificity, genome-wide screening" },
@@ -60,9 +60,9 @@ const OUTCOMES = [
       </>
     ),
     activities: [
-      { title: "Evidence gathering", text: "Students research and summarise the therapeutic potential of CRISPR gene editing, using a real case such as its use in treating sickle cell disease.", tag: "Builds: understanding the evidence base" },
-      { title: "Criteria building", text: "As a class, students agree on what would count as strong evidence for or against using the therapy, such as effectiveness, safety, cost, and access.", tag: "Builds: criteria for weighing the evidence" },
-      { title: "Structured debate", text: "Students apply these criteria to weigh the therapeutic benefits against risks such as off-target effects and cost, then justify a position on when the technology should be used.", tag: "Builds: weighing evidence to reach a justified judgement" },
+      { title: "Evidence gathering", text: "Students research and summarise the therapeutic potential of CRISPR gene editing, using a real case such as its use in treating sickle cell disease." },
+      { title: "Criteria building", text: "As a class, students agree on what would count as strong evidence for or against using the therapy, such as effectiveness, safety, cost, and access." },
+      { title: "Structured debate", text: "Students apply these criteria to weigh the therapeutic benefits against risks such as off-target effects and cost, then justify a position on when the technology should be used." },
     ],
     content: [
       { label: "Key terms", text: "CRISPR-Cas9, gene therapy, off-target effects, germline vs. somatic editing" },
@@ -199,7 +199,7 @@ export default function AlignmentMap() {
           transition:opacity .16s ease,transform .16s ease;}
         .iam-tip-bubble::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
           border:6px solid transparent;border-top-color:var(--text);}
-        .iam-tip:hover .iam-tip-bubble,.iam-tip:focus-within .iam-tip-bubble{
+        .iam-tip:hover .iam-tip-bubble,.iam-tip:focus-within .iam-tip-bubble,.iam-tip:active .iam-tip-bubble{
           opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
 
         /* Activities — numbered like the plan table's lesson badges, so the
@@ -214,8 +214,6 @@ export default function AlignmentMap() {
         .iam-activity-body{flex:1;min-width:0;}
         .iam-activity-body p{margin:0;font-size:14.5px;line-height:1.55;color:var(--text-soft);}
         .iam-activity-body p.iam-activity-title{font-size:15px;font-weight:700;color:var(--text);margin:0 0 4px;}
-        .iam-activity .tag{display:inline-block;margin-top:9px;font-size:12px;font-weight:600;
-          color:var(--blue);background:var(--blue-bg);padding:4px 10px;border-radius:999px;}
 
         /* Content — a small two-column table (label / description), reusing
            the same bordered-cell, soft-gray-label language as the plan table
@@ -226,6 +224,21 @@ export default function AlignmentMap() {
         .iam-content-label{background:var(--bg-soft);font-family:'Poppins',sans-serif;
           font-weight:600;font-size:12.5px;color:var(--text);width:120px;white-space:nowrap;}
         .iam-content-text{color:var(--text-soft);}
+
+        /* Below this container width the fixed 120px label column starts
+           crowding the description text into a narrow strip. Stacking each
+           row into its own bordered block (label on top) reads far better
+           on a phone than a cramped two-column table. */
+        @container (max-width:420px){
+          .iam-content-table, .iam-content-table tbody, .iam-content-table tr, .iam-content-table td{
+            display:block; width:100%;}
+          .iam-content-table tr{margin-bottom:8px; border:1px solid var(--line); border-radius:var(--radius);
+            overflow:hidden;}
+          .iam-content-table tr:last-child{margin-bottom:0;}
+          .iam-content-table td{border:none; border-bottom:1px solid var(--line);}
+          .iam-content-table td:last-child{border-bottom:none;}
+          .iam-content-label{width:auto; white-space:normal;}
+        }
 
         /* Plan table */
         .iam-syllabus{margin-top:32px;padding-top:28px;border-top:1px solid var(--line);}
@@ -246,11 +259,41 @@ export default function AlignmentMap() {
         .iam-row-assess .iam-lesson-badge{background:var(--blue);border-color:var(--blue);color:#fff;}
         .iam-assess-activity{font-weight:500;color:var(--text);}
 
+        /* Below the table's own 560px min-width, the table-wrap's horizontal
+           scroll works but forces sideways scrolling to read a lesson's
+           activity and resources — a stacked card per lesson (like the
+           content table's mobile view above) reads top-to-bottom instead. */
+        .iam-plan-mobile{display:none;}
+        .iam-plan-card{border:1px solid var(--line); border-radius:var(--radius); padding:12px 14px; margin-bottom:8px;}
+        .iam-plan-card:last-child{margin-bottom:0;}
+        .iam-plan-card.assess{background:var(--blue-bg); border-color:var(--blue);}
+        .iam-plan-card-head{display:flex; align-items:center; gap:8px; margin-bottom:8px;}
+        .iam-plan-stage{font-family:'Poppins',sans-serif; font-size:11px; font-weight:600;
+          letter-spacing:.04em; text-transform:uppercase; color:var(--text-soft);}
+        .iam-plan-card.assess .iam-plan-stage{color:var(--blue);}
+        .iam-plan-activity{font-size:13.5px; line-height:1.5; color:var(--text); margin:0 0 4px;}
+        .iam-plan-card.assess .iam-plan-activity{font-weight:500;}
+        .iam-plan-resources{font-size:12.5px; color:var(--text-soft); margin:0;}
+
+        @container (max-width:560px){
+          .iam-table-wrap{display:none;}
+          .iam-plan-mobile{display:block;}
+        }
+
         /* A container can't query its own size — only its descendants can
            query it — so the padding reduction below uses a viewport media
-           query instead of @container. */
+           query instead of @container. The border and radius are dropped
+           here too — on a phone screen there's no surrounding page chrome
+           this card needs to visually separate from, so it's just a second
+           frame squeezed inside the piece page's own margin, taking width
+           away from content (like the tables above) that badly needs it.
+           Horizontal padding goes to near-zero rather than just shrinking —
+           the individual elements inside (outcome buttons, the task card)
+           already carry their own border and padding, so they read fine
+           sitting flush against the page's own margin, the same way the
+           homepage's piece-cards do against .wrap. */
         @media (max-width:600px){
-          .alignment-map{padding:26px 20px;}
+          .alignment-map{padding:16px 2px;border:none;border-radius:0;}
         }
       `}</style>
 
@@ -320,7 +363,6 @@ export default function AlignmentMap() {
                 <div className="iam-activity-body">
                   <p className="iam-activity-title">{a.title}</p>
                   <p>{a.text}</p>
-                  <span className="tag">{a.tag}</span>
                 </div>
               </div>
             ))}
@@ -410,6 +452,29 @@ export default function AlignmentMap() {
                     </tr>
                   </tbody>
                 </table>
+              </div>
+
+              <div className="iam-plan-mobile">
+                {LESSON_PLAN.map((row, i) => (
+                  <div className="iam-plan-card" key={i}>
+                    <div className="iam-plan-card-head">
+                      <span className="iam-lesson-badge">{i + 1}</span>
+                      <span className="iam-plan-stage">{row.outcome}</span>
+                    </div>
+                    <p className="iam-plan-activity">{row.activity}</p>
+                    <p className="iam-plan-resources">{row.resources}</p>
+                  </div>
+                ))}
+                <div className="iam-plan-card assess">
+                  <div className="iam-plan-card-head">
+                    <span className="iam-lesson-badge">{LESSON_PLAN.length + 1}</span>
+                    <span className="iam-plan-stage">Assessment</span>
+                  </div>
+                  <p className="iam-plan-activity">
+                    Write a response to the sickle cell case, bringing description, explanation, and evaluation together
+                  </p>
+                  <p className="iam-plan-resources">Case (recap)</p>
+                </div>
               </div>
             </>
           )}

@@ -135,7 +135,7 @@ const allPieces = [...featured, ...rest];
       </div>
       <div class="about-grid">
         <div class="about-photo">
-          <Image src={profileImage} alt="David King" width={420} height={560} />
+          <Image src={profileImage} alt="David King" width={420} height={560} loading="eager" />
         </div>
         <div class="about-text" id="aboutText">
           <div class="about-body" id="aboutBody">
@@ -158,14 +158,37 @@ const allPieces = [...featured, ...rest];
       const btn = document.getElementById('readMoreBtn');
       if (!photo || !textWrap || !body || !btn) return;
 
-      // The column height always tracks the photo's rendered height (not a
-      // fixed value) so it stays correct across breakpoints and once a real
+      // On desktop, the column height tracks the photo's rendered height (not
+      // a fixed value) so it stays correct across breakpoints and once a real
       // photo replaces the placeholder at a different aspect ratio. It's set
       // on the column itself (not just the clamped text) so the flex layout
       // pins the trigger to that exact bottom edge, flush with the photo.
+      // Below the same breakpoint the layout stacks (photo above text) and
+      // matching the photo's height no longer means anything for the text
+      // column's own vertical rhythm, so it clamps to a fixed 10 lines
+      // instead — independent of the (now shorter) mobile photo.
+      const isStacked = () => window.matchMedia('(max-width:700px)').matches;
+
       function syncClampHeight() {
         if (textWrap.classList.contains('expanded')) return;
-        textWrap.style.height = photo.getBoundingClientRect().height + 'px';
+        if (isStacked()) {
+          // Sized directly on the text itself, not the column — the column
+          // has no photo to stay flush with once stacked, so it's left to
+          // auto-size around the clamped text plus the button below it,
+          // rather than budgeting the button's own height out of the 10 lines.
+          // `flex:1` (flex-basis:0%) ignores an explicit height on a flex
+          // item, so it has to be overridden to `flex:none` for that height
+          // to actually take effect instead of the item just growing to fit
+          // all its content in the now auto-height column.
+          textWrap.style.height = '';
+          body.style.flex = 'none';
+          const lineHeight = parseFloat(getComputedStyle(body).lineHeight);
+          body.style.height = (lineHeight * 10) + 'px';
+        } else {
+          body.style.flex = '';
+          body.style.height = '';
+          textWrap.style.height = photo.getBoundingClientRect().height + 'px';
+        }
       }
 
       function updateButtonVisibility() {
@@ -193,6 +216,8 @@ const allPieces = [...featured, ...rest];
         const expanded = textWrap.classList.toggle('expanded');
         if (expanded) {
           textWrap.style.height = 'auto';
+          body.style.flex = '';
+          body.style.height = '';
           btn.textContent = 'Read less ↑';
         } else {
           syncClampHeight();

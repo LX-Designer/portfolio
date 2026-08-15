@@ -20,6 +20,17 @@ const { piece } = Astro.props;
 // display headings) that the rest of the portfolio doesn't load — only this
 // piece's standalone page pulls in the extra font families.
 const TACOMA_FONTS_HREF = 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&family=DM+Serif+Display:ital@0;1&display=swap';
+
+// Natural Selection and Cumulative Advantage carry their own tinted palette
+// (--paper / --bg inside their own scoped styles) rather than the site's
+// white. On mobile, where each asset's own box loses its padding, that tint
+// is passed up to BaseLayout so it can fill the whole page background —
+// must match the --paper/--bg values set inside each component's own
+// <style> block. Every other piece leaves this undefined (plain white).
+const MOBILE_BODY_BG = {
+  NaturalSelection: '#F4F0E7',
+  CumulativeAdvantage: '#F7F8FA',
+};
 ---
 {piece.standalonePage ? (
   // This piece's asset is a self-contained full-page tool with its own nav
@@ -41,23 +52,18 @@ const TACOMA_FONTS_HREF = 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mon
     </div>
   </BaseLayout>
 ) : (
-  <BaseLayout title={`${piece.title} — Dave`} description={piece.is}>
+  <BaseLayout title={`${piece.title} — Dave`} description={piece.is} mobileBodyBg={MOBILE_BODY_BG[piece.island]}>
     <section class="piece-body">
       <div class="wrap">
         <a class="piece-back" href="/#portfolio">← Back to Portfolio</a>
 
+        {/* No tag/title/"what this is" framing here — the visitor lands on
+           this page either straight from a shared link or (on mobile, where
+           the modal shortcut is skipped) from tapping the card, and in both
+           cases the asset itself carries its own heading. Framing text would
+           just repeat what the card already said, or duplicate a heading the
+           asset renders itself. */}
         <div id="piece-content">
-          <span class="tag-pill">{piece.tag}</span>
-          <h1>{piece.title}</h1>
-          <div class="piece-section">
-            <h3>What this is</h3>
-            <p>{piece.is}</p>
-          </div>
-          <div class="piece-section">
-            <h3>What this demonstrates</h3>
-            <p>{piece.demonstrates}</p>
-          </div>
-
           {piece.island === 'NaturalSelection' ? (
             <div id="piece-asset" class="asset-mount">
               {/* client:only — this component's initial state is Math.random()-driven,

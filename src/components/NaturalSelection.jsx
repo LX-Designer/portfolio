@@ -420,8 +420,16 @@ export default function NaturalSelection() {
         .ns-footer{margin-top:24px;padding:15px 2px 6px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);line-height:1.6;display:flex;gap:10px;align-items:flex-start;}
         .ns-footer b{color:var(--ink);} .ns-footer-icon{flex:0 0 auto;margin-top:2px;color:var(--muted);}
 
+        /* ns-root's padding goes to zero on every side, not just
+           horizontally — the asset-mount wrapper around this component clips
+           to a 16px rounded corner, so any leftover top/bottom padding here
+           left a tinted, separately-rounded strip poking out above the first
+           card (whose own margin-top is already 0). At 0 padding, that
+           card's own rounded top sits flush with asset-mount's, so there's
+           a single corner instead of two stacked ones — and the tint still
+           reads as a page tone in the gaps between the cards below it. */
         @media(max-width:600px){
-          .ns-root{padding:20px 12px 14px;}
+          .ns-root{padding:0;}
           .ns-card{padding:14px;}
           .ns-field{height:300px;}
           .ns-yax{width:40px;flex:0 0 40px;} .ns-xax{margin-left:48px;}

@@ -160,8 +160,16 @@ export default function SoloRubric() {
           .sr-table-wrap{display:none;}
           .sr-mobile-results{display:block;}
         }
+        /* The border and radius are dropped on a phone screen too — there's
+           no surrounding page chrome this card needs to visually separate
+           from at that width, so it's just a second frame squeezed inside
+           the piece page's own margin, taking width away from content that
+           badly needs it. Horizontal padding goes to near-zero rather than
+           just shrinking — the response options and callout below already
+           carry their own border/background, so they read fine sitting
+           flush against the page's own margin. */
         @media(max-width:600px){
-          .solo-rubric{padding:26px 20px;}
+          .solo-rubric{padding:16px 2px;border:none;border-radius:0;}
         }
       `}</style>
 
