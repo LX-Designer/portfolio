@@ -303,11 +303,9 @@ export default function CumulativeAdvantage() {
         .he-insight p{margin:0 0 12px;} .he-insight p:last-child{margin-bottom:0;}
         .he-insight b{color:var(--ink);}
         .he-eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:9px;}
-        .he-pullquote{margin:0 0 16px;padding:15px 18px 15px 20px;background:#F0F1FE;border-left:3px solid var(--accent);border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;font-weight:600;letter-spacing:-.01em;color:var(--ink);}
-        .he-concept{display:flex;gap:13px;align-items:flex-start;margin:16px 0;padding:15px 17px;background:#FFF8EC;border:1px solid #F3D9A8;border-radius:12px;}
-        .he-concept-icon{flex:0 0 34px;width:34px;height:34px;border-radius:9px;background:var(--hot);color:#fff;display:flex;align-items:center;justify-content:center;}
-        .he-concept-body{font-size:14px;line-height:1.6;color:#5C4A28;}
-        .he-concept-term{font-weight:700;color:#B45309;}
+        .he-concept{display:flex;gap:13px;align-items:flex-start;margin:16px 0;padding:15px 17px;background:#F7F7FE;border:1px solid #E3E1FB;border-radius:12px;}
+        .he-concept-body{font-size:14px;line-height:1.6;color:#33314A;}
+        .he-concept-term{font-weight:700;color:var(--accent);}
         .he-quizhd{font-size:19px;font-weight:700;letter-spacing:-.01em;margin:0 0 8px;}
         .he-quizprompt{font-size:14px;color:#3C424C;margin:0 0 16px;line-height:1.5;}
         .he-quizitem{margin-bottom:10px;}
@@ -348,7 +346,7 @@ export default function CumulativeAdvantage() {
       `}</style>
 
       <div className="he-card he-first">
-        <div className="he-quizhd">The making of a hit</div>
+        <div className="he-quizhd">Cumulative Advantage Explorable</div>
 
         <p className="he-lede">
           In 2006, researchers Salganik, Dodds, and Watts ran an experiment to understand why some songs become
@@ -376,8 +374,8 @@ export default function CumulativeAdvantage() {
             </div>
           </div>
           <div className="he-tryit-note">
-            As each selection is made, watch how early random choices start to shape the chart, trapping future
-            participants in a feedback loop where choices rapidly accumulate toward a single runaway hit.
+            As each song selection is made, watch how early random choices start to shape the chart and how that
+            influences the choices of other participants.
           </div>
         </div>
       </div>
@@ -542,26 +540,11 @@ export default function CumulativeAdvantage() {
         <div className="he-card">
           <div className="he-insight">
             <div className="he-eyebrow">The takeaway</div>
-            <blockquote className="he-pullquote">
-              The same song can become a runaway #1 hit in one world and completely flop in another, and nothing
-              about the song changed. Its success depended entirely on who got lucky first.
-            </blockquote>
             <p>
-              If you ran the simulation across several <b>social worlds</b>, you likely saw exactly that: a
-              different winner each time, decided not by quality but by which track happened to catch an early lead.
+              If you ran the simulation across several social worlds, you likely noticed that the same song can
+              become a runaway #1 hit in one world and completely flop in another:{" "}
+              <b>Its success depended entirely on who got lucky first.</b>
             </p>
-            <div className="he-concept">
-              <span className="he-concept-icon" aria-hidden="true">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                  <path d="M2 12L7 7L10 10L16 4M16 4H11.5M16 4V8.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </span>
-              <div className="he-concept-body">
-                <span className="he-concept-term">Cumulative Advantage</span>, often called the{" "}
-                <span className="he-concept-term">Matthew Effect</span>, is a simple rule: the rich get richer,
-                and the popular get more popular.
-              </div>
-            </div>
             <p>
               In the Independent world, a song's success matches its quality, because people only rely on their
               own taste. But the moment you introduce a chart, you introduce social influence. An accidental,
@@ -569,6 +552,13 @@ export default function CumulativeAdvantage() {
               must be good, and download it too. That small advantage compounds over and over, until a completely
               average song snowballs into an unstoppable market monopoly.
             </p>
+            <div className="he-concept">
+              <div className="he-concept-body">
+                <span className="he-concept-term">Cumulative Advantage</span>, often called the{" "}
+                <span className="he-concept-term">Matthew Effect</span>, is a simple rule: the rich get richer,
+                and the popular get more popular.
+              </div>
+            </div>
           </div>
         </div>
       )}

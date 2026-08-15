@@ -113,7 +113,7 @@ export default function SoloRubric() {
           color:var(--blue);margin:0 0 6px;}
         .sr-task{font-size:15.5px;font-weight:600;line-height:1.5;margin:0;color:var(--text);}
         .sr-instruct{font-size:14px;color:var(--text-soft);margin:0 0 20px;}
-        .sr-reselect-hint{font-size:13.5px;color:var(--text-soft);font-style:italic;margin:18px 0 0;}
+        .sr-reselect-hint{font-size:13.5px;color:var(--text-soft);margin:18px 0 0;}
         .sr-option{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--line);
           border-radius:var(--radius);padding:16px 18px;margin-bottom:10px;cursor:pointer;
           font-family:'Inter',sans-serif;font-size:14.5px;line-height:1.65;color:var(--text);
