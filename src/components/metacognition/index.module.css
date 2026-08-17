@@ -1100,9 +1100,10 @@
   .maPanel { display: flex; }
   /* 54px = .topbar's own rendered height at mobile widths (see the touch-
      target rule below, which makes it taller than the 36px desktop value) —
-     expanded height reaches flush against it rather than floating above
-     whatever height the content happens to need. */
-  .maPanel.expanded { height: calc(100vh - 54px); }
+     expanded height stops just short of it (8px gap) rather than sitting
+     flush against it or floating above whatever height the content happens
+     to need. */
+  .maPanel.expanded { height: calc(100vh - 62px); }
 }
 
 /* ── TOUCH TARGETS ────────────────────────────────────────────────────── */
