@@ -89,6 +89,60 @@
 .navBtn:hover { background: rgba(255,255,255,.15); color: #fff; }
 .navBtn.active { background: rgba(255,255,255,.2); color: #fff; font-weight: 600; }
 
+/* Mobile-only burger menu that replaces the horizontally scrolling pill row
+   below 600px (see media query) — hidden by default so desktop keeps the
+   pill row as-is. Drops its menu down from the nav bar itself (a distinct
+   top-anchored treatment, not the bottom-sheet pattern used elsewhere in
+   this asset) so it reads as a different kind of control from the mobile
+   activity panel, which does own the bottom-sheet spot. */
+.navDropdownWrap { display: none; position: relative; }
+.navDropdownTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,.1);
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.navMenuBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.25);
+  z-index: 149;
+}
+.navDropdownMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 150;
+  background: var(--navy);
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  border-radius: 10px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  border: 1px solid rgba(255,255,255,.12);
+}
+.navDropdownItem {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,.8);
+  font-size: 14px;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.navDropdownItem.active { background: rgba(255,255,255,.15); color: #fff; font-weight: 600; }
+
 /* ── LAYOUT ───────────────────────────────────────────────────────────── */
 .page {
   max-width: 960px;
@@ -508,6 +562,107 @@
 }
 .jbExit:hover { color: rgba(255,255,255,.85); }
 
+/* ── MOBILE ACTIVITY PANEL ────────────────────────────────────────────── */
+/* Below 600px the classic left sidebar (above) is hidden entirely in favour
+   of this bottom-anchored panel, which replaces both the sidebar AND the
+   separate activity modal — the activity itself is the panel's expanded
+   content, not something opened on top of it. A single element, always
+   mounted, whose height animates between a peek strip and full height —
+   bottom-anchored so it grows upward from the screen edge like a native
+   bottom sheet, with the drag handle staying pinned to its current top. */
+.jbGrabber {
+  width: 34px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,.35);
+  flex-shrink: 0;
+}
+.maPanel {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 95;
+  flex-direction: column;
+  background: var(--navy);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -8px 28px rgba(0,0,0,.5);
+  height: 54px;
+  overflow: hidden;
+  transition: height .32s cubic-bezier(.4,0,.2,1);
+}
+.maPeek {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px 6px;
+}
+.maPeekRow { display: flex; align-items: center; width: 100%; gap: 4px; }
+.maPeekLabel {
+  flex: 1;
+  min-width: 0;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: left;
+  padding: 4px;
+  cursor: pointer;
+}
+.maHeaderLabel { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+.maContent {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 12px calc(12px + env(safe-area-inset-bottom));
+}
+.maExit {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,.4);
+  font-size: 13px;
+  line-height: 1;
+  padding: 6px;
+  cursor: pointer;
+  transition: color .2s;
+}
+.maExit:hover { color: rgba(255,255,255,.85); }
+/* Quiet by design — Prev/Next are a secondary way to move between steps
+   (the activity's own Continue button is the primary path now), so they
+   read as plain text controls rather than competing pill buttons. */
+.maNavRow { display: flex; align-items: center; justify-content: space-between; }
+.maNavBtn {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,.5);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: color .2s;
+}
+.maNavBtn:hover { color: #fff; }
+.maNavBtn:disabled { opacity: .3; cursor: not-allowed; }
+.maBody {
+  flex: 1;
+  min-height: 0;
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px 16px 20px;
+  overflow-y: auto;
+}
+/* Each activity renders its own "Close" button (for the desktop modal it's
+   embedded in elsewhere) — here the collapse chevron in .maPeek is the
+   only dismiss control, so it's suppressed rather than duplicated. */
+.maBody .amFooter .amBtn.secondary { display: none; }
+
 /* ── PAGE / SIDEBAR LAYOUT ────────────────────────────────────────────── */
 /* .page centers itself (max-width + margin:0 auto) within whichever parent
    contains it — margin-left here reserves the fixed sidebar's width so that
@@ -856,12 +1011,14 @@
 
 /* ── RESPONSIVE: MOBILE ───────────────────────────────────────────────── */
 @media (max-width: 600px) {
-  .topbar { overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; padding: 0 10px; scrollbar-width: none; }
-  .topbar::-webkit-scrollbar { display: none; }
   .navLeft { flex-shrink: 0; }
-  .navCenter { position: static; pointer-events: auto; overflow: visible; flex-wrap: nowrap; }
+  /* Below 600px there isn't room for all 9 section pills; the horizontally
+     scrolling row they used to get gave no visual cue it was scrollable, so
+     it's replaced with a burger menu that drops the full list down from the
+     nav bar instead. */
+  .navCenter { display: none; }
+  .navDropdownWrap { display: flex; justify-content: flex-end; flex: 1; min-width: 0; padding: 6px 0; }
   .navTitle { font-size: 12px; padding: 10px 6px 10px 0; margin-right: 4px; }
-  .navBtn { padding: 10px 9px; font-size: 11.5px; flex-shrink: 0; }
 
   .hero { padding: 22px 16px; border-radius: 10px; }
   .hero h1 { font-size: 18px; }
@@ -933,23 +1090,24 @@
   .synGrid { grid-template-columns: 1fr; }
   .ref { font-size: 12px; padding: 10px 12px; }
 
-  /* Below this width there's no room to sit a sidebar beside the content, so
-     it becomes a full-width overlay instead — .page needs no reserved
-     margin since it's simply covered while the journey sidebar is open. */
-  .journeyBar { top: 42px; width: 100%; padding: 16px 16px 20px; gap: 14px; }
+  /* Below this width the classic left sidebar has nowhere to go, so it's
+     replaced outright by the mobile activity panel (mini bar / expanded
+     panel) below — .page needs no reserved margin since nothing sits
+     beside it any more. */
+  .journeyBar.visible { display: none; }
   .pageWrap.withSidebar { margin-left: 0; }
-  .jbStepLabel { font-size: 10px; }
-  .jbStepTitle { font-size: 15px; }
-  .jbDot { width: 6px; height: 6px; }
-  .jbProgress { gap: 3px; }
-  .jbBtn { padding: 8px 10px; font-size: 12px; }
-  .jbExit { top: 10px; right: 10px; padding: 8px; }
-  .jbBtns { gap: 5px; }
+
+  .maPanel { display: flex; }
+  /* 54px = .topbar's own rendered height at mobile widths (see the touch-
+     target rule below, which makes it taller than the 36px desktop value) —
+     expanded height reaches flush against it rather than floating above
+     whatever height the content happens to need. */
+  .maPanel.expanded { height: calc(100vh - 54px); }
 }
 
 /* ── TOUCH TARGETS ────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .jbBtn, .amBtn, .mcCta, .wmStart, .tabBtn, .navBtn { min-height: 42px; display: inline-flex; align-items: center; justify-content: center; }
+  .jbBtn, .amBtn, .mcCta, .wmStart, .tabBtn, .navBtn, .navDropdownTrigger { min-height: 42px; display: inline-flex; align-items: center; justify-content: center; }
   .sortBtn, .classifyOpt { min-height: 38px; }
   .stageHead, .accHead, .phaseCard { min-height: 48px; }
 }
@@ -957,7 +1115,7 @@
 /* ── PRINT ────────────────────────────────────────────────────────────── */
 @media print {
   /* Hide chrome and all page sections */
-  .topbar, .journeyBar, .welcomeModal, .activityModal { display: none !important; }
+  .topbar, .journeyBar, .maPanel, .welcomeModal, .activityModal { display: none !important; }
   .page > * { display: none !important; }
 
   /* Show only the synthesis section */

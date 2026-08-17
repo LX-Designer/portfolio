@@ -28,6 +28,11 @@ const NUM_STEPS = 7
 function navTo(id) {
   const el = document.getElementById(id)
   if (!el) return
+  // The mobile activity panel locks body scroll while expanded (see the
+  // scroll-lock effect below) — clear it before scrolling so this isn't a
+  // no-op, since a locked body has no scrolling mechanism to move. The
+  // effect re-locks it on next render if the panel is still expanded.
+  document.body.style.overflow = ''
   const navH = document.querySelector('nav')?.offsetHeight ?? 48
   window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - navH - 16, behavior: 'smooth' })
 }
@@ -406,6 +411,15 @@ export default function MetacognitionLab({ backHref }) {
   const [activeActivity, setActiveActivity] = useState(null)
   const [activeSection, setActiveSection] = useState('overview')
   const [showExitConfirm, setShowExitConfirm] = useState(false)
+  // Mobile-only nav: the pill row is hidden below 600px in favour of a
+  // burger menu that drops this list down from the nav bar.
+  const [navMenuOpen, setNavMenuOpen] = useState(false)
+  // The fixed left sidebar (desktop/tablet) is replaced below 600px by a
+  // bottom activity panel — collapsed to a minimal step tag by default so
+  // starting the journey never covers the page the reader is meant to read
+  // first; expanding it surfaces that step's activity directly, in place of
+  // the sidebar rather than as a modal on top of it.
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true)
 
   // Scrollspy
   useEffect(() => {
@@ -422,11 +436,29 @@ export default function MetacognitionLab({ backHref }) {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Lock background scroll while the mobile activity panel is expanded, so
+  // touch-scrolling moves the panel's own content rather than the page
+  // underneath it. Scoped to mobile widths via matchMedia so it never
+  // affects the desktop/tablet sidebar, which coexists with page scroll.
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 600px)')
+    function apply() {
+      document.body.style.overflow = (journeyActive && !sidebarCollapsed && mq.matches) ? 'hidden' : ''
+    }
+    apply()
+    mq.addEventListener('change', apply)
+    return () => {
+      mq.removeEventListener('change', apply)
+      document.body.style.overflow = ''
+    }
+  }, [journeyActive, sidebarCollapsed])
+
   // ── Journey handlers ────────────────────────────────────────────────────────
   function startJourney() {
     setShowWelcome(false)
     setStep(0)
     setJourneyActive(true)
+    setSidebarCollapsed(true)
     navTo('overview')
   }
 
@@ -449,6 +481,7 @@ export default function MetacognitionLab({ backHref }) {
       const resumeStep = Math.min(activityDone[activityDone.length - 1] + 1, NUM_STEPS - 1)
       setStep(resumeStep)
       setJourneyActive(true)
+      setSidebarCollapsed(true)
       navTo(stepSection(resumeStep))
     } else {
       startJourney()
@@ -506,6 +539,23 @@ export default function MetacognitionLab({ backHref }) {
       setJourneyActive(false)
       navTo('synthesis')
       onComplete(null, { stepsCompleted: NUM_STEPS })
+    }
+  }
+
+  // Mobile activity panel: the activity is embedded in place rather than a
+  // modal launched from a "done" state, so completing it should carry the
+  // reader straight into the next step's activity instead of leaving them
+  // parked on the one they just finished.
+  async function handleMobileActivityComplete(data) {
+    await onResponse(`activity-${step}`, { done: true, ...data })
+    if (step >= NUM_STEPS - 1) {
+      setJourneyActive(false)
+      navTo('synthesis')
+      onComplete(null, { stepsCompleted: NUM_STEPS })
+    } else {
+      const next = step + 1
+      setStep(next)
+      navTo(stepSection(next))
     }
   }
 
@@ -630,6 +680,9 @@ export default function MetacognitionLab({ backHref }) {
         onNext={nextStep}
         onExit={exitJourney}
         onGoToStep={goToStep}
+        collapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(c => !c)}
+        onActivityComplete={handleMobileActivityComplete}
       />
 
       {activeActivity !== null && (
@@ -660,6 +713,36 @@ export default function MetacognitionLab({ backHref }) {
             </button>
           ))}
         </div>
+        <div className={s.navDropdownWrap}>
+          <button
+            className={s.navDropdownTrigger}
+            onClick={() => setNavMenuOpen(o => !o)}
+            aria-expanded={navMenuOpen}
+            aria-label="Open section menu"
+          >
+            ☰
+          </button>
+          {navMenuOpen && (
+            <div className={s.navMenuBackdrop} onClick={() => setNavMenuOpen(false)} />
+          )}
+          {navMenuOpen && (
+            <div className={s.navDropdownMenu}>
+              {NAV_SECTIONS.map(sec => (
+                <button
+                  key={sec.id}
+                  className={`${s.navDropdownItem} ${activeSection === sec.id ? s.active : ''}`}
+                  onClick={() => {
+                    setSidebarCollapsed(true)
+                    navTo(sec.id)
+                    setNavMenuOpen(false)
+                  }}
+                >
+                  {sec.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </nav>
 
       <div className={`${s.pageWrap} ${journeyActive ? s.withSidebar : ''}`}>
@@ -674,7 +757,7 @@ export default function MetacognitionLab({ backHref }) {
               <div className={`${s.modeCard} ${s.highlight}`}>
                 <div className={s.mcTitle}><span className={s.mcIcon}>🧭</span>Guided Journey (Recommended)</div>
                 <div className={s.mcDesc}>A 7-step path that takes you from a self-assessment baseline through concept-building activities, scenario analysis, and a personal action plan. Each step directs you to the relevant section, then challenges you to apply what you've read before moving on. Approximately 25–35 minutes.</div>
-                <button className={s.mcCta} onClick={startJourney}>Start Guided Journey →</button>
+                <button className={s.mcCta} onClick={resumeOrStartJourney}>Start Guided Journey →</button>
               </div>
               <div className={s.modeCard}>
                 <div className={s.mcTitle}><span className={s.mcIcon}>🗺️</span>Explore Freely</div>

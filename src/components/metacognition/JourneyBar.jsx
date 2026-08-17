@@ -1,4 +1,13 @@
 import s from './index.module.css'
+import Act0 from './activities/Act0.jsx'
+import Act1 from './activities/Act1.jsx'
+import Act2 from './activities/Act2.jsx'
+import Act3 from './activities/Act3.jsx'
+import Act4 from './activities/Act4.jsx'
+import Act5 from './activities/Act5.jsx'
+import Act6 from './activities/Act6.jsx'
+
+const ACTIVITIES = [Act0, Act1, Act2, Act3, Act4, Act5, Act6]
 
 const STEPS = [
   'Baseline Self-Assessment',
@@ -20,52 +29,94 @@ const INSTRUCTIONS = [
   "You've built the knowledge. Now synthesise it into a concrete plan for your own practice.",
 ]
 
-export default function JourneyBar({ visible, step, activityDone, onActivity, onPrev, onNext, onExit, onGoToStep }) {
+export default function JourneyBar({
+  visible, step, activityDone, onActivity, onPrev, onNext, onExit, onGoToStep,
+  collapsed, onToggleCollapse, onActivityComplete,
+}) {
   if (!visible || step < 0 || step >= STEPS.length) return null
 
   const isDone = activityDone.includes(step)
   const isFirst = step <= 0
   const isLast = step >= STEPS.length - 1
+  const Activity = ACTIVITIES[step]
 
   return (
-    <div className={`${s.journeyBar} ${s.visible}`}>
-      <button className={s.jbExit} onClick={onExit} aria-label="Exit guided journey">✕</button>
+    <>
+      {/* Desktop / tablet: classic fixed left sidebar. Hidden below 600px in
+          favour of the mobile activity panel below. */}
+      <div className={`${s.journeyBar} ${s.visible}`}>
+        <button className={s.jbExit} onClick={onExit} aria-label="Exit guided journey">✕</button>
 
-      <div className={s.jbProgress}>
-        {STEPS.map((_, i) => (
+        <div className={s.jbProgress}>
+          {STEPS.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              className={`${s.jbDot} ${i < step ? s.done : i === step ? s.current : ''}`}
+              onClick={() => onGoToStep(i)}
+              aria-label={`Go to step ${i + 1}: ${STEPS[i]}`}
+            />
+          ))}
+        </div>
+
+        <div className={s.jbStepInfo}>
+          <div className={s.jbStepLabel}>Step {step + 1} of {STEPS.length}</div>
+          <div className={s.jbStepTitle}>{STEPS[step]}</div>
+          <div className={s.jbInstruction}>{INSTRUCTIONS[step]}</div>
+        </div>
+
+        <div className={s.jbBtns}>
           <button
-            key={i}
-            type="button"
-            className={`${s.jbDot} ${i < step ? s.done : i === step ? s.current : ''}`}
-            onClick={() => onGoToStep(i)}
-            aria-label={`Go to step ${i + 1}: ${STEPS[i]}`}
-          />
-        ))}
-      </div>
-
-      <div className={s.jbStepInfo}>
-        <div className={s.jbStepLabel}>Step {step + 1} of {STEPS.length}</div>
-        <div className={s.jbStepTitle}>{STEPS[step]}</div>
-        <div className={s.jbInstruction}>{INSTRUCTIONS[step]}</div>
-      </div>
-
-      <div className={s.jbBtns}>
-        <button
-          className={`${s.jbBtn} ${s.primary}`}
-          style={{ background: isDone ? '#2A9D8F' : '#E9C46A' }}
-          onClick={onActivity}
-        >
-          {isDone ? '✓ Revisit Activity' : '▶ Activity'}
-        </button>
-        <div className={s.jbNavBtns}>
-          <button className={`${s.jbBtn} ${s.secondary}`} onClick={onPrev} disabled={isFirst}>
-            ← Previous
+            className={`${s.jbBtn} ${s.primary}`}
+            style={{ background: isDone ? '#2A9D8F' : '#E9C46A' }}
+            onClick={onActivity}
+          >
+            {isDone ? '✓ Revisit Activity' : '▶ Activity'}
           </button>
-          <button className={`${s.jbBtn} ${s.secondary}`} onClick={onNext}>
-            {isLast ? 'Finish ✓' : 'Next step →'}
-          </button>
+          <div className={s.jbNavBtns}>
+            <button className={`${s.jbBtn} ${s.secondary}`} onClick={onPrev} disabled={isFirst}>
+              ← Previous
+            </button>
+            <button className={`${s.jbBtn} ${s.secondary}`} onClick={onNext}>
+              {isLast ? 'Finish ✓' : 'Next step →'}
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Mobile only: replaces the sidebar entirely below 600px. Always
+          mounted (rather than swapped) so it can slide between a peek strip
+          and the full activity, growing upward from the bottom edge like a
+          native bottom sheet, instead of popping between two states. */}
+      <div className={`${s.maPanel} ${collapsed ? '' : s.expanded}`}>
+        <div className={s.maPeek}>
+          <span className={s.jbGrabber} />
+          <div className={s.maPeekRow}>
+            <button
+              className={s.maPeekLabel}
+              onClick={onToggleCollapse}
+              aria-expanded={!collapsed}
+              aria-label={collapsed ? 'Expand activity panel' : 'Collapse activity panel'}
+            >
+              <span className={s.maHeaderLabel}>Step {step + 1} of {STEPS.length}: {STEPS[step]}</span>
+            </button>
+            <button className={s.maExit} onClick={onExit} aria-label="Exit guided journey">✕</button>
+          </div>
+        </div>
+        <div className={s.maContent} aria-hidden={collapsed}>
+          <div className={s.maNavRow}>
+            <button className={s.maNavBtn} onClick={onPrev} disabled={isFirst}>
+              ← Previous
+            </button>
+            <button className={s.maNavBtn} onClick={onNext}>
+              {isLast ? 'Finish ✓' : 'Next →'}
+            </button>
+          </div>
+          <div className={s.maBody}>
+            {Activity && <Activity onComplete={onActivityComplete} onClose={onToggleCollapse} />}
+          </div>
+        </div>
+      </div>
+    </>
   )
 }
