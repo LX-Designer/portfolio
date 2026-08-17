@@ -267,11 +267,13 @@ export default function AlignmentMap() {
         .iam-plan-card{border:1px solid var(--line); border-radius:var(--radius); padding:12px 14px; margin-bottom:8px;}
         .iam-plan-card:last-child{margin-bottom:0;}
         .iam-plan-card.assess{background:var(--blue-bg); border-color:var(--blue);}
-        .iam-plan-card-head{display:flex; align-items:center; gap:8px; margin-bottom:8px;}
-        .iam-plan-stage{font-family:'Poppins',sans-serif; font-size:11px; font-weight:600;
-          letter-spacing:.04em; text-transform:uppercase; color:var(--text-soft);}
-        .iam-plan-card.assess .iam-plan-stage{color:var(--blue);}
-        .iam-plan-activity{font-size:13.5px; line-height:1.5; color:var(--text); margin:0 0 4px;}
+        .iam-plan-lesson{font-family:'Poppins',sans-serif; font-size:13px; font-weight:700;
+          color:var(--text); margin:0;}
+        .iam-plan-card.assess .iam-plan-lesson{color:var(--blue);}
+        .iam-plan-subhead{font-family:'Poppins',sans-serif; font-size:10.5px; font-weight:600;
+          letter-spacing:.04em; text-transform:uppercase; color:var(--text-soft); margin:10px 0 3px;}
+        .iam-plan-card.assess .iam-plan-subhead{color:var(--blue);}
+        .iam-plan-activity{font-size:13.5px; line-height:1.5; color:var(--text); margin:0;}
         .iam-plan-card.assess .iam-plan-activity{font-weight:500;}
         .iam-plan-resources{font-size:12.5px; color:var(--text-soft); margin:0;}
 
@@ -457,22 +459,20 @@ export default function AlignmentMap() {
               <div className="iam-plan-mobile">
                 {LESSON_PLAN.map((row, i) => (
                   <div className="iam-plan-card" key={i}>
-                    <div className="iam-plan-card-head">
-                      <span className="iam-lesson-badge">{i + 1}</span>
-                      <span className="iam-plan-stage">{row.outcome}</span>
-                    </div>
+                    <p className="iam-plan-lesson">Lesson {i + 1}</p>
+                    <p className="iam-plan-subhead">Activity</p>
                     <p className="iam-plan-activity">{row.activity}</p>
+                    <p className="iam-plan-subhead">Content</p>
                     <p className="iam-plan-resources">{row.resources}</p>
                   </div>
                 ))}
                 <div className="iam-plan-card assess">
-                  <div className="iam-plan-card-head">
-                    <span className="iam-lesson-badge">{LESSON_PLAN.length + 1}</span>
-                    <span className="iam-plan-stage">Assessment</span>
-                  </div>
+                  <p className="iam-plan-lesson">Assessment</p>
+                  <p className="iam-plan-subhead">Activity</p>
                   <p className="iam-plan-activity">
                     Write a response to the sickle cell case, bringing description, explanation, and evaluation together
                   </p>
+                  <p className="iam-plan-subhead">Content</p>
                   <p className="iam-plan-resources">Case (recap)</p>
                 </div>
               </div>
