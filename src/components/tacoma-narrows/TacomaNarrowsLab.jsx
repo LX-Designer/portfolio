@@ -17,9 +17,41 @@ const NAV_SECTIONS = [
   { id: 'tn-investigation',  label: 'Findings' },
 ]
 
+// `overflow: hidden` on body doesn't reliably block touch-driven scrolling
+// on mobile Safari — pinning body in place with position:fixed does, and
+// the saved scroll position is restored on unlock. navTo() also calls
+// unlockBodyScroll() before scrolling, since a fixed body has no scroll
+// position to move (e.g. when a modal closes and scrolls to a section in
+// the same tick, ahead of the lock effect's own re-render).
+function lockBodyScroll() {
+  if (document.body.dataset.scrollLocked === '1') return
+  const scrollY = window.scrollY
+  document.body.dataset.scrollLocked = '1'
+  document.body.dataset.scrollY = String(scrollY)
+  document.body.style.position = 'fixed'
+  document.body.style.top = `-${scrollY}px`
+  document.body.style.left = '0'
+  document.body.style.right = '0'
+  document.body.style.width = '100%'
+}
+
+function unlockBodyScroll() {
+  if (document.body.dataset.scrollLocked !== '1') return
+  const scrollY = parseInt(document.body.dataset.scrollY || '0', 10)
+  document.body.style.position = ''
+  document.body.style.top = ''
+  document.body.style.left = ''
+  document.body.style.right = ''
+  document.body.style.width = ''
+  delete document.body.dataset.scrollLocked
+  delete document.body.dataset.scrollY
+  window.scrollTo(0, scrollY)
+}
+
 function navTo(id) {
   const el = document.getElementById(id)
   if (!el) return
+  unlockBodyScroll()
   // Land the section just below the sticky nav — flush reads as cramped,
   // so a small gap is kept, but not so much that the heading sits partway
   // down the viewport.
@@ -123,14 +155,15 @@ export default function TacomaNarrowsLab({ backHref }) {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Locks the page's own scroll while any full-screen modal is open, so the
-  // mouse wheel scrolls the modal's content instead of the case file
-  // scrolling underneath it. Restores on close/unmount.
+  // Locks the page's own scroll while any modal or the activity/concept
+  // sidebar is open, so swiping the overlay scrolls its own content instead
+  // of the case file scrolling underneath it. Restores on close/unmount.
   useEffect(() => {
-    const anyModalOpen = showWelcome || activeActivityId !== null || activeConceptId !== null || showReportSubmitted
-    document.body.style.overflow = anyModalOpen ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
-  }, [showWelcome, activeActivityId, activeConceptId, showReportSubmitted])
+    const anyOverlayOpen = showWelcome || activeActivityId !== null || activeConceptId !== null || showReportSubmitted || sidebarOpen
+    if (anyOverlayOpen) lockBodyScroll()
+    else unlockBodyScroll()
+    return unlockBodyScroll
+  }, [showWelcome, activeActivityId, activeConceptId, showReportSubmitted, sidebarOpen])
 
   function handleSave(id, data) {
     if (data === null) {
