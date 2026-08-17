@@ -368,15 +368,6 @@ export default function ReactionRateSimulator() {
         the particles react.
       </p>
 
-      <div className="rxn-canvas-wrap">
-        <canvas ref={canvasRef} width={WIDTH} height={HEIGHT} />
-        <div className="rxn-legend">
-          <Legend color={COLORS.A} label="Reactant A" />
-          <Legend color={COLORS.B} label="Reactant B" />
-          <Legend color={COLORS.C} label="Product C" />
-        </div>
-      </div>
-
       <div className="rxn-callout">
         <p className="rxn-callout-lede">
           The environment starts with a low temperature and high energy barrier. Notice that in this
@@ -387,6 +378,15 @@ export default function ReactionRateSimulator() {
           <li><span className="rxn-num">2</span><span>Reset the experiment and raise only the Temperature slider.</span></li>
           <li><span className="rxn-num">3</span><span>Compare what is different about each change before answering the questions below.</span></li>
         </ol>
+      </div>
+
+      <div className="rxn-canvas-wrap">
+        <canvas ref={canvasRef} width={WIDTH} height={HEIGHT} />
+        <div className="rxn-legend">
+          <Legend color={COLORS.A} label="Reactant A" />
+          <Legend color={COLORS.B} label="Reactant B" />
+          <Legend color={COLORS.C} label="Product C" />
+        </div>
       </div>
 
       <div className="rxn-controls">

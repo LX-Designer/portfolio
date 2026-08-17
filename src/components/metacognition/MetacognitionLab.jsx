@@ -88,7 +88,6 @@ function ExpandCard({ tag, icon, title, body, detail, noHover }) {
   return (
     <div className={`${s.card} ${open ? s.active : ''}`} onClick={() => setOpen(o => !o)}>
       {tag && <div className={s.cardTag}>{tag}</div>}
-      <div className={s.cardIcon}>{icon}</div>
       <div className={s.cardTitle}>{title}</div>
       <div className={s.cardBody}>{body}</div>
       <div className={s.cardDetail}>{detail}</div>
@@ -172,9 +171,9 @@ function TabGroup({ tabs, defaultTab }) {
 function SDLCycle() {
   const [phase, setPhase] = useState(0)
   const phases = [
-    { title: '🎯 Forethought Phase', body: <>Goal-setting, strategic planning, and motivational activation before a task. The metacognitive pillar active here is <strong>Metacognitive Knowledge</strong>.</> },
-    { title: '⚙️ Performance Phase', body: <>Execution of strategies with self-monitoring and self-control. The metacognitive pillar active here is <strong>Metacognitive Monitoring</strong>.</> },
-    { title: '🔁 Self-Reflection Phase', body: <>Post-task self-evaluation and adaptive inference for future performance. The metacognitive pillar active here is <strong>Metacognitive Control &amp; Regulation</strong>.</> },
+    { icon: '🎯', title: 'Forethought Phase', body: <>Goal-setting, strategic planning, and motivational activation before a task. The metacognitive pillar active here is <strong>Metacognitive Knowledge</strong>.</> },
+    { icon: '⚙️', title: 'Performance Phase', body: <>Execution of strategies with self-monitoring and self-control. The metacognitive pillar active here is <strong>Metacognitive Monitoring</strong>.</> },
+    { icon: '🔁', title: 'Self-Reflection Phase', body: <>Post-task self-evaluation and adaptive inference for future performance. The metacognitive pillar active here is <strong>Metacognitive Control &amp; Regulation</strong>.</> },
   ]
   return (
     <div className={s.cycleWrap}>
@@ -271,7 +270,6 @@ function Pillars() {
       {pillars.map((p, i) => (
         <div key={i} className={`${s.pillar} ${open.includes(i) ? s.active : ''}`} onClick={() => toggle(i)}>
           <div className={s.pillarHead} style={{ background: p.color }}>
-            <div className={s.phIcon}>{p.icon}</div>
             <div className={s.phNum}>{p.num}</div>
             <div className={s.phTitle}>{p.title}</div>
           </div>
@@ -331,7 +329,7 @@ function SynthesisSection({ baseline, actionPlan, isComplete, hasStarted, onStar
           <p className={s.synSub}>Generated from your Guided Journey responses</p>
           <div className={s.synGrid}>
             <div className={s.synCard} style={{ gridColumn: '1 / -1' }}>
-              <h4>📊 Your Baseline: Metacognitive Self-Assessment</h4>
+              <h4 className={s.iconHeading}><span className={s.inlineIcon}>📊</span>Your Baseline: Metacognitive Self-Assessment</h4>
               <div className={s.baselineBars}>
                 {blLabels.map((l, i) => (
                   <div key={i} className={s.bbItem}>
@@ -344,7 +342,7 @@ function SynthesisSection({ baseline, actionPlan, isComplete, hasStarted, onStar
             </div>
             {actionPlan.pillar && (
               <div className={s.synCard} style={{ gridColumn: '1 / -1' }}>
-                <h4>📋 Your Action Plan</h4>
+                <h4 className={s.iconHeading}><span className={s.inlineIcon}>📋</span>Your Action Plan</h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 13 }}>
                   <div><span style={{ opacity: .7 }}>Pillar focus: </span><strong>{actionPlan.pillar}</strong></div>
                   <div><span style={{ opacity: .7 }}>Current practice: </span><strong>{actionPlan.practice}</strong></div>
@@ -553,12 +551,10 @@ export default function MetacognitionLab({ backHref }) {
           <div className={`${s.callout} ${s.gold}`}><strong>Schraw &amp; Dennison's Metacognitive Awareness Inventory (1994)</strong> is the field's most widely used measurement tool, deployed in hundreds of studies.</div>
           <div className={`${s.cardGrid} ${s.cols2}`}>
             <div className={`${s.card} ${s.cardStatic}`}>
-              <div className={s.cardIcon}>📋</div>
               <div className={s.cardTitle}>52-item inventory</div>
               <div className={s.cardBody}>Two higher-order factors: Knowledge of Cognition and Regulation of Cognition. Alpha = .91 for each factor; .95 for the full scale. Used in hundreds of studies across educational contexts.</div>
             </div>
             <div className={`${s.card} ${s.cardStatic}`}>
-              <div className={s.cardIcon}>🔑</div>
               <div className={s.cardTitle}>Why conditional knowledge matters</div>
               <div className={s.cardBody}>The MAI captures all three knowledge sub-types. Conditional knowledge is the most commonly under-taught: learners know strategies exist but don't know when they're appropriate. A distinct instructional target.</div>
             </div>
@@ -574,8 +570,8 @@ export default function MetacognitionLab({ backHref }) {
         <>
           <div className={s.callout}><strong>Knowles (1975):</strong> SDL is "a process in which individuals take the initiative, with or without the help of others, in diagnosing their learning needs, formulating goals, identifying human and material resources, choosing and implementing learning strategies, and evaluating learning outcomes."</div>
           <div className={`${s.cardGrid} ${s.cols2}`}>
-            <div className={`${s.card} ${s.cardStatic}`}><div className={s.cardIcon}>🌱</div><div className={s.cardTitle}>Humanistic tradition</div><div className={s.cardBody}>Knowles' andragogical model positions SDL within adult learning: mature learners are self-concept-driven, draw on experience, and are motivated by relevance. The teacher becomes a facilitator.</div></div>
-            <div className={`${s.card} ${s.cardStatic}`}><div className={s.cardIcon}>⚠️</div><div className={s.cardTitle}>The cognitive gap</div><div className={s.cardBody}>Knowles describes <em>what</em> SDL involves but says little about the cognitive mechanisms that make it possible. This is where metacognition becomes essential: it is the how of SDL.</div></div>
+            <div className={`${s.card} ${s.cardStatic}`}><div className={s.cardTitle}>Humanistic tradition</div><div className={s.cardBody}>Knowles' andragogical model positions SDL within adult learning: mature learners are self-concept-driven, draw on experience, and are motivated by relevance. The teacher becomes a facilitator.</div></div>
+            <div className={`${s.card} ${s.cardStatic}`}><div className={s.cardTitle}>The cognitive gap</div><div className={s.cardBody}>Knowles describes <em>what</em> SDL involves but says little about the cognitive mechanisms that make it possible. This is where metacognition becomes essential: it is the how of SDL.</div></div>
           </div>
         </>
       ),
@@ -584,9 +580,9 @@ export default function MetacognitionLab({ backHref }) {
       id: 'garrison', label: 'Garrison (1997)', content: (
         <>
           <div className={`${s.cardGrid} ${s.cols3}`}>
-            <div className={`${s.card} ${s.cardStatic}`} style={{ borderTop: '3px solid #E76F51' }}><div className={s.cardIcon}>🔥</div><div className={s.cardTitle}>Motivation</div><div className={s.cardBody}>Entering motivation (inclination to engage) + task motivation (will to persist). Motivation is the gateway: it determines whether regulatory processes are activated at all.</div></div>
-            <div className={`${s.card} ${s.cardStatic}`} style={{ borderTop: '3px solid #2E75B6' }}><div className={s.cardIcon}>📐</div><div className={s.cardTitle}>Self-Management</div><div className={s.cardBody}>Contextual control over the external conditions of learning: goal-setting, resource identification, managing the environment.</div></div>
-            <div className={`${s.card} ${s.cardStatic}`} style={{ borderTop: '3px solid #2A9D8F' }}><div className={s.cardIcon}>🔍</div><div className={s.cardTitle}>Self-Monitoring</div><div className={s.cardBody}>The internal, cognitive-metacognitive regulation of the learning process. This is Garrison's explicit bridge to metacognition: self-monitoring is the metacognitive core of SDL.</div></div>
+            <div className={`${s.card} ${s.cardStatic}`} style={{ borderTop: '3px solid #E76F51' }}><div className={s.cardTitle}>Motivation</div><div className={s.cardBody}>Entering motivation (inclination to engage) + task motivation (will to persist). Motivation is the gateway: it determines whether regulatory processes are activated at all.</div></div>
+            <div className={`${s.card} ${s.cardStatic}`} style={{ borderTop: '3px solid #2E75B6' }}><div className={s.cardTitle}>Self-Management</div><div className={s.cardBody}>Contextual control over the external conditions of learning: goal-setting, resource identification, managing the environment.</div></div>
+            <div className={`${s.card} ${s.cardStatic}`} style={{ borderTop: '3px solid #2A9D8F' }}><div className={s.cardTitle}>Self-Monitoring</div><div className={s.cardBody}>The internal, cognitive-metacognitive regulation of the learning process. This is Garrison's explicit bridge to metacognition: self-monitoring is the metacognitive core of SDL.</div></div>
           </div>
           <div className={`${s.callout} ${s.green}`}><strong>Key interdependence:</strong> Motivation enables self-monitoring; successful self-monitoring reinforces task motivation. This bidirectional loop is central to the three-pillar framework in Section 4.</div>
         </>
@@ -595,7 +591,7 @@ export default function MetacognitionLab({ backHref }) {
     {
       id: 'zimmerman', label: 'Zimmerman & Pintrich', content: (
         <>
-          <p className={s.sectionIntro}>Zimmerman's (2002) cyclical model and Pintrich's (2000, 2004) elaboration provide the most detailed cognitive account of SDL. Click a phase to learn more.</p>
+          <p className={s.sectionIntro}>Zimmerman's (2002) cyclical model and Pintrich's (2000, 2004) elaboration provide the most detailed cognitive account of SDL. Select a phase to learn more.</p>
           <SDLCycle />
           <div className={s.callout}><strong>Pintrich's extension (2000, 2004):</strong> Metacognition operates across all three phases: in planning which strategies to use, monitoring during execution, and evaluating outcomes. Regulation is distributed across the entire learning episode.</div>
         </>
@@ -676,15 +672,13 @@ export default function MetacognitionLab({ backHref }) {
             <p className={s.htuSub}>Two modes are available. The Guided Journey is strongly recommended for anyone seeking to build deep, transferable understanding, not just familiarity with the content.</p>
             <div className={s.modes}>
               <div className={`${s.modeCard} ${s.highlight}`}>
-                <div className={s.mcIcon}>🧭</div>
-                <div className={s.mcTitle}>Guided Journey (Recommended)</div>
+                <div className={s.mcTitle}><span className={s.mcIcon}>🧭</span>Guided Journey (Recommended)</div>
                 <div className={s.mcDesc}>A 7-step path that takes you from a self-assessment baseline through concept-building activities, scenario analysis, and a personal action plan. Each step directs you to the relevant section, then challenges you to apply what you've read before moving on. Approximately 25–35 minutes.</div>
                 <button className={s.mcCta} onClick={startJourney}>Start Guided Journey →</button>
               </div>
               <div className={s.modeCard}>
-                <div className={s.mcIcon}>🗺️</div>
-                <div className={s.mcTitle}>Explore Freely</div>
-                <div className={s.mcDesc}>Use the navigation bar to jump to any section. Click cards to expand detail, explore tabs, and interact with diagrams in any order. Best used as a reference after completing the Guided Journey, or for targeted review of a specific concept.</div>
+                <div className={s.mcTitle}><span className={s.mcIcon}>🗺️</span>Explore Freely</div>
+                <div className={s.mcDesc}>Use the navigation bar to jump to any section. Select cards to expand detail, explore tabs, and interact with diagrams in any order. Best used as a reference after completing the Guided Journey, or for targeted review of a specific concept.</div>
                 <button className={`${s.mcCta} ${s.outline}`} onClick={() => navTo('how-to-use')}>Use nav bar above ↑</button>
               </div>
             </div>
@@ -734,7 +728,7 @@ export default function MetacognitionLab({ backHref }) {
         {/* METACOGNITION */}
         <section id="metacognition" className={s.section}>
           <div className={s.sectionHeader}><div className={s.sectionNum}>1</div><h2>What is Metacognition?</h2></div>
-          <p className={s.sectionIntro}>Metacognition is "knowledge and cognition about cognitive phenomena" (Flavell, 1979, p. 906). It is not a single skill but a layered construct. Click each card to explore the detail.</p>
+          <p className={s.sectionIntro}>Metacognition is "knowledge and cognition about cognitive phenomena" (Flavell, 1979, p. 906). It is not a single skill but a layered construct. Select each card to explore the detail.</p>
           <h3 className={s.subheading}>Flavell's Four Components (1979)</h3>
           <ExpandCardGrid colsClass={s.cols4}>
             <ExpandCard tag="Component 1" icon="🧠" title="Metacognitive Knowledge" body="Stored beliefs about oneself, tasks, and strategies." detail={'Includes what you know about yourself as a learner (e.g. "I retain more by teaching others"), about the nature of cognitive tasks, and about cognitive strategies. This is the most commonly assessed component.'} />
@@ -752,7 +746,7 @@ export default function MetacognitionLab({ backHref }) {
         {/* SDL THEORY */}
         <section id="sdl" className={s.section}>
           <div className={s.sectionHeader}><div className={s.sectionNum}>2</div><h2>Self-Directed Learning: Theoretical Landscape</h2></div>
-          <p className={s.sectionIntro}>SDL has been theorised from humanistic, cognitive, and social-cognitive traditions. The major frameworks converge on a core insight: SDL is an intentional, cyclical process of managing one's own learning. Click a theorist to explore their model.</p>
+          <p className={s.sectionIntro}>SDL has been theorised from humanistic, cognitive, and social-cognitive traditions. The major frameworks converge on a core insight: SDL is an intentional, cyclical process of managing one's own learning. Select a theorist to explore their model.</p>
           <TabGroup tabs={sdlTabs} />
         </section>
 
@@ -772,8 +766,8 @@ export default function MetacognitionLab({ backHref }) {
             <div className={`${s.callout} ${s.gold}`}><strong>Veenman (2006): the critical finding</strong><br />Metacognitive skillfulness outweighs <em>intelligence</em> as a predictor of learning. While IQ is largely fixed, metacognitive skills are teachable. This reframes the equity argument: metacognitive instruction levels the field.</div>
           </div>
           <div className={`${s.cardGrid} ${s.cols2}`} style={{ marginTop: 14 }}>
-            <div className={`${s.card} ${s.cardStatic}`}><div className={s.cardIcon}>📊</div><div className={s.cardTitle}>Online monitoring matters most</div><div className={s.cardBody}>Think-aloud measures of online monitoring correlated with academic performance at <strong>r = .53</strong>, more than twice the correlation of self-report questionnaires (r = .23). What learners <em>do</em> when monitoring matters more than what they say they believe about it.</div></div>
-            <div className={`${s.card} ${s.cardStatic}`}><div className={s.cardIcon}>🔗</div><div className={s.cardTitle}>Metacognition × Motivation = SDL</div><div className={s.cardBody}>SEM studies confirm that metacognitive awareness and motivational orientation jointly predict SDL readiness. Metacognition predicts performance <em>via</em> SDL readiness: the two are tightly coupled, not independent.</div></div>
+            <div className={`${s.card} ${s.cardStatic}`}><div className={s.cardTitle}>Online monitoring matters most</div><div className={s.cardBody}>Think-aloud measures of online monitoring correlated with academic performance at <strong>r = .53</strong>, more than twice the correlation of self-report questionnaires (r = .23). What learners <em>do</em> when monitoring matters more than what they say they believe about it.</div></div>
+            <div className={`${s.card} ${s.cardStatic}`}><div className={s.cardTitle}>Metacognition × Motivation = SDL</div><div className={s.cardBody}>SEM studies confirm that metacognitive awareness and motivational orientation jointly predict SDL readiness. Metacognition predicts performance <em>via</em> SDL readiness: the two are tightly coupled, not independent.</div></div>
           </div>
         </section>
 
@@ -782,7 +776,7 @@ export default function MetacognitionLab({ backHref }) {
         {/* FRAMEWORK */}
         <section id="framework" className={s.section}>
           <div className={s.sectionHeader}><div className={s.sectionNum}>4</div><h2>The Three-Pillar Framework</h2></div>
-          <p className={s.sectionIntro}>Three metacognitive pillars function as the cognitive engine of SDL. Each pillar is primarily activated at a different phase of the SDL cycle. Click each pillar for full detail.</p>
+          <p className={s.sectionIntro}>Three metacognitive pillars function as the cognitive engine of SDL. Each pillar is primarily activated at a different phase of the SDL cycle. Select each pillar for full detail.</p>
           <Pillars />
           <div className={s.callout} style={{ marginTop: 0 }}><strong>The Motivational Bridge:</strong> Metacognitive processes will not activate unless the learner is sufficiently motivated. Zimmerman &amp; Moylan (2009) describe self-regulation as "where metacognition and motivation intersect." Addressing motivation is therefore not optional: it is a gateway condition for the entire framework.</div>
           <div style={{ height: 20 }} />
@@ -804,7 +798,7 @@ export default function MetacognitionLab({ backHref }) {
         {/* CULTIVATING */}
         <section id="cultivating" className={s.section}>
           <div className={s.sectionHeader}><div className={s.sectionNum}>5</div><h2>Cultivating Metacognitive Skills: A Five-Stage Model</h2></div>
-          <p className={s.sectionIntro}>A developmental instructional progression: from external scaffolding to independent, transferable self-regulation. Each stage builds on the last. Click to expand.</p>
+          <p className={s.sectionIntro}>A developmental instructional progression: from external scaffolding to independent, transferable self-regulation. Each stage builds on the last. Select to expand.</p>
           <Stages />
         </section>
 

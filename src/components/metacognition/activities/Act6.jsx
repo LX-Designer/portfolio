@@ -73,7 +73,7 @@ export default function Act6({ onComplete, onClose }) {
       </div>
       {previewing && (
         <div className={`${s.planOutput} ${s.show}`}>
-          <h3>📋 Your Action Plan</h3>
+          <h3>Your Action Plan</h3>
           {[
             ['Focus pillar', fields.pillar],
             ['Current practice', fields.practice],

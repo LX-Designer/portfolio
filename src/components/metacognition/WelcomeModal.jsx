@@ -28,17 +28,15 @@ export default function WelcomeModal({ mode, onModeChange, hasProgress, isComple
             className={`${s.wmMode} ${mode === 'journey' ? s.selected : ''}`}
             onClick={() => onModeChange('journey')}
           >
-            <div className={s.wmIcon}>🧭</div>
-            <div className={s.wmTitle}>Guided Journey</div>
+            <div className={s.wmTitle}><span className={s.wmIcon}>🧭</span>Guided Journey</div>
             <div className={s.wmDesc}>A 7-step learning path with interactive activities, scenario analysis, and a personal action plan. ~25–35 minutes. Recommended for deep understanding.</div>
           </div>
           <div
             className={`${s.wmMode} ${mode === 'explore' ? s.selected : ''}`}
             onClick={() => onModeChange('explore')}
           >
-            <div className={s.wmIcon}>🗺️</div>
-            <div className={s.wmTitle}>Explore Freely</div>
-            <div className={s.wmDesc}>Navigate sections in any order, click to expand detail, and use the resource as a reference. No activities or guided steps.</div>
+            <div className={s.wmTitle}><span className={s.wmIcon}>🗺️</span>Explore Freely</div>
+            <div className={s.wmDesc}>Navigate sections in any order, select to expand detail, and use the resource as a reference. No activities or guided steps.</div>
           </div>
         </div>
 

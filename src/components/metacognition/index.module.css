@@ -131,8 +131,12 @@
 }
 .modeCard:hover { background: rgba(255,255,255,.18); transform: translateY(-2px); }
 .modeCard.highlight { background: rgba(255,255,255,.2); border-color: var(--gold); }
-.mcIcon { font-size: 28px; margin-bottom: 10px; }
-.mcTitle { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+/* The icon precedes its heading on the same line rather than sitting
+   stacked above it on its own row — a plain, appropriately-sized glyph
+   with no badge/fill of its own, so there's no background colour to clash
+   against whatever the card's own background happens to be. */
+.mcIcon { font-size: 18px; line-height: 1; flex-shrink: 0; }
+.mcTitle { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; margin-bottom: 6px; }
 .mcDesc { font-size: 13px; opacity: .85; line-height: 1.6; }
 .mcCta {
   margin-top: auto;
@@ -275,7 +279,6 @@
    expandable ones. */
 .card.cardStatic { cursor: default; }
 .card.cardStatic:hover { box-shadow: none; transform: none; }
-.cardIcon { font-size: 24px; margin-bottom: 10px; }
 .cardTitle { font-weight: 700; color: var(--navy); font-size: 14px; margin-bottom: 6px; }
 .cardBody { font-size: 13px; color: var(--muted); line-height: 1.6; }
 .cardDetail { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--lblue); font-size: 13px; line-height: 1.65; color: var(--text); }
@@ -338,7 +341,6 @@
 .pillar:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(31,78,121,.12); }
 .pillar.active { border-color: var(--blue); box-shadow: 0 0 0 2px var(--lblue); min-height: var(--eh-h-open, auto); }
 .pillarHead { padding: 16px; text-align: center; color: #fff; font-weight: 700; }
-.phIcon { font-size: 28px; margin-bottom: 6px; }
 .phNum { font-size: 11px; opacity: .85; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; }
 .phTitle { font-size: 15px; margin-top: 4px; }
 .pillarBody { background: var(--card); padding: 14px; font-size: 13px; color: var(--muted); line-height: 1.6; min-height: 80px; }
@@ -361,6 +363,13 @@
 .phaseCard:hover { border-color: var(--blue); }
 .phaseCard.active { border-color: var(--blue); background: var(--pale); }
 .pcTitle { font-weight: 700; font-size: 13.5px; color: var(--navy); }
+/* Plain, appropriately-sized icon preceding a line of text (phase titles,
+   "Your Action Plan" style headings) instead of a separate stacked line
+   or a coloured badge that has to fight each card's own background. */
+.inlineIcon { font-size: 15px; line-height: 1; flex-shrink: 0; }
+/* Section-heading rows that carry a leading .inlineIcon instead of a plain
+   emoji character typed straight into the heading text. */
+.iconHeading { display: flex; align-items: center; gap: 8px; }
 .pcBody { font-size: 13px; color: var(--muted); line-height: 1.6; margin-top: 4px; display: none; }
 .phaseCard.active .pcBody { display: block; color: var(--text); }
 
@@ -562,8 +571,8 @@
 }
 .wmMode:hover { border-color: var(--blue); background: var(--pale); }
 .wmMode.selected { border-color: var(--navy); background: var(--lblue); }
-.wmIcon { font-size: 28px; margin-bottom: 8px; }
-.wmTitle { font-weight: 700; color: var(--navy); font-size: 14px; margin-bottom: 4px; }
+.wmIcon { font-size: 18px; line-height: 1; flex-shrink: 0; }
+.wmTitle { display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700; color: var(--navy); font-size: 14px; margin-bottom: 4px; }
 .wmDesc { font-size: 12px; color: var(--muted); line-height: 1.5; }
 .wmStart {
   width: 100%;
@@ -890,6 +899,9 @@
   .stageNum { width: 30px; height: 30px; font-size: 13px; }
   .stageTitle { font-size: 13.5px; }
   .stageSub { font-size: 11px; }
+
+  .mcIcon, .wmIcon { font-size: 15px; }
+  .inlineIcon { font-size: 13px; }
   .stageBody { padding: 14px; }
 
   .accHead { padding: 12px 14px; font-size: 13.5px; }

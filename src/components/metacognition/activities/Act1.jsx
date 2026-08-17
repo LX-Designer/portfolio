@@ -58,7 +58,7 @@ export default function Act1({ onComplete, onClose }) {
         <span className={s.amStepBadge}>Step 2 of 7</span>
       </div>
       <div className={s.amInstruction}>
-        Each scenario below illustrates one of Flavell's four metacognitive components. Click the correct component for each scenario, then check your answers.
+        Each scenario below illustrates one of Flavell's four metacognitive components. Select the correct component for each scenario, then check your answers.
       </div>
       <div className={s.classifyGrid}>
         {SCENARIOS.map((sc, i) => (
