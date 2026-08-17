@@ -20,8 +20,11 @@ const NAV_SECTIONS = [
 function navTo(id) {
   const el = document.getElementById(id)
   if (!el) return
+  // Land the section just below the sticky nav — flush reads as cramped,
+  // so a small gap is kept, but not so much that the heading sits partway
+  // down the viewport.
   const navH = document.querySelector('nav')?.offsetHeight ?? 44
-  window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - navH - 16, behavior: 'smooth' })
+  window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - navH - 12, behavior: 'smooth' })
 }
 
 function ActivitiesTab({ responses, activeActivityId, onOpenActivity }) {
@@ -95,6 +98,9 @@ export default function TacomaNarrowsLab({ backHref }) {
   const [sidebarTab, setSidebarTab] = useState('activities')
   const [activeSection, setActiveSection] = useState('tn-overview')
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  // Mobile-only nav: the pill row is hidden below 600px in favour of a
+  // burger menu that drops this list down from the topbar.
+  const [navMenuOpen, setNavMenuOpen] = useState(false)
   const [confirmReset, setConfirmReset] = useState(false)
   const [showWelcome, setShowWelcome] = useState(true)
   const [showReportSubmitted, setShowReportSubmitted] = useState(false)
@@ -190,18 +196,31 @@ export default function TacomaNarrowsLab({ backHref }) {
   }
 
   // Opens a section (without closing any others already open) and scrolls to
-  // it. Safe to call before the open state has rendered: a section's own tab
-  // doesn't move when IT opens — only later siblings shift down — so the
-  // scroll target position is already correct.
+  // it. A section's own tab doesn't shift position when IT opens — only
+  // later siblings move — but if it was closed, its .45s grid-row expand
+  // transition is still mid-flight while the native smooth scroll runs, and
+  // a section growing inside the viewport mid-scroll is exactly what
+  // triggers the browser's scroll-anchoring adjustment, landing the scroll
+  // somewhere other than intended. instantExpand (see toggleAllSections)
+  // sidesteps that by skipping straight to the open height in one paint, so
+  // nothing is still resizing once the scroll starts.
   function goToSection(id) {
+    setInstantExpand(true)
     setOpenSections(prev => new Set(prev).add(id))
-    requestAnimationFrame(() => navTo(id))
+    setTimeout(() => {
+      navTo(id)
+      setInstantExpand(false)
+    }, 0)
   }
 
   function scrollToSection(id) {
     setActiveActivityId(null)
+    setInstantExpand(true)
     setOpenSections(prev => new Set(prev).add(id))
-    setTimeout(() => navTo(id), 50)
+    setTimeout(() => {
+      navTo(id)
+      setInstantExpand(false)
+    }, 0)
   }
 
   const completedCount = activities.filter(a => getActivityStatus(a.id, responses) === 'complete').length
@@ -225,6 +244,32 @@ export default function TacomaNarrowsLab({ backHref }) {
               {sec.label}
             </button>
           ))}
+        </div>
+        <div className={s.navDropdownWrap}>
+          <button
+            className={s.navDropdownTrigger}
+            onClick={() => setNavMenuOpen(o => !o)}
+            aria-expanded={navMenuOpen}
+            aria-label="Open section menu"
+          >
+            ☰
+          </button>
+          {navMenuOpen && (
+            <div className={s.navMenuBackdrop} onClick={() => setNavMenuOpen(false)} />
+          )}
+          {navMenuOpen && (
+            <div className={s.navDropdownMenu}>
+              {NAV_SECTIONS.map(sec => (
+                <button
+                  key={sec.id}
+                  className={`${s.navDropdownItem} ${activeSection === sec.id ? s.navDropdownItemActive : ''}`}
+                  onClick={() => { goToSection(sec.id); setNavMenuOpen(false) }}
+                >
+                  {sec.label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </nav>
 

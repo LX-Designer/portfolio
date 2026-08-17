@@ -84,6 +84,60 @@
 .navBtn:hover { background: rgba(245,240,232,.1); color: var(--tn-paper); }
 .navBtnActive { background: var(--tn-paper); color: var(--tn-ink); font-weight: 600; }
 
+/* Mobile-only burger menu that replaces the pill row below 600px (see the
+   responsive rules) — hidden by default so desktop/tablet keep the pill
+   row as-is. Drops its menu down from the topbar itself, styled to match
+   (dark ink chrome, mono labels, paper/ink active state). */
+.navDropdownWrap { display: none; position: relative; }
+.navDropdownTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(245,240,232,.1);
+  border: none;
+  color: var(--tn-paper);
+  font-size: 15px;
+  padding: 7px 11px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.navMenuBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(26,24,20,.35);
+  z-index: 210;
+}
+.navDropdownMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 211;
+  background: var(--tn-ink);
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  border-radius: 4px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  border: 1px solid rgba(245,240,232,.15);
+}
+.navDropdownItem {
+  background: none;
+  border: none;
+  font-family: var(--tn-mono);
+  color: rgba(245,240,232,.75);
+  font-size: 12.5px;
+  letter-spacing: .04em;
+  text-align: left;
+  padding: 11px 12px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.navDropdownItemActive { background: var(--tn-paper); color: var(--tn-ink); font-weight: 600; }
+
 /* ── SIDEBAR ─────────────────────────────────────────────────────────── */
 
 .sidebar {
@@ -718,20 +772,10 @@
      section links stay centred regardless of .navLeft's width — but with
      overflow:hidden, on a phone the links that don't fit (all six need
      ~418px) are just silently clipped, not merely visually tight: there's
-     no way to reach them at all. Below this width it drops out of that
-     absolute/centred layout into the topbar's own flex row instead, taking
-     the remaining space next to the back link and scrolling horizontally,
-     so every section stays reachable by swipe. */
-  .navCenter {
-    position: static;
-    flex: 1;
-    min-width: 0;
-    justify-content: flex-start;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    mask-image: linear-gradient(to right, transparent, black 12px, black calc(100% - 12px), transparent);
-  }
-  .navCenter::-webkit-scrollbar { display: none; }
-  .navBtn { flex-shrink: 0; }
+     no way to reach them at all. Below this width it's replaced by a
+     burger menu that drops the full list down from the topbar instead, so
+     every section stays reachable without relying on a scroll affordance
+     the topbar gives no visual hint of. */
+  .navCenter { display: none; }
+  .navDropdownWrap { display: flex; justify-content: flex-end; flex: 1; min-width: 0; }
 }
