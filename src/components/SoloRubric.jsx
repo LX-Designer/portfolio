@@ -81,6 +81,36 @@ function shuffle(arr) {
   return a;
 }
 
+function easeInOutCubic(t) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+// scrollIntoView's "smooth" behaviour has no controllable duration, so the
+// descriptor-strip glide is driven manually instead. scroll-snap-type is
+// switched off for the duration: with it left on, the browser treats every
+// scrollLeft write as a scroll gesture and periodically injects its own
+// snap-correction nudges mid-flight, fighting the tween frame-by-frame and
+// making the motion look jerky instead of one continuous glide. It's safe
+// to re-enable once settled, since the tween's own target already is the
+// slide's snap-center position.
+function animateScrollLeft(el, target, duration) {
+  const start = el.scrollLeft;
+  const change = target - start;
+  if (change === 0) return;
+  el.style.scrollSnapType = "none";
+  const startTime = performance.now();
+  function step(now) {
+    const t = Math.min((now - startTime) / duration, 1);
+    el.scrollLeft = start + change * easeInOutCubic(t);
+    if (t < 1) {
+      requestAnimationFrame(step);
+    } else {
+      el.style.scrollSnapType = "";
+    }
+  }
+  requestAnimationFrame(step);
+}
+
 export default function SoloRubric() {
   // Shuffled once per mount, not on every re-render — response order isn't
   // meant to hint at which is "best", but it shouldn't reshuffle under the
@@ -88,13 +118,46 @@ export default function SoloRubric() {
   const [responses] = useState(() => shuffle(RESPONSES));
   const [selectedId, setSelectedId] = useState(null);
   const resultsRef = useRef(null);
+  // Keyed by criterion id, one per mobile descriptor strip — used to drive
+  // the reveal sweep below.
+  const mobileScrollRefs = useRef({});
 
   const selected = responses.find((r) => r.id === selectedId) || null;
 
   // Runs after React commits the DOM update for the newly-selected response,
   // so the scroll targets the results panel's actual post-update position.
   useEffect(() => {
-    if (selectedId) resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (!selectedId || !selected) return;
+    resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    // Each mobile descriptor strip starts snapped to its leftmost ("Emerging")
+    // slide, then glides across to the matched level in parallel with the
+    // section's own scroll-into-view above (only lightly staggered per
+    // criterion row) rather than waiting for it to finish — so the rubric
+    // rises into view while its descriptors are visibly settling into place
+    // at the same time, instead of two separate steps. A custom tween (not
+    // scrollIntoView) is used because native smooth-scroll duration isn't
+    // controllable, and this glide is deliberately slower/gentler than the
+    // browser's own default. A response matched at "Emerging" has nowhere to
+    // glide from, which is fine — the peeking edge to its right still shows
+    // the row scrolls.
+    const timers = CRITERIA.map((c, i) => {
+      const strip = mobileScrollRefs.current[c.id];
+      const lvl = selected.levels[c.id];
+      // +1 to skip the leading spacer element (see sr-mcard-spacer).
+      const matchedSlide = strip?.children[lvl + 1];
+      if (!strip || !matchedSlide) return null;
+      strip.scrollLeft = 0;
+      // getBoundingClientRect, not offsetLeft: .sr-mcard-scroll has no
+      // `position` set, so offsetLeft on its children resolves against the
+      // nearest positioned ancestor (body) rather than the strip itself —
+      // viewport-relative rects sidestep that entirely.
+      const stripRect = strip.getBoundingClientRect();
+      const slideRect = matchedSlide.getBoundingClientRect();
+      const target = strip.scrollLeft + (slideRect.left - stripRect.left) - (strip.clientWidth - matchedSlide.clientWidth) / 2;
+      return setTimeout(() => animateScrollLeft(strip, target, 1300), i * 90);
+    });
+    return () => timers.forEach((t) => t && clearTimeout(t));
   }, [selectedId]);
 
   const handleSelect = (r) => setSelectedId(r.id);
@@ -150,9 +213,38 @@ export default function SoloRubric() {
         .sr-mcard{border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;}
         .sr-mcard:last-child{margin-bottom:0;}
         .sr-mcard-crit{font-size:13.5px;font-weight:600;margin:0 0 8px;color:var(--text);}
-        .sr-mcard-hit{background:var(--blue-bg);border-radius:8px;padding:10px 12px;box-shadow:inset 0 0 0 1px var(--blue);}
+        /* Horizontally-swipeable strip of all five level descriptors, not
+           just the matched one — sized so roughly three are visible at once
+           (a sliver of the previous level, the full current one, a sliver of
+           the next), with a fade at each edge instead of a hard crop, so the
+           slivers themselves read as "more this way" rather than clipped
+           content. Native scroll-snap handles swipe physics; no drag JS
+           needed. The reveal sweep on selection is driven from the
+           component's own effect via mobileScrollRefs.
+           The two sr-mcard-spacer elements matter more than they look: the
+           first and last slides have no neighbour to peek at on one side,
+           so without extra room there the browser clamps scrolling at the
+           content edge instead of centering them — they end up jammed flush
+           against the strip's boundary, and the mask (which fades a fixed
+           band of the container, not "whatever happens to be scrolled
+           there") ends up cropping straight through the slide's own shape
+           instead of fading empty space. Real flex-item spacers are used
+           rather than padding on the scroll container itself, because
+           trailing/leading padding on a scrollable flex container isn't
+           reliably included in its scrollWidth across browsers — a spacer
+           is a genuine flex item, so it always is. */
+        .sr-mcard-scroll{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;
+          -webkit-overflow-scrolling:touch;scrollbar-width:none;padding:2px 0 4px;
+          -webkit-mask-image:linear-gradient(to right,transparent,black 20px,black calc(100% - 20px),transparent);
+          mask-image:linear-gradient(to right,transparent,black 20px,black calc(100% - 20px),transparent);}
+        .sr-mcard-scroll::-webkit-scrollbar{display:none;}
+        .sr-mcard-spacer{flex:0 0 10%;}
+        .sr-mcard-slide{flex:0 0 80%;scroll-snap-align:center;background:var(--bg-soft);
+          border-radius:8px;padding:10px 12px;box-shadow:inset 0 0 0 1px var(--line);}
+        .sr-mcard-slide.hit{background:var(--blue-bg);box-shadow:inset 0 0 0 1px var(--blue);}
         .sr-mcard-level{display:inline-block;font-family:'Poppins',sans-serif;font-size:11.5px;font-weight:600;
-          letter-spacing:.03em;text-transform:uppercase;color:var(--blue);margin:0 0 4px;}
+          letter-spacing:.03em;text-transform:uppercase;color:var(--text-soft);margin:0 0 4px;}
+        .sr-mcard-slide.hit .sr-mcard-level{color:var(--blue);}
         .sr-mcard-desc{font-size:13.5px;line-height:1.55;color:var(--text);margin:0;}
         .sr-mcard-placeholder{font-size:13px;color:var(--text-soft);margin:0;font-style:italic;}
 
@@ -199,7 +291,7 @@ export default function SoloRubric() {
         <p className="sr-results-title">How this response grades</p>
         <p className="sr-results-sub">
           {selected
-            ? "The highlighted cell in each row is where this response lands. Select a different response to compare."
+            ? "The highlighted cell in each row is where this response sits on the assessment rubric. Select a different response to compare."
             : "Select a response above: the matching cell in each row will highlight."}
         </p>
 
@@ -244,12 +336,21 @@ export default function SoloRubric() {
               <div key={c.id} className="sr-mcard">
                 <p className="sr-mcard-crit">{c.name}</p>
                 {selected ? (
-                  <div className="sr-mcard-hit">
-                    <span className="sr-mcard-level">{LEVEL_LABELS[lvl]}</span>
-                    <p className="sr-mcard-desc">{c.descriptors[lvl]}</p>
+                  <div
+                    className="sr-mcard-scroll"
+                    ref={(el) => { mobileScrollRefs.current[c.id] = el; }}
+                  >
+                    <div className="sr-mcard-spacer" aria-hidden="true" />
+                    {[0, 1, 2, 3, 4].map((i) => (
+                      <div key={i} className={`sr-mcard-slide${i === lvl ? " hit" : ""}`}>
+                        <span className="sr-mcard-level">{LEVEL_LABELS[i]}</span>
+                        <p className="sr-mcard-desc">{c.descriptors[i]}</p>
+                      </div>
+                    ))}
+                    <div className="sr-mcard-spacer" aria-hidden="true" />
                   </div>
                 ) : (
-                  <p className="sr-mcard-placeholder">Select a response above to see where it lands.</p>
+                  <p className="sr-mcard-placeholder">Select a response above to see how its graded.</p>
                 )}
               </div>
             );
