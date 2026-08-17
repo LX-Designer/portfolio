@@ -156,6 +156,76 @@ const QUIZ = [
   { key: "all", label: "All of the Above", desc: "Every one of these is the same three-step mechanism you just ran." },
 ];
 
+// Diagnostic MC quiz — right/wrong feedback, distinct from the exploratory
+// click-to-reveal QUIZ above. Ported from the same pattern used in
+// ReactionRateSimulator.jsx, restyled to this asset's own `.ns-` palette.
+const CYU_QUESTIONS = [
+  {
+    prompt: "Across the generations you ran, what actually changed?",
+    options: [
+      { text: "Individual moths gradually darkened their own wings to hide better", correct: false, feedback: "No moth ever changed colour — each was born its shade and kept it for life. What changed was the make-up of the whole population." },
+      { text: "The population's average colour shifted, even though no single moth changed", correct: true, feedback: "Correct. Darker moths survived and bred more often, so each new generation had more of them. The population moved, not any individual." },
+      { text: "The bark changed to match the moths", correct: false, feedback: "The bark's shade stayed fixed. It was the moth population that shifted toward the bark, because the visible moths were the ones caught." },
+    ],
+  },
+  {
+    prompt: "Why did the darker moths come to dominate?",
+    options: [
+      { text: "They needed to survive, so they adapted to the soot", correct: false, feedback: "Nothing in the moths \"tried\" to adapt. Darker moths simply happened to be harder to spot, so more survived to breed — no intent required." },
+      { text: "They were harder to spot against the dark bark, so more survived to breed and pass on their colouring", correct: true, feedback: "Correct. That's differential survival: the camouflaged moths left more offspring, and offspring inherit their parents' shade." },
+      { text: "The bird preferred the taste of pale moths", correct: false, feedback: "It wasn't taste, it was visibility. Pale moths stood out against the soot-darkened bark and were easier to catch." },
+    ],
+  },
+];
+
+const OPTION_LETTERS = ["A", "B", "C"];
+
+// Controlled by the parent (selected/onSelect), not local state — the
+// "answer all questions to unlock the takeaway" gate needs to know from
+// outside whether each question has been answered.
+function CyuQuestion({ index, question, selected, onSelect }) {
+  const answered = selected !== null;
+  const answeredCorrect = answered && question.options[selected].correct;
+
+  return (
+    <div className="ns-cyu-q">
+      <div className="ns-cyu-head">
+        <span className="ns-cyu-num">{index + 1}</span>
+        <p className="ns-cyu-prompt">{question.prompt}</p>
+      </div>
+      {question.options.map((opt, oi) => {
+        const isSelected = selected === oi;
+        const stateClass = isSelected ? (opt.correct ? " selected correct" : " selected incorrect") : "";
+        return (
+          <button
+            key={oi}
+            type="button"
+            className={`ns-cyu-opt${stateClass}`}
+            onClick={() => onSelect(oi)}
+          >
+            <span className="ns-cyu-opt-marker">
+              {isSelected ? (opt.correct ? "✓" : "✕") : OPTION_LETTERS[oi]}
+            </span>
+            <span className="ns-cyu-opt-text">{opt.text}</span>
+          </button>
+        );
+      })}
+      {answered && (
+        <div className={`ns-cyu-feedback ${answeredCorrect ? "correct" : "incorrect"}`}>
+          <span className="ns-cyu-feedback-icon">{answeredCorrect ? "✓" : "✕"}</span>
+          <span>{question.options[selected].feedback}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const ChevronDown = () => (
+  <svg className="ns-chev" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
 // ── Moth glyph — filled with its own blotch pattern, no stroke, no shadow
 // while hunting: a real colour/texture match is the only thing that hides it. ──
 function Moth({ patternId }) {
@@ -187,6 +257,14 @@ export default function NaturalSelection() {
     { gen: 1, mean: meanShade(pop), env: "soot" },
   ]);
   const [revealedQuiz, setRevealedQuiz] = useState(new Set());
+  // Check-your-understanding gate: available from page load like the
+  // reaction-rate asset's quiz (not tied to generation count), and itself
+  // gates the takeaway/real-world sections — those only unlock once every
+  // question here has been answered.
+  const [showQuestions, setShowQuestions] = useState(false);
+  const [cyuAnswers, setCyuAnswers] = useState(() => CYU_QUESTIONS.map(() => null));
+  const [takeawayRevealed, setTakeawayRevealed] = useState(false);
+  const allCyuAnswered = cyuAnswers.every((a) => a !== null);
 
   const env = ENVS[envKey];
   const rafRef = useRef(null);
@@ -280,8 +358,6 @@ export default function NaturalSelection() {
   const gotHidden = survivorHidden > wholeHidden + 0.01;
 
   const rounds = generation - 1;
-  const showTakeaway = generation >= 3;
-  const showQuiz = showTakeaway; // appears alongside the takeaway, not a generation later
 
   // ── generations chart geometry ──
   const chart = useMemo(() => {
@@ -416,6 +492,41 @@ export default function NaturalSelection() {
         .ns-quizdesc{font-size:13px;color:var(--muted);margin-top:3px;display:block;}
         .ns-quizreveal{background:var(--paper);border:1.5px solid var(--accent);border-top:none;border-radius:0 0 10px 10px;padding:14px 15px;font-size:13.5px;line-height:1.6;color:#3B4234;margin-top:-1px;}
         .ns-quizreveal b{color:var(--ink);} .ns-quizreveal ul{margin:8px 0;padding-left:20px;} .ns-quizreveal li{margin-bottom:6px;}
+
+        .ns-cyu-q{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:14px;}
+        .ns-cyu-q:last-child{margin-bottom:0;}
+        .ns-cyu-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;}
+        .ns-cyu-num{flex:0 0 26px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+        .ns-cyu-prompt{font-size:14.5px;font-weight:600;margin:0;line-height:1.5;color:var(--ink);}
+        .ns-cyu-opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:11px 14px;margin-bottom:8px;cursor:pointer;font-size:13.5px;font-family:inherit;color:var(--ink);transition:border-color .12s ease,transform .1s ease;}
+        .ns-cyu-opt:last-of-type{margin-bottom:0;}
+        .ns-cyu-opt:hover{border-color:var(--accent);transform:translateX(2px);}
+        .ns-cyu-opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+        .ns-cyu-opt-marker{flex:0 0 22px;width:22px;height:22px;border-radius:50%;background:var(--paper);border:1.5px solid var(--border);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .12s ease;}
+        .ns-cyu-opt-text{flex:1;}
+        .ns-cyu-opt.selected{transform:none;}
+        .ns-cyu-opt.selected.correct{background:#E8F5EC;border-color:#4CAF6D;}
+        .ns-cyu-opt.selected.correct .ns-cyu-opt-marker{background:#4CAF6D;border-color:#4CAF6D;color:#fff;}
+        .ns-cyu-opt.selected.incorrect{background:#FBEAEA;border-color:#D9534F;}
+        .ns-cyu-opt.selected.incorrect .ns-cyu-opt-marker{background:#D9534F;border-color:#D9534F;color:#fff;}
+        .ns-cyu-feedback{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.55;margin-top:12px;padding:12px 14px;border-radius:10px;}
+        .ns-cyu-feedback-icon{flex:0 0 20px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;margin-top:1px;}
+        .ns-cyu-feedback.correct{color:#2C7A47;background:#E8F5EC;}
+        .ns-cyu-feedback.correct .ns-cyu-feedback-icon{background:#4CAF6D;}
+        .ns-cyu-feedback.incorrect{color:#A83B36;background:#FBEAEA;}
+        .ns-cyu-feedback.incorrect .ns-cyu-feedback-icon{background:#D9534F;}
+
+        .ns-reveal{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+          background:var(--card);border:1px dashed var(--border);border-radius:12px;padding:13px 16px;
+          font-family:inherit;font-size:14px;font-weight:600;color:var(--accent-deep);cursor:pointer;
+          transition:background .14s ease,border-color .14s ease;}
+        .ns-reveal:hover{background:var(--accent-wash);border-color:var(--accent);}
+        .ns-reveal:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+        .ns-reveal:disabled{opacity:.45;cursor:not-allowed;}
+        .ns-reveal .ns-chev{transition:transform .16s ease;}
+        .ns-reveal:hover .ns-chev{transform:translateY(2px);}
+        .ns-cyu-progress{font-size:12.5px;color:var(--muted);text-align:center;margin:14px 0 0;}
+        .ns-cyu-unlock{margin-top:14px;}
 
         .ns-footer{margin-top:24px;padding:15px 2px 6px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);line-height:1.6;display:flex;gap:10px;align-items:flex-start;}
         .ns-footer b{color:var(--ink);} .ns-footer-icon{flex:0 0 auto;margin-top:2px;color:var(--muted);}
@@ -581,8 +692,40 @@ export default function NaturalSelection() {
         )}
       </div>
 
+      {/* ── Check your understanding ── */}
+      <div className="ns-card">
+        {!showQuestions ? (
+          <button type="button" className="ns-reveal" onClick={() => setShowQuestions(true)}>
+            Show the check-your-understanding questions <ChevronDown />
+          </button>
+        ) : (
+          <>
+            <div className="ns-eyebrow">Check your understanding</div>
+            <p className="ns-quizprompt">Answer these questions based on what you noticed in the hunt.</p>
+            {CYU_QUESTIONS.map((q, qi) => (
+              <CyuQuestion
+                key={qi}
+                index={qi}
+                question={q}
+                selected={cyuAnswers[qi]}
+                onSelect={(oi) => setCyuAnswers((prev) => prev.map((a, i) => (i === qi ? oi : a)))}
+              />
+            ))}
+            {!takeawayRevealed && (
+              allCyuAnswered ? (
+                <button type="button" className="ns-reveal ns-cyu-unlock" onClick={() => setTakeawayRevealed(true)}>
+                  Show the takeaway <ChevronDown />
+                </button>
+              ) : (
+                <p className="ns-cyu-progress">Answer all {CYU_QUESTIONS.length} questions to unlock the takeaway.</p>
+              )
+            )}
+          </>
+        )}
+      </div>
+
       {/* ── Takeaway ── */}
-      {showTakeaway && (
+      {takeawayRevealed && (
         <div className="ns-card">
           <div className="ns-eyebrow">The takeaway</div>
           <blockquote className="ns-pull">
@@ -614,10 +757,10 @@ export default function NaturalSelection() {
       )}
 
       {/* ── Beyond the field ── */}
-      {showQuiz && (
+      {takeawayRevealed && (
         <div className="ns-card">
           <div className="ns-eyebrow">Beyond the field</div>
-          <div className="ns-quizhd">The same mechanism, everywhere alive</div>
+          <div className="ns-quizhd">Natural selection across the ecosystem.</div>
           <p className="ns-quizprompt">Which of these is driven by the exact three-step process you just ran? Click one to reveal the mechanism.</p>
 
           {QUIZ.map((q) => (

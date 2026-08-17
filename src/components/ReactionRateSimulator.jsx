@@ -78,6 +78,19 @@ export default function ReactionRateSimulator() {
   const [temperature, setTemperature] = useState(INITIAL_TEMPERATURE);
   const [activationEnergy, setActivationEnergy] = useState(INITIAL_ACTIVATION_ENERGY);
   const [showQuestions, setShowQuestions] = useState(false);
+  // Same gating chain as CumulativeAdvantage.jsx / NaturalSelection.jsx:
+  // the takeaway and beyond-the-lab sections only unlock once every
+  // check-your-understanding question has been answered.
+  const [cyuAnswers, setCyuAnswers] = useState(() => QUESTIONS.map(() => null));
+  const [takeawayRevealed, setTakeawayRevealed] = useState(false);
+  const [revealedBeyondLab, setRevealedBeyondLab] = useState(new Set());
+  const allAnswered = cyuAnswers.every((a) => a !== null);
+
+  const toggleBeyondLab = (key) => setRevealedBeyondLab((prev) => {
+    const next = new Set(prev);
+    next.has(key) ? next.delete(key) : next.add(key);
+    return next;
+  });
 
   // Latest slider values, readable from inside the animation loop without
   // needing to restart the loop or re-bind the effect on every change.
@@ -342,6 +355,40 @@ export default function ReactionRateSimulator() {
         .rxn-quiz-feedback.incorrect{color:#A83B36;background:#FBEAEA;}
         .rxn-quiz-feedback.incorrect .rxn-quiz-feedback-icon{background:#D9534F;}
 
+        .rxn-cyu-progress{font-size:12.5px;color:var(--text-soft);text-align:center;margin:14px 0 0;}
+        .rxn-cyu-unlock{margin-top:14px;}
+
+        .rxn-eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);
+          font-weight:700;margin:0 0 9px;}
+        .rxn-takeaway{font-size:14px;line-height:1.65;color:var(--text-soft);}
+        .rxn-takeaway p{margin:0 0 13px;}
+        .rxn-takeaway p:last-child{margin-bottom:0;}
+        .rxn-takeaway b{color:var(--text);}
+        .rxn-concept{margin:16px 0 0;padding:15px 17px;background:var(--blue-bg);border:1px solid var(--line);
+          border-radius:12px;}
+        .rxn-concept p{font-size:14px;line-height:1.6;color:var(--text-soft);margin:0;}
+        .rxn-concept b{color:var(--text);}
+
+        .rxn-blab-hd{font-family:'Poppins',sans-serif;font-size:19px;font-weight:700;letter-spacing:-.01em;
+          margin:0 0 8px;color:var(--text);}
+        .rxn-blab-prompt{font-size:14px;color:var(--text-soft);margin:0 0 16px;line-height:1.5;}
+        .rxn-blab-item{margin-bottom:10px;}
+        .rxn-blab-opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);
+          border-radius:10px;padding:13px 15px;cursor:pointer;font-family:'Inter',sans-serif;
+          transition:border-color .15s,background .15s;}
+        .rxn-blab-opt:hover{border-color:var(--blue);}
+        .rxn-blab-opt.open{border-color:var(--blue);background:var(--blue-bg);
+          border-bottom-left-radius:0;border-bottom-right-radius:0;}
+        .rxn-blab-opt:focus-visible{outline:2px solid var(--blue);outline-offset:2px;}
+        .rxn-blab-lab{font-size:14px;font-weight:600;color:var(--text);display:block;}
+        .rxn-blab-desc{font-size:13px;color:var(--text-soft);margin-top:3px;display:block;}
+        .rxn-blab-reveal{background:var(--bg-soft);border:1.5px solid var(--blue);border-top:none;
+          border-radius:0 0 10px 10px;padding:14px 15px;font-size:13.5px;line-height:1.6;
+          color:var(--text-soft);margin-top:-1px;}
+        .rxn-blab-reveal b{color:var(--text);}
+        .rxn-blab-reveal ul{margin:8px 0;padding-left:20px;}
+        .rxn-blab-reveal li{margin-bottom:6px;}
+
         @container (max-width:480px){
           .rxn-controls{grid-template-columns:1fr;}
         }
@@ -429,11 +476,108 @@ export default function ReactionRateSimulator() {
           <>
             <p className="rxn-quiz-label">Check your understanding</p>
             {QUESTIONS.map((q, qi) => (
-              <QuizQuestion key={qi} index={qi} question={q} />
+              <QuizQuestion
+                key={qi}
+                index={qi}
+                question={q}
+                selected={cyuAnswers[qi]}
+                onSelect={(oi) => setCyuAnswers((prev) => prev.map((a, i) => (i === qi ? oi : a)))}
+              />
             ))}
+            {!takeawayRevealed && (
+              allAnswered ? (
+                <button type="button" className="rxn-reveal rxn-cyu-unlock" onClick={() => setTakeawayRevealed(true)}>
+                  Show the takeaway <ChevronDown />
+                </button>
+              ) : (
+                <p className="rxn-cyu-progress">Answer all {QUESTIONS.length} questions to unlock the takeaway.</p>
+              )
+            )}
           </>
         )}
       </div>
+
+      {takeawayRevealed && (
+        <div className="rxn-quiz-section">
+          <div className="rxn-eyebrow">The takeaway</div>
+          <div className="rxn-takeaway">
+            <p>
+              You changed the reaction rate two different ways, and they weren't the same. Lowering the{" "}
+              <b>activation energy</b> left the particles moving exactly as before. It simply lowered the bar
+              each collision had to clear, so collisions that used to bounce apart now reacted. Raising the{" "}
+              <b>temperature</b> did two things at once: the particles moved faster, so they collided more
+              often, and each collision landed harder, so more of them cleared the bar.
+            </p>
+            <div className="rxn-concept">
+              <p>
+                <b>Collision theory</b> explains reaction rate with a single rule: a reaction happens only when
+                particles collide and that collision carries enough energy to react. Anything that makes
+                energetic collisions more likely, whether hotter particles or a lower energy barrier, speeds
+                the reaction up.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {takeawayRevealed && (
+        <div className="rxn-quiz-section">
+          <div className="rxn-eyebrow">Beyond the lab</div>
+          <div className="rxn-blab-hd">Collision theory in the real world</div>
+          <p className="rxn-blab-prompt">
+            Which of these everyday situations is explained by collision theory? Click one to reveal the mechanism.
+          </p>
+
+          {BEYOND_LAB.map((q) => (
+            <div key={q.key} className="rxn-blab-item">
+              <button
+                className={`rxn-blab-opt ${revealedBeyondLab.has(q.key) ? "open" : ""}`}
+                onClick={() => toggleBeyondLab(q.key)}
+              >
+                <span className="rxn-blab-lab">{q.label}</span>
+                <span className="rxn-blab-desc">{q.desc}</span>
+              </button>
+              {revealedBeyondLab.has(q.key) && (
+                <div className="rxn-blab-reveal">
+                  {q.key === "fridge" && (
+                    <p><b>Correct.</b> Spoilage is a set of chemical reactions, and cold slows them the same
+                    way lowering the temperature slider did: the molecules move more slowly, so they collide
+                    less often and with less energy. Fewer collisions clear the bar, so the milk turns far
+                    more slowly. The freezer takes this further still, nearly stopping the reactions altogether.</p>
+                  )}
+                  {q.key === "pan" && (
+                    <p><b>Correct.</b> Cooking is chemistry: the browning is the Maillard reaction between
+                    sugars and proteins. At room temperature those collisions almost never carry enough energy
+                    to react. Add heat and the molecules collide far more often and far harder, so a reaction
+                    that was effectively stalled now races. Same food, same reaction, different rate.</p>
+                  )}
+                  {q.key === "catalyst" && (
+                    <p><b>Correct, and this is the other lever.</b> A catalyst doesn't heat anything up; it
+                    lowers the activation energy, exactly like sliding the Activation Energy control down. It
+                    offers the reaction an easier path, so collisions that used to bounce apart now clear the
+                    lowered bar. That's how your enzymes digest a meal at 37°C, and how a converter neutralises
+                    exhaust without a flame.</p>
+                  )}
+                  {q.key === "all" && (
+                    <>
+                      <p><b>Exactly.</b> Whether you're slowing a reaction down or speeding it up, you're
+                      pulling one of two levers:</p>
+                      <ul>
+                        <li><b>Collision frequency and energy:</b> temperature. Hotter means more collisions,
+                        each carrying more energy (the hot pan). Colder means the reverse (the fridge).</li>
+                        <li><b>The energy barrier:</b> activation energy. A catalyst lowers it so reactions
+                        run without extra heat (your enzymes, the converter).</li>
+                      </ul>
+                      <p>Once you see reactions as collisions that either clear a bar or don't, you can explain
+                      why a fridge preserves, a flame cooks, and a catalyst works, all with one idea.</p>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -525,8 +669,10 @@ const QUESTIONS = [
 
 const OPTION_LETTERS = ["A", "B", "C", "D"];
 
-function QuizQuestion({ index, question }) {
-  const [selected, setSelected] = useState(null);
+// Controlled by the parent (selected/onSelect), not local state — the
+// "answer all questions to unlock the takeaway" gate needs to know from
+// outside whether each question has been answered.
+function QuizQuestion({ index, question, selected, onSelect }) {
   const answered = selected !== null;
   const answeredCorrect = answered && question.options[selected].correct;
 
@@ -544,7 +690,7 @@ function QuizQuestion({ index, question }) {
             key={oi}
             type="button"
             className={`rxn-quiz-opt${stateClass}`}
-            onClick={() => setSelected(oi)}
+            onClick={() => onSelect(oi)}
           >
             <span className="rxn-quiz-opt-marker">
               {isSelected ? (opt.correct ? "✓" : "✕") : OPTION_LETTERS[oi]}
@@ -562,3 +708,13 @@ function QuizQuestion({ index, question }) {
     </div>
   );
 }
+
+// Exploratory click-to-reveal scenarios for "Beyond the lab" — distinct from
+// the diagnostic QUESTIONS above, same pattern as the equivalent section in
+// CumulativeAdvantage.jsx / NaturalSelection.jsx.
+const BEYOND_LAB = [
+  { key: "fridge", label: "The Fridge", desc: "Milk keeps for a week chilled, but sours in a day on the counter." },
+  { key: "pan", label: "The Hot Pan", desc: "A steak that would never \"cook\" on the counter browns in minutes in a screaming-hot pan." },
+  { key: "catalyst", label: "Catalysts: Your Body and Your Car", desc: "Enzymes run reactions at body temperature that would otherwise need a furnace; a catalytic converter cleans exhaust that would barely react on its own." },
+  { key: "all", label: "All of the Above", desc: "Every one of these is collision theory in action." },
+];

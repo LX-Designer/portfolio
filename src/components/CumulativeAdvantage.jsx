@@ -63,6 +63,76 @@ const QUIZ = [
   { key: "all", label: "All of the Above", desc: "Every single one of these scenarios is a runaway feedback loop." },
 ];
 
+// Diagnostic MC quiz — right/wrong feedback, distinct from the exploratory
+// click-to-reveal QUIZ above. Ported from the same pattern used in
+// ReactionRateSimulator.jsx, restyled to this asset's own `.he-` palette.
+const CYU_QUESTIONS = [
+  {
+    prompt: "In the Social worlds (with charts), what makes one song pull ahead into a runaway hit?",
+    options: [
+      { text: "It was clearly the best-written song in the set", correct: false, feedback: "Not in this model. Every song starts equal; the winner isn't decided by quality, but by which one happened to gain an early lead that others could see." },
+      { text: "It picked up a small early lead that later listeners could see, and that visibility snowballed", correct: true, feedback: "Correct. An accidental early advantage made the song more visible on the chart; later listeners read that as a sign of quality and picked it too, compounding the lead." },
+      { text: "The simulation placed it at the top of the chart from the start", correct: false, feedback: "No song is favoured at the start — all sixteen begin at zero. The lead emerges from listeners' own choices." },
+    ],
+  },
+  {
+    prompt: "How does the Independent world (no charts) differ from the Social worlds?",
+    options: [
+      { text: "With no chart to see, no early lead can snowball, so plays stay spread fairly evenly", correct: true, feedback: "Correct. When listeners can't see each other's choices, there's no social signal to compound, so success tracks personal taste and no runaway hit emerges." },
+      { text: "The best song still wins, just by a smaller margin", correct: false, feedback: "There's no fixed \"best\" song here; plays stay roughly even because nothing amplifies an early lead." },
+      { text: "A hit still forms, it just takes longer to appear", correct: false, feedback: "No runaway hit forms at all without a visible chart — the snowball needs listeners to see and follow the early leader." },
+    ],
+  },
+];
+
+const OPTION_LETTERS = ["A", "B", "C"];
+
+// Controlled by the parent (selected/onSelect), not local state — the
+// "answer all questions to unlock the takeaway" gate needs to know from
+// outside whether each question has been answered.
+function CyuQuestion({ index, question, selected, onSelect }) {
+  const answered = selected !== null;
+  const answeredCorrect = answered && question.options[selected].correct;
+
+  return (
+    <div className="he-cyu-q">
+      <div className="he-cyu-head">
+        <span className="he-cyu-num">{index + 1}</span>
+        <p className="he-cyu-prompt">{question.prompt}</p>
+      </div>
+      {question.options.map((opt, oi) => {
+        const isSelected = selected === oi;
+        const stateClass = isSelected ? (opt.correct ? " selected correct" : " selected incorrect") : "";
+        return (
+          <button
+            key={oi}
+            type="button"
+            className={`he-cyu-opt${stateClass}`}
+            onClick={() => onSelect(oi)}
+          >
+            <span className="he-cyu-opt-marker">
+              {isSelected ? (opt.correct ? "✓" : "✕") : OPTION_LETTERS[oi]}
+            </span>
+            <span className="he-cyu-opt-text">{opt.text}</span>
+          </button>
+        );
+      })}
+      {answered && (
+        <div className={`he-cyu-feedback ${answeredCorrect ? "correct" : "incorrect"}`}>
+          <span className="he-cyu-feedback-icon">{answeredCorrect ? "✓" : "✕"}</span>
+          <span>{question.options[selected].feedback}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const ChevronDown = () => (
+  <svg className="he-chev" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
 export default function CumulativeAdvantage() {
   const [active, setActive] = useState(null);
   const [plays, setPlays] = useState(new Array(N).fill(0));
@@ -74,6 +144,14 @@ export default function CumulativeAdvantage() {
   const [lastChosenSong, setLastChosenSong] = useState(null);
   const [completed, setCompleted] = useState([]); // {label, c, hitIndex, hitShare}
   const [revealedQuiz, setRevealedQuiz] = useState(new Set());
+  // Check-your-understanding gate: available from page load like the
+  // reaction-rate asset's quiz (not tied to having run a world), and itself
+  // gates the takeaway/real-world sections — those only unlock once every
+  // question here has been answered.
+  const [showQuestions, setShowQuestions] = useState(false);
+  const [cyuAnswers, setCyuAnswers] = useState(() => CYU_QUESTIONS.map(() => null));
+  const [takeawayRevealed, setTakeawayRevealed] = useState(false);
+  const allCyuAnswered = cyuAnswers.every((a) => a !== null);
   const worldRef = useRef(null);
   const pulseTimer = useRef(null);
   // shared by both press-and-hold and auto-play — same ramp, different trigger/stop
@@ -317,6 +395,42 @@ export default function CumulativeAdvantage() {
         .he-quizreveal{background:#FBFAF7;border:1.5px solid var(--accent);border-top:none;border-radius:0 0 10px 10px;padding:14px 15px;font-size:13.5px;line-height:1.6;color:#3C424C;margin-top:-1px;}
         .he-quizreveal b{color:var(--ink);}
         .he-quizreveal ul{margin:8px 0;padding-left:20px;} .he-quizreveal li{margin-bottom:6px;}
+
+        .he-cyu-q{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:14px;}
+        .he-cyu-q:last-child{margin-bottom:0;}
+        .he-cyu-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;}
+        .he-cyu-num{flex:0 0 26px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+        .he-cyu-prompt{font-size:14.5px;font-weight:600;margin:0;line-height:1.5;color:var(--ink);}
+        .he-cyu-opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:11px 14px;margin-bottom:8px;cursor:pointer;font-size:13.5px;font-family:inherit;color:var(--ink);transition:border-color .12s ease,transform .1s ease;}
+        .he-cyu-opt:last-of-type{margin-bottom:0;}
+        .he-cyu-opt:hover{border-color:var(--accent);transform:translateX(2px);}
+        .he-cyu-opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+        .he-cyu-opt-marker{flex:0 0 22px;width:22px;height:22px;border-radius:50%;background:var(--bg);border:1.5px solid var(--border);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .12s ease;}
+        .he-cyu-opt-text{flex:1;}
+        .he-cyu-opt.selected{transform:none;}
+        .he-cyu-opt.selected.correct{background:#E8F5EC;border-color:#4CAF6D;}
+        .he-cyu-opt.selected.correct .he-cyu-opt-marker{background:#4CAF6D;border-color:#4CAF6D;color:#fff;}
+        .he-cyu-opt.selected.incorrect{background:#FBEAEA;border-color:#D9534F;}
+        .he-cyu-opt.selected.incorrect .he-cyu-opt-marker{background:#D9534F;border-color:#D9534F;color:#fff;}
+        .he-cyu-feedback{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.55;margin-top:12px;padding:12px 14px;border-radius:10px;}
+        .he-cyu-feedback-icon{flex:0 0 20px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;margin-top:1px;}
+        .he-cyu-feedback.correct{color:#2C7A47;background:#E8F5EC;}
+        .he-cyu-feedback.correct .he-cyu-feedback-icon{background:#4CAF6D;}
+        .he-cyu-feedback.incorrect{color:#A83B36;background:#FBEAEA;}
+        .he-cyu-feedback.incorrect .he-cyu-feedback-icon{background:#D9534F;}
+
+        .he-reveal{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+          background:var(--card);border:1px dashed var(--border);border-radius:12px;padding:13px 16px;
+          font-family:inherit;font-size:14px;font-weight:600;color:var(--accent);cursor:pointer;
+          transition:background .14s ease,border-color .14s ease;}
+        .he-reveal:hover{background:#F7F7FE;border-color:var(--accent);}
+        .he-reveal:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+        .he-reveal:disabled{opacity:.45;cursor:not-allowed;}
+        .he-reveal .he-chev{transition:transform .16s ease;}
+        .he-reveal:hover .he-chev{transform:translateY(2px);}
+        .he-cyu-progress{font-size:12.5px;color:var(--muted);text-align:center;margin:14px 0 0;}
+        .he-cyu-unlock{margin-top:14px;}
+
         .he-footer{margin-top:24px;padding:15px 2px 6px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);line-height:1.6;display:flex;gap:10px;align-items:flex-start;} .he-footer b{color:var(--ink);}
         .he-footer-icon{flex:0 0 auto;margin-top:2px;color:var(--muted);}
         @media(max-width:620px){.he-sid{width:76px;flex:0 0 76px;}}
@@ -536,7 +650,38 @@ export default function CumulativeAdvantage() {
         )}
       </div>
 
-      {completed.length > 0 && (
+      <div className="he-card">
+        {!showQuestions ? (
+          <button type="button" className="he-reveal" onClick={() => setShowQuestions(true)}>
+            Show the check-your-understanding questions <ChevronDown />
+          </button>
+        ) : (
+          <>
+            <div className="he-eyebrow">Check your understanding</div>
+            <p className="he-quizprompt">Answer these questions based on what you noticed in the simulation.</p>
+            {CYU_QUESTIONS.map((q, qi) => (
+              <CyuQuestion
+                key={qi}
+                index={qi}
+                question={q}
+                selected={cyuAnswers[qi]}
+                onSelect={(oi) => setCyuAnswers((prev) => prev.map((a, i) => (i === qi ? oi : a)))}
+              />
+            ))}
+            {!takeawayRevealed && (
+              allCyuAnswered ? (
+                <button type="button" className="he-reveal he-cyu-unlock" onClick={() => setTakeawayRevealed(true)}>
+                  Show the takeaway <ChevronDown />
+                </button>
+              ) : (
+                <p className="he-cyu-progress">Answer all {CYU_QUESTIONS.length} questions to unlock the takeaway.</p>
+              )
+            )}
+          </>
+        )}
+      </div>
+
+      {takeawayRevealed && (
         <div className="he-card">
           <div className="he-insight">
             <div className="he-eyebrow">The takeaway</div>
@@ -563,7 +708,7 @@ export default function CumulativeAdvantage() {
         </div>
       )}
 
-      {completed.length > 0 && (
+      {takeawayRevealed && (
         <div className="he-card">
           <div className="he-eyebrow">Beyond the lab</div>
           <div className="he-quizhd">Cumulative advantage in the real world</div>
