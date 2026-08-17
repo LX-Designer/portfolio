@@ -701,7 +701,6 @@ export default function NaturalSelection() {
         ) : (
           <>
             <div className="ns-eyebrow">Check your understanding</div>
-            <p className="ns-quizprompt">Answer these questions based on what you noticed in the hunt.</p>
             {CYU_QUESTIONS.map((q, qi) => (
               <CyuQuestion
                 key={qi}

@@ -658,7 +658,6 @@ export default function CumulativeAdvantage() {
         ) : (
           <>
             <div className="he-eyebrow">Check your understanding</div>
-            <p className="he-quizprompt">Answer these questions based on what you noticed in the simulation.</p>
             {CYU_QUESTIONS.map((q, qi) => (
               <CyuQuestion
                 key={qi}
