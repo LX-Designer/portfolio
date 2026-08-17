@@ -25,14 +25,44 @@ const NAV_SECTIONS = [
 
 const NUM_STEPS = 7
 
+// `overflow: hidden` on body doesn't reliably block touch-driven scrolling
+// on mobile Safari — the standard fix is pinning body in place with
+// position:fixed (which does stop touch scroll) and restoring the saved
+// scroll position on unlock. navTo() also uses unlockBodyScroll() to escape
+// this before scrolling, since a fixed body has no scroll position to move.
+function lockBodyScroll() {
+  if (document.body.dataset.scrollLocked === '1') return
+  const scrollY = window.scrollY
+  document.body.dataset.scrollLocked = '1'
+  document.body.dataset.scrollY = String(scrollY)
+  document.body.style.position = 'fixed'
+  document.body.style.top = `-${scrollY}px`
+  document.body.style.left = '0'
+  document.body.style.right = '0'
+  document.body.style.width = '100%'
+}
+
+function unlockBodyScroll() {
+  if (document.body.dataset.scrollLocked !== '1') return
+  const scrollY = parseInt(document.body.dataset.scrollY || '0', 10)
+  document.body.style.position = ''
+  document.body.style.top = ''
+  document.body.style.left = ''
+  document.body.style.right = ''
+  document.body.style.width = ''
+  delete document.body.dataset.scrollLocked
+  delete document.body.dataset.scrollY
+  window.scrollTo(0, scrollY)
+}
+
 function navTo(id) {
   const el = document.getElementById(id)
   if (!el) return
   // The mobile activity panel locks body scroll while expanded (see the
   // scroll-lock effect below) — clear it before scrolling so this isn't a
-  // no-op, since a locked body has no scrolling mechanism to move. The
-  // effect re-locks it on next render if the panel is still expanded.
-  document.body.style.overflow = ''
+  // no-op, since a locked body has no scroll position to move. The effect
+  // re-locks it on next render if the panel is still expanded.
+  unlockBodyScroll()
   const navH = document.querySelector('nav')?.offsetHeight ?? 48
   window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - navH - 16, behavior: 'smooth' })
 }
@@ -443,13 +473,14 @@ export default function MetacognitionLab({ backHref }) {
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 600px)')
     function apply() {
-      document.body.style.overflow = (journeyActive && !sidebarCollapsed && mq.matches) ? 'hidden' : ''
+      if (journeyActive && !sidebarCollapsed && mq.matches) lockBodyScroll()
+      else unlockBodyScroll()
     }
     apply()
     mq.addEventListener('change', apply)
     return () => {
       mq.removeEventListener('change', apply)
-      document.body.style.overflow = ''
+      unlockBodyScroll()
     }
   }, [journeyActive, sidebarCollapsed])
 
