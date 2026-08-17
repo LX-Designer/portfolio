@@ -116,27 +116,35 @@ export default function ActivityModal({
         </div>
 
         <div className={s.tnModalFooter}>
-          <button className={s.tnNavBtn} disabled={!prevActivity} onClick={() => prevActivity && navigate(prevActivity.id)}>
-            ← {prevActivity ? `Activity ${actIndex}` : 'Previous'}
-          </button>
-
-          {showClearConfirm ? (
-            <div className={s.clearConfirm}>
-              <span>Clear this response?</span>
-              <button onClick={() => setShowClearConfirm(false)}>Cancel</button>
-              <button onClick={clearResponse}>Clear</button>
-            </div>
-          ) : (
-            <button className={s.tnClearBtn} onClick={() => setShowClearConfirm(true)}>Clear this response</button>
-          )}
-
-          {nextActivity ? (
-            <button className={s.tnNavBtn} onClick={() => navigate(nextActivity.id)}>
-              Activity {actIndex + 2} →
+          <div className={s.tnNavRow}>
+            <button className={s.tnNavBtn} disabled={!prevActivity} onClick={() => prevActivity && navigate(prevActivity.id)}>
+              <span aria-hidden="true">← </span>
+              <span className={s.tnNavLabelFull}>{prevActivity ? `Activity ${actIndex}` : 'Previous'}</span>
+              <span className={s.tnNavLabelShort}>Previous</span>
             </button>
-          ) : (
-            <button className={s.tnNavBtn} onClick={onClose}>Close</button>
-          )}
+
+            {nextActivity ? (
+              <button className={s.tnNavBtn} onClick={() => navigate(nextActivity.id)}>
+                <span className={s.tnNavLabelFull}>Activity {actIndex + 2}</span>
+                <span className={s.tnNavLabelShort}>Next</span>
+                <span aria-hidden="true"> →</span>
+              </button>
+            ) : (
+              <button className={s.tnNavBtn} onClick={onClose}>Close</button>
+            )}
+          </div>
+
+          <div className={s.tnClearRow}>
+            {showClearConfirm ? (
+              <div className={s.clearConfirm}>
+                <span>Clear this response?</span>
+                <button onClick={() => setShowClearConfirm(false)}>Cancel</button>
+                <button onClick={clearResponse}>Clear</button>
+              </div>
+            ) : (
+              <button className={s.tnClearBtn} onClick={() => setShowClearConfirm(true)}>Clear this response</button>
+            )}
+          </div>
         </div>
       </div>
     </div>

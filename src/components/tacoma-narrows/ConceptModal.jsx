@@ -32,12 +32,18 @@ export default function ConceptModal({ conceptId, onNavigate, onClose }) {
         </div>
 
         <div className={s.tnModalFooter}>
-          <button className={s.tnNavBtn} disabled={!prev} onClick={() => prev && onNavigate(prev.id)}>
-            ← {prev ? prev.title : 'Previous'}
-          </button>
-          <button className={s.tnNavBtn} disabled={!next} onClick={() => next && onNavigate(next.id)}>
-            {next ? next.title : 'Next'} →
-          </button>
+          <div className={s.tnNavRow}>
+            <button className={s.tnNavBtn} disabled={!prev} onClick={() => prev && onNavigate(prev.id)}>
+              <span aria-hidden="true">← </span>
+              <span className={s.tnNavLabelFull}>{prev ? prev.title : 'Previous'}</span>
+              <span className={s.tnNavLabelShort}>Previous</span>
+            </button>
+            <button className={s.tnNavBtn} disabled={!next} onClick={() => next && onNavigate(next.id)}>
+              <span className={s.tnNavLabelFull}>{next ? next.title : 'Next'}</span>
+              <span className={s.tnNavLabelShort}>Next</span>
+              <span aria-hidden="true"> →</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

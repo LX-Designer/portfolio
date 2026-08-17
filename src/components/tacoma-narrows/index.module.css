@@ -718,17 +718,30 @@
 }
 .linkBtn:hover { background: var(--tn-paper-darker); border-color: var(--tn-border-s); }
 
+/* The footer is two purpose-built rows rather than one shared wrapping row:
+   primary Prev/Next navigation on its own line, and the secondary/
+   destructive "clear response" control (plus its confirm state) on a
+   quieter line below — so the confirm state gaining two extra buttons never
+   crowds the nav buttons it has nothing to do with. */
 .tnModalFooter {
-  display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  padding: 16px 32px; border-top: 1px solid var(--tn-border); flex-shrink: 0; flex-wrap: wrap;
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 16px 32px; border-top: 1px solid var(--tn-border); flex-shrink: 0;
 }
+.tnNavRow { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .tnNavBtn {
   font-family: var(--tn-mono); font-size: 11px; letter-spacing: 0.06em; background: none;
   border: 1px solid var(--tn-border-s); border-radius: 3px; padding: 9px 16px; color: var(--tn-ink); cursor: pointer;
   transition: background .15s;
+  max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .tnNavBtn:hover { background: var(--tn-paper-dark); }
 .tnNavBtn:disabled { opacity: .4; cursor: not-allowed; }
+/* Full title/activity-number label by default; swapped for a generic
+   Previous/Next below 600px, where there's no room for it and the header
+   already names the current item. */
+.tnNavLabelShort { display: none; }
+
+.tnClearRow { display: flex; justify-content: center; }
 .tnClearBtn { font-family: var(--tn-mono); font-size: 10px; background: none; border: none; color: var(--tn-ink-light); cursor: pointer; text-decoration: underline; }
 .tnClearBtn:hover { color: var(--tn-accent); }
 .clearConfirm { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--tn-ink-mid); }
@@ -763,6 +776,13 @@
   .tnModalFull { padding-bottom: 18px; }
   .tnConceptBox .tnModalBody { padding-bottom: 18px; }
   .tnModalFooter { padding: 12px 18px; }
+  /* Prev/Next become equal-width buttons that fill the row instead of
+     shrinking around long labels — paired with the generic label swap
+     below, since the modal header already names the current item. */
+  .tnNavBtn { flex: 1; max-width: none; text-align: center; }
+  .tnNavLabelFull { display: none; }
+  .tnNavLabelShort { display: inline; }
+  .clearConfirm { flex-wrap: wrap; justify-content: center; }
 
   .fileTab { padding: 14px 16px; gap: 10px; }
   .fileTabTitle { font-size: 17px; }
