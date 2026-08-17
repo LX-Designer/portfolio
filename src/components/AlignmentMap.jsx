@@ -23,10 +23,10 @@ const OUTCOMES = [
       { title: "Sequencing task", text: "Students arrange the steps of the CRISPR-Cas9 process into the correct order, describing what happens at each stage." },
     ],
     content: [
-      { label: "Key terms", text: "guide RNA, Cas9 enzyme, target DNA sequence, PAM site" },
-      { label: "Diagram", text: "labelled cross-section of the CRISPR-Cas9 complex bound to target DNA" },
-      { label: "Reference", text: "short animation of the CRISPR-Cas9 mechanism" },
-      { label: "Reading", text: "brief history of CRISPR as a bacterial immune system" },
+      { label: "Key terms", text: "Guide RNA, Cas9 enzyme, target DNA sequence, PAM site" },
+      { label: "Diagram", text: "Labelled cross-section of the CRISPR-Cas9 complex bound to target DNA" },
+      { label: "Reference", text: "Short animation of the CRISPR-Cas9 mechanism" },
+      { label: "Reading", text: "Brief history of CRISPR as a bacterial immune system" },
     ],
   },
   {
@@ -44,10 +44,10 @@ const OUTCOMES = [
       { title: "Cause-and-effect mapping", text: "Students independently connect guide RNA specificity, sequence similarity, and binding conditions into one explanation of why off-target cutting occurs." },
     ],
     content: [
-      { label: "Key terms", text: "off-target effect, sequence specificity, genome-wide screening" },
-      { label: "Data", text: "reported off-target rates across different CRISPR delivery methods" },
-      { label: "Case study", text: "a documented instance of off-target editing identified in CRISPR research" },
-      { label: "Reference", text: "short explainer on how researchers screen for off-target effects" },
+      { label: "Key terms", text: "Off-target effect, sequence specificity, genome-wide screening" },
+      { label: "Data", text: "Reported off-target rates across different CRISPR delivery methods" },
+      { label: "Case study", text: "A documented instance of off-target editing identified in CRISPR research" },
+      { label: "Reference", text: "Short explainer on how researchers screen for off-target effects" },
     ],
   },
   {
@@ -66,9 +66,9 @@ const OUTCOMES = [
     ],
     content: [
       { label: "Key terms", text: "CRISPR-Cas9, gene therapy, off-target effects, germline vs. somatic editing" },
-      { label: "Data", text: "comparison of cost, success rate, and access between CRISPR therapy and traditional bone marrow transplant" },
-      { label: "Case study", text: "the first approved CRISPR-based therapy, used to treat sickle cell disease" },
-      { label: "Reference", text: "short explainer on how the CRISPR-Cas9 system edits DNA" },
+      { label: "Data", text: "Comparison of cost, success rate, and access between CRISPR therapy and traditional bone marrow transplant" },
+      { label: "Case study", text: "The first approved CRISPR-based therapy, used to treat sickle cell disease" },
+      { label: "Reference", text: "Short explainer on how the CRISPR-Cas9 system edits DNA" },
     ],
   },
 ];
