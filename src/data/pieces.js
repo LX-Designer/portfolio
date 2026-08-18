@@ -40,7 +40,7 @@ export const pieces = [
     island: 'CumulativeAdvantage',
     // Card-only override: this card's body copy differs from the "is" text
     // used on its own standalone page.
-    cardBody: 'This explorable demonstrates a discovery-based approach to conceptual understanding. Learners build the same music chart across several simulated worlds, then observe how an initial, random advantage leads to wildly different results. This phenomenon is then exemplified through additional real-world examples.',
+    cardBody: 'This explorable demonstrates a discovery-based approach to conceptual understanding. Learners build the same music chart across several simulated worlds, then observe how an initial, random advantage leads to wildly different results.',
   },
   {
     slug: 'metacognition-literature-review', category: 'interactive', tag: 'Professional Development',
