@@ -577,13 +577,20 @@
    mounted, whose height animates between a peek strip and full height —
    bottom-anchored so it grows upward from the screen edge like a native
    bottom sheet, with the drag handle staying pinned to its current top. */
+/* An open-corner chevron (same construction as the site's other chevron
+   icons, just via borders instead of an SVG path) rather than a plain bar —
+   it points up while collapsed, hinting "drag/tap up to expand", and flips
+   to point down once expanded, hinting "drag/tap down to collapse". */
 .jbGrabber {
-  width: 34px;
-  height: 4px;
-  border-radius: 2px;
-  background: rgba(255,255,255,.35);
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid rgba(255,255,255,.5);
+  border-bottom: 2px solid rgba(255,255,255,.5);
   flex-shrink: 0;
+  transform: rotate(-135deg);
+  transition: transform .25s ease;
 }
+.jbGrabber.jbGrabberOpen { transform: rotate(45deg); }
 .maPanel {
   display: none;
   position: fixed;
@@ -601,26 +608,30 @@
 }
 .maPeek {
   flex-shrink: 0;
+  padding: 10px 12px 6px;
+}
+.maPeekRow { display: flex; align-items: center; width: 100%; gap: 4px; }
+/* The grabber lives inside this button (not beside it) specifically so the
+   tap/drag target covers the chevron and the heading as one region — a user
+   reaching for "the handle" and one reaching for "the title" should hit the
+   same control either way. */
+.maPeekLabel {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  padding: 10px 12px 6px;
-}
-.maPeekRow { display: flex; align-items: center; width: 100%; gap: 4px; }
-.maPeekLabel {
-  flex: 1;
-  min-width: 0;
   background: none;
   border: none;
   color: #fff;
   font-size: 12.5px;
   font-weight: 600;
-  text-align: left;
+  text-align: center;
   padding: 4px;
   cursor: pointer;
 }
-.maHeaderLabel { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+.maHeaderLabel { width: 100%; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
 .maContent {
   flex: 1;
   min-height: 0;

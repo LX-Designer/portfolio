@@ -130,7 +130,6 @@ export default function JourneyBar({
           native bottom sheet, instead of popping between two states. */}
       <div className={`${s.maPanel} ${collapsed ? '' : s.expanded}`}>
         <div className={s.maPeek}>
-          <span className={s.jbGrabber} />
           <div className={s.maPeekRow}>
             <button
               className={s.maPeekLabel}
@@ -140,6 +139,7 @@ export default function JourneyBar({
               aria-expanded={!collapsed}
               aria-label={collapsed ? 'Expand activity panel' : 'Collapse activity panel'}
             >
+              <span className={`${s.jbGrabber} ${collapsed ? '' : s.jbGrabberOpen}`} />
               <span className={s.maHeaderLabel}>Step {step + 1} of {STEPS.length}: {STEPS[step]}</span>
             </button>
             <button className={s.maExit} onClick={onExit} aria-label="Exit guided journey">✕</button>
