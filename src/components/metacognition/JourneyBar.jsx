@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import s from './index.module.css'
 import Act0 from './activities/Act0.jsx'
 import Act1 from './activities/Act1.jsx'
@@ -33,6 +34,45 @@ export default function JourneyBar({
   visible, step, activityDone, onActivity, onPrev, onNext, onExit, onGoToStep,
   collapsed, onToggleCollapse, onActivityComplete,
 }) {
+  // Drag-to-expand/collapse on the peek handle: a drag is recognised as
+  // soon as it crosses a small threshold in the "make sense" direction
+  // (up while collapsed, down while expanded) — it doesn't wait for the
+  // finger to lift, so the panel starts sliding the moment the gesture is
+  // clear, same as a native bottom sheet. Pointer capture keeps the whole
+  // gesture targeted at this button even once the finger moves outside its
+  // (fairly short) bounds. A plain tap still works via the click handler;
+  // the `fired` flag stops it from firing a second time right after a drag
+  // already toggled the state.
+  const dragRef = useRef({ startY: 0, fired: false })
+
+  function handlePeekPointerDown(e) {
+    dragRef.current = { startY: e.clientY, fired: false }
+    // Can legitimately throw (e.g. the pointer's already gone by the time
+    // this runs) — capture is a nice-to-have for tracking the drag outside
+    // the button's bounds, not something the gesture depends on.
+    try { e.currentTarget.setPointerCapture(e.pointerId) } catch {}
+  }
+  function handlePeekPointerMove(e) {
+    const drag = dragRef.current
+    if (drag.fired) return
+    const DRAG_THRESHOLD = 10
+    const deltaY = e.clientY - drag.startY
+    if (collapsed && deltaY < -DRAG_THRESHOLD) {
+      drag.fired = true
+      onToggleCollapse()
+    } else if (!collapsed && deltaY > DRAG_THRESHOLD) {
+      drag.fired = true
+      onToggleCollapse()
+    }
+  }
+  function handlePeekClick() {
+    if (dragRef.current.fired) {
+      dragRef.current.fired = false
+      return
+    }
+    onToggleCollapse()
+  }
+
   if (!visible || step < 0 || step >= STEPS.length) return null
 
   const isDone = activityDone.includes(step)
@@ -94,7 +134,9 @@ export default function JourneyBar({
           <div className={s.maPeekRow}>
             <button
               className={s.maPeekLabel}
-              onClick={onToggleCollapse}
+              onPointerDown={handlePeekPointerDown}
+              onPointerMove={handlePeekPointerMove}
+              onClick={handlePeekClick}
               aria-expanded={!collapsed}
               aria-label={collapsed ? 'Expand activity panel' : 'Collapse activity panel'}
             >

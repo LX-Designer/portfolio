@@ -1109,8 +1109,14 @@
      target rule below, which makes it taller than the 36px desktop value) —
      expanded height stops just short of it (8px gap) rather than sitting
      flush against it or floating above whatever height the content happens
-     to need. */
-  .maPanel.expanded { height: calc(100vh - 62px); }
+     to need. Two declarations: 100vh on iOS Safari is the *largest*
+     possible viewport (as if its toolbar were hidden), taller than what's
+     actually visible when the toolbar is showing — sizing against it pushed
+     the panel's top edge up behind the fixed nav bar. 100dvh tracks the
+     real visible viewport instead; the vh line stays first as a fallback
+     for browsers that don't support dvh, since unsupported units make a
+     whole declaration invalid (ignored, not zero). */
+  .maPanel.expanded { height: calc(100vh - 62px); height: calc(100dvh - 62px); }
 }
 
 /* ── TOUCH TARGETS ────────────────────────────────────────────────────── */
