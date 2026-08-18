@@ -590,7 +590,7 @@
 /* ── DIAGRAM FIGURES ─────────────────────────────────────────────────── */
 
 .diagram { width: 100%; margin: 24px 0; display: block; }
-.diagram img, .diagram svg { width: 100%; height: auto; display: block; }
+.diagram img, .diagram svg, .diagram video { width: 100%; height: auto; display: block; background: #000; }
 .diagramCaption { font-family: var(--tn-mono); font-size: 10px; color: var(--tn-ink-light); letter-spacing: 0.06em; margin-top: 8px; text-align: center; }
 
 /* ── INSTRUCTION / SENTENCE STARTERS / INPUTS (used inside modals) ────── */
@@ -611,9 +611,13 @@
 
 .textarea {
   width: 100%; border: 1px solid var(--tn-border-s); border-radius: 3px; padding: 14px 16px;
-  font-family: var(--tn-serif); font-size: 15px; line-height: 1.6; background: #fff; resize: vertical;
+  font-family: var(--tn-serif); font-size: 16px; line-height: 1.6; background: #fff; resize: vertical;
   min-height: 100px; color: var(--tn-ink); margin-top: 8px;
 }
+/* 16px, not 15px: iOS Safari auto-zooms the page on focus for any text
+   input under 16px, and that zoom doesn't reliably reset on blur inside a
+   position:fixed modal with a scrolling body — the viewport just stays
+   zoomed in. Staying at/above the threshold avoids the zoom entirely. */
 .textarea:focus { outline: 2px solid var(--tn-accent); outline-offset: 1px; }
 .textareaLg { min-height: 200px; line-height: 1.75; }
 .inputLabel { font-size: 13px; font-family: var(--tn-mono); letter-spacing: 0.06em; color: var(--tn-ink-mid); display: block; margin-bottom: 4px; }

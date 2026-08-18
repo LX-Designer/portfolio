@@ -2,6 +2,7 @@ import s from './index.module.css'
 import FileSection from './FileSection.jsx'
 
 const bridgePhoto      = '/tacoma-narrows/tacoma-narrow-bridge.jpg'
+const collapseVideo    = '/videos/The_collapse_of_the_Tacoma_Bridge.mp4'
 const girderDiagram     = '/tacoma-narrows/girder-comparison.svg'
 const frequencyDiagram  = '/tacoma-narrows/frequency-diagram.svg'
 const flutterDiagram    = '/tacoma-narrows/flutter-feedback.svg'
@@ -107,11 +108,13 @@ export default function CaseDocument({ responses, openSections, onToggleSection,
           <p>The collapse was filmed by University of Washington engineer F.B. Farquharson, who had been stationed at the bridge as part of an ongoing investigation into its unusual behaviour. His footage, still widely circulated today, shows the bridge twisting violently along its length, one side of the roadway rising while the other falls, before sections of the deck tear themselves apart.</p>
 
           <figure className={s.diagram}>
-            <img src={bridgePhoto} alt="The Tacoma Narrows Bridge oscillating in the wind, 1940." />
-            <figcaption className={s.diagramCaption}>Tacoma Narrows Bridge, 1940. Library of Congress / Wikimedia Commons. Public domain.</figcaption>
+            <video src={collapseVideo} poster={bridgePhoto} controls playsInline preload="metadata">
+              Your browser doesn't support this video format.
+            </video>
+            <figcaption className={s.diagramCaption}>Footage of the Tacoma Narrows Bridge collapsing, 7 November 1940. Public domain.</figcaption>
           </figure>
 
-          <p>The collapse shocked the engineering world. Tacoma Narrows was not an experimental structure; it had been reviewed by eminent engineers and approved by federal funding authorities. It was the third-longest suspension bridge in the world. Its collapse represented not merely a structural failure, but a failure of the profession's models and assumptions.</p>
+          <p>The collapse has shocked the engineering world. Tacoma Narrows was not an experimental structure; it had been reviewed by eminent engineers and approved by federal funding authorities. It was the third-longest suspension bridge in the world. Its collapse represents not merely a structural failure, but a failure of the profession's models and assumptions.</p>
         </FileSection>
 
         <FileSection id="tn-specifications" code="§ 02" title="Bridge Specifications" isOpen={isOpen('tn-specifications')} onToggle={toggle('tn-specifications')}>
