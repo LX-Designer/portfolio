@@ -116,6 +116,7 @@
   background: var(--tn-ink);
   max-height: calc(100vh - 100px);
   overflow-y: auto;
+  overscroll-behavior: contain;
   border-radius: 4px;
   padding: 6px;
   display: flex;
@@ -199,6 +200,11 @@
 .sbBody {
   flex: 1; overflow-y: auto; padding: 8px 0;
   scrollbar-width: thin; scrollbar-color: rgba(245,240,232,.25) transparent;
+  /* Stops scroll chaining: once this list hits its own top/bottom, further
+     scroll input stays here instead of bleeding through to the case file
+     scrolling underneath the sidebar. The page itself is never locked —
+     scrolling over the visible case file still scrolls it normally. */
+  overscroll-behavior: contain;
 }
 .sbBody::-webkit-scrollbar { width: 8px; }
 .sbBody::-webkit-scrollbar-track { background: transparent; }
@@ -697,6 +703,9 @@
   flex: 1; min-height: 0;
   overflow-y: auto; padding: 32px; padding-bottom: 0;
   scrollbar-width: thin; scrollbar-color: var(--tn-border-s) transparent;
+  /* Same scroll-chaining fix as .sbBody: contained to this modal's own
+     content, without locking scroll on the page behind it. */
+  overscroll-behavior: contain;
 }
 .tnModalBody::-webkit-scrollbar { width: 8px; }
 .tnModalBody::-webkit-scrollbar-track { background: transparent; }
