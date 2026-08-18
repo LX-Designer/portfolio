@@ -1,5 +1,6 @@
 import s from './index.module.css'
 import FileSection from './FileSection.jsx'
+import DiagramLightbox from './DiagramLightbox.jsx'
 
 const bridgePhoto      = '/tacoma-narrows/tacoma-narrow-bridge.jpg'
 const collapseVideo    = '/videos/The_collapse_of_the_Tacoma_Bridge.mp4'
@@ -137,9 +138,7 @@ export default function CaseDocument({ responses, openSections, onToggleSection,
             </table>
           </div>
 
-          <figure className={s.diagram}>
-            <img src={girderDiagram} alt="Cross-section comparison: open-lattice truss (original design, 7.6 m deep) versus solid plate girder (as built, 2.4 m deep), with wind flow shown in each case." />
-          </figure>
+          <DiagramLightbox src={girderDiagram} alt="Cross-section comparison: open-lattice truss (original design, 7.6 m deep) versus solid plate girder (as built, 2.4 m deep), with wind flow shown in each case." />
 
           <div className={s.callout}>
             <span className={s.calloutLabel}>Design note</span>
@@ -179,9 +178,7 @@ export default function CaseDocument({ responses, openSections, onToggleSection,
             </table>
           </div>
 
-          <figure className={s.diagram}>
-            <img src={frequencyDiagram} alt="Frequency diagram showing three values on a horizontal axis: torsional oscillation at collapse (0.2 Hz), natural vertical frequency (0.6 Hz), and vortex shedding frequency at 42 mph wind (1.0 Hz)." />
-          </figure>
+          <DiagramLightbox src={frequencyDiagram} alt="Frequency diagram showing three values on a horizontal axis: torsional oscillation at collapse (0.2 Hz), natural vertical frequency (0.6 Hz), and vortex shedding frequency at 42 mph wind (1.0 Hz)." />
         </FileSection>
 
         <FileSection id="tn-design" code="§ 04" title="Original Engineering Sign-Off" isOpen={isOpen('tn-design')} onToggle={toggle('tn-design')}>
@@ -226,10 +223,11 @@ export default function CaseDocument({ responses, openSections, onToggleSection,
             </div>
           </div>
 
-          <figure className={s.diagram}>
-            <img src={flutterDiagram} alt="Diagram of the aeroelastic flutter feedback loop: twist changes aerodynamic force, which amplifies the twist" />
-            <figcaption className={s.diagramCaption}>The aeroelastic flutter feedback loop described by Dr. Osei-Mensah. Unlike resonance, flutter is self-sustaining: the structure's own motion generates the forces that destroy it.</figcaption>
-          </figure>
+          <DiagramLightbox
+            src={flutterDiagram}
+            alt="Diagram of the aeroelastic flutter feedback loop: twist changes aerodynamic force, which amplifies the twist"
+            caption="The aeroelastic flutter feedback loop described by Dr. Osei-Mensah. Unlike resonance, flutter is self-sustaining: the structure's own motion generates the forces that destroy it."
+          />
         </FileSection>
 
         <FileSection id="tn-investigation" code="§ 06" title="Post-Collapse Investigation" isOpen={isOpen('tn-investigation')} onToggle={toggle('tn-investigation')}>

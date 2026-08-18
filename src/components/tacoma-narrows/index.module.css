@@ -643,6 +643,70 @@
 .diagram img, .diagram svg, .diagram video { width: 100%; height: auto; display: block; background: #000; }
 .diagramCaption { font-family: var(--tn-mono); font-size: 10px; color: var(--tn-ink-light); letter-spacing: 0.06em; margin-top: 8px; text-align: center; }
 
+/* Same figure treatment for the concept-toolkit diagrams, which previously
+   had their sizing/radius applied directly to the <img> rather than a
+   wrapping figure — kept as a distinct class since the margin/radius differ
+   slightly from the case-file diagrams above. */
+.ccDiagramFigure { width: 100%; margin: 20px 0; display: block; }
+.ccDiagramFigure img { width: 100%; height: auto; display: block; border-radius: 2px; }
+
+/* Tap/click-to-enlarge trigger wrapping each diagram image. Button reset
+   (block, full-width, no native chrome) so it behaves like the plain <img>
+   it replaces, plus a relative anchor for the corner zoom hint. */
+.diagramTrigger {
+  display: block; width: 100%; position: relative;
+  background: none; border: none; padding: 0; margin: 0;
+  cursor: zoom-in; font: inherit; text-align: inherit;
+}
+.diagramZoomHint {
+  position: absolute; bottom: 10px; right: 10px;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(26,24,20,.65); color: var(--tn-paper);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; line-height: 1;
+  opacity: 1; transition: opacity .2s, background .2s;
+}
+/* Above 900px (mouse/trackpad territory) the hint stays out of the way
+   until hovered — below it, there's no hover state to reveal it with, so it
+   stays visible by default as the only affordance a touch user gets. */
+@media (min-width: 901px) {
+  .diagramZoomHint { opacity: 0; }
+  .diagramTrigger:hover .diagramZoomHint,
+  .diagramTrigger:focus-visible .diagramZoomHint { opacity: 1; }
+}
+
+/* ── DIAGRAM LIGHTBOX ────────────────────────────────────────────────── */
+/* A stage for viewing one enlarged diagram at a time, not a document panel
+   — darker backdrop than .tnModal, no scrollable body. These are vector
+   SVGs, so opening them large is enough on its own; the page's viewport
+   meta doesn't disable pinch-zoom, so native pinch still works here for a
+   reader who wants to go further. z-index sits above .tnModal (250) since
+   the concept-toolkit diagrams open this from inside an already-open
+   concept modal. */
+.lightbox {
+  position: fixed; inset: 0; z-index: 260;
+  background: rgba(10,9,7,.94);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 16px;
+  padding: calc(24px + env(safe-area-inset-top)) calc(24px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) calc(24px + env(safe-area-inset-left));
+}
+.lightboxClose {
+  position: absolute; top: 14px; right: 14px;
+  background: none; border: none; color: rgba(245,240,232,.7);
+  font-size: 28px; line-height: 1; cursor: pointer; padding: 8px;
+  transition: color .2s;
+}
+.lightboxClose:hover { color: var(--tn-paper); }
+.lightboxImg {
+  max-width: 92vw; max-height: calc(100vh - 120px); max-height: calc(100dvh - 120px);
+  width: auto; height: auto; object-fit: contain;
+  background: #000; border-radius: 4px;
+}
+.lightboxCaption {
+  font-family: var(--tn-mono); font-size: 11px; color: rgba(245,240,232,.75);
+  letter-spacing: 0.04em; text-align: center; max-width: 640px;
+}
+
 /* ── INSTRUCTION / SENTENCE STARTERS / INPUTS (used inside modals) ────── */
 
 .instruction { background: var(--tn-paper-dark); border: 1px solid var(--tn-border); border-radius: 3px; padding: 16px 20px; font-size: 15px; line-height: 1.65; margin-bottom: 20px; }
@@ -697,7 +761,6 @@
 .ccCard { color: var(--tn-ink); }
 .ccTagline { font-family: var(--tn-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tn-ink-mid); margin-bottom: 16px; line-height: 1.5; }
 .ccIntro { font-size: 15px; line-height: 1.75; margin-bottom: 20px; }
-.ccDiagram { width: 100%; height: auto; display: block; margin: 20px 0; border-radius: 2px; }
 .ccSection { margin-bottom: 18px; }
 .ccSectionHeading { font-family: var(--tn-mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--tn-ink-light); margin-bottom: 6px; font-weight: normal; }
 .ccSectionBody { font-size: 14px; line-height: 1.7; margin: 0; }

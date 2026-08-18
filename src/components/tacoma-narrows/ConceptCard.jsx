@@ -1,4 +1,5 @@
 import s from './index.module.css'
+import DiagramLightbox from './DiagramLightbox.jsx'
 
 export default function ConceptCard({ concept }) {
   return (
@@ -7,7 +8,7 @@ export default function ConceptCard({ concept }) {
       <p className={s.ccIntro}>{concept.intro}</p>
 
       {concept.diagram && (
-        <img src={concept.diagram} alt={concept.diagramAlt} className={s.ccDiagram} />
+        <DiagramLightbox src={concept.diagram} alt={concept.diagramAlt} variant="concept" />
       )}
 
       {concept.sections.map(section => (
