@@ -164,6 +164,50 @@
 }
 .sidebarClose:hover { color: rgba(245,240,232,.95); }
 
+/* Below 900px the sidebar becomes a bottom-anchored panel (see the
+   responsive block) with this peek strip as its always-visible header,
+   dragging/tapping up to expand — same mechanic as Metacognition's mobile
+   activity panel. Hidden entirely above that width, where the sidebar is
+   the classic slide-in-from-the-left panel and .sidebarTrigger opens it. */
+.sbPeek { display: none; flex-shrink: 0; padding: 10px 12px 6px; }
+.sbPeekRow { display: flex; align-items: center; width: 100%; gap: 4px; }
+.sbPeekLabel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: var(--tn-paper);
+  font-family: var(--tn-mono);
+  font-size: 11px;
+  letter-spacing: .04em;
+  text-align: center;
+  padding: 4px;
+  cursor: pointer;
+}
+/* Open-corner chevron, same construction as the site's other chevron icons —
+   points up while collapsed ("drag/tap up to expand"), flips to point down
+   once expanded ("drag/tap down to collapse"). */
+.sbChev {
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid rgba(245,240,232,.5);
+  border-bottom: 2px solid rgba(245,240,232,.5);
+  flex-shrink: 0;
+  transform: rotate(-135deg);
+  transition: transform .25s ease;
+}
+.sbChev.sbChevOpen { transform: rotate(45deg); }
+.sbPeekHeaderLabel { width: 100%; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+/* Invisible to flex layout above 900px, so .sbHeader/.sbTabs/.sbBody/
+   .sbFooter keep acting as direct children of the flex-column .sidebar,
+   exactly as before this wrapper existed. Becomes a real flex column below
+   900px, next to .sbPeek, once the sidebar's own layout switches to row. */
+.sidebarMain { display: contents; }
+
 .sbHeader { padding: 22px 20px 16px; border-bottom: 1px solid rgba(245,240,232,.1); }
 .sbEyebrow {
   font-family: var(--tn-mono);
@@ -769,11 +813,35 @@
   .docTitle  { font-size: 33px; }
   .contentWrap { padding: 40px 24px 64px; }
 
-  /* Below this width the sidebar overlays content (with a backdrop) instead
-     of sharing the row with it, since there's no room to push .main over. */
-  .sidebar { top: 0; width: 300px; max-width: 84vw; }
-  .sidebarBackdrop { display: block; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 190; }
+  /* Below this width the sidebar leaves the row entirely and becomes a
+     bottom-anchored panel instead — a slim peek strip pinned to the bottom
+     edge, dragging or tapping up to expand into the full Activities/
+     Concepts menu, rather than sliding in from the side over a backdrop.
+     52px of headroom (topbar height + gap) is left at the top so the
+     sticky topbar is never fully covered when expanded. */
+  .sidebar {
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    max-width: none;
+    height: 54px;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -8px 28px rgba(0,0,0,.3);
+    transform: none;
+    overflow: hidden;
+    transition: height .32s cubic-bezier(.4,0,.2,1);
+  }
+  .sidebar.sidebarOpen { height: calc(100vh - 52px); height: calc(100dvh - 52px); }
+  .sidebarBackdrop { display: none; }
+  .sidebarTrigger { display: none; }
+  .sidebarClose { display: none; }
   .mainShifted { margin-left: 0; }
+
+  .sbPeek { display: flex; }
+  .sidebarMain { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; }
+  .sbFooter { padding-bottom: calc(14px + env(safe-area-inset-bottom)); }
 }
 
 @media (max-width: 600px) {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import s from './index.module.css'
 import CaseDocument from './CaseDocument.jsx'
 import ActivityModal from './ActivityModal.jsx'
@@ -206,6 +206,7 @@ export default function TacomaNarrowsLab({ backHref }) {
 
   function scrollToSection(id) {
     setActiveActivityId(null)
+    setSidebarOpen(false)
     setInstantExpand(true)
     setOpenSections(prev => new Set(prev).add(id))
     setTimeout(() => {
@@ -216,6 +217,39 @@ export default function TacomaNarrowsLab({ backHref }) {
 
   const completedCount = activities.filter(a => getActivityStatus(a.id, responses) === 'complete').length
   const progressPct = Math.round((completedCount / activities.length) * 100)
+
+  // Same drag-to-expand/collapse pattern as Metacognition's mobile activity
+  // panel: a drag is recognised the moment it crosses a small threshold in
+  // the "make sense" direction (up while collapsed, down while expanded),
+  // rather than waiting for the finger to lift. A plain tap still works via
+  // the click handler; `fired` stops it from also firing right after a drag
+  // already toggled the state.
+  const sbDragRef = useRef({ startY: 0, fired: false })
+
+  function handleSbPeekPointerDown(e) {
+    sbDragRef.current = { startY: e.clientY, fired: false }
+    try { e.currentTarget.setPointerCapture(e.pointerId) } catch {}
+  }
+  function handleSbPeekPointerMove(e) {
+    const drag = sbDragRef.current
+    if (drag.fired) return
+    const DRAG_THRESHOLD = 10
+    const deltaY = e.clientY - drag.startY
+    if (!sidebarOpen && deltaY < -DRAG_THRESHOLD) {
+      drag.fired = true
+      setSidebarOpen(true)
+    } else if (sidebarOpen && deltaY > DRAG_THRESHOLD) {
+      drag.fired = true
+      setSidebarOpen(false)
+    }
+  }
+  function handleSbPeekClick() {
+    if (sbDragRef.current.fired) {
+      sbDragRef.current.fired = false
+      return
+    }
+    setSidebarOpen(o => !o)
+  }
 
   return (
     <div className={s.shell}>
@@ -265,41 +299,59 @@ export default function TacomaNarrowsLab({ backHref }) {
       </nav>
 
       <aside className={`${s.sidebar} ${sidebarOpen ? s.sidebarOpen : ''}`}>
-        <button className={s.sidebarClose} onClick={() => setSidebarOpen(false)} aria-label="Close activity guide">×</button>
-
-        <div className={s.sbHeader}>
-          <div className={s.sbEyebrow}>Activity Guide</div>
-          <div className={s.sbTitle}>The Bridge That Shouldn't Have Failed</div>
-          <div className={s.sbSubtitle}>1940-TN-001 · Inquiry Tribunal</div>
-          <div className={s.sbProgressRow}>
-            {completedCount} of {activities.length} activities complete
-            <span className={s.sbProgressTrack}><span className={s.sbProgressFill} style={{ width: `${progressPct}%` }} /></span>
+        <div className={s.sbPeek}>
+          <div className={s.sbPeekRow}>
+            <button
+              className={s.sbPeekLabel}
+              onPointerDown={handleSbPeekPointerDown}
+              onPointerMove={handleSbPeekPointerMove}
+              onClick={handleSbPeekClick}
+              aria-expanded={sidebarOpen}
+              aria-label={sidebarOpen ? 'Collapse activity guide' : 'Expand activity guide'}
+            >
+              <span className={`${s.sbChev} ${sidebarOpen ? s.sbChevOpen : ''}`} />
+              <span className={s.sbPeekHeaderLabel}>Activities ({completedCount}/{activities.length})</span>
+            </button>
           </div>
         </div>
 
-        <div className={s.sbTabs}>
-          <button className={`${s.sbTab} ${sidebarTab === 'activities' ? s.sbTabActive : ''}`} onClick={() => setSidebarTab('activities')}>Activities</button>
-          <button className={`${s.sbTab} ${sidebarTab === 'concepts' ? s.sbTabActive : ''}`} onClick={() => setSidebarTab('concepts')}>Concepts</button>
-        </div>
+        <div className={s.sidebarMain}>
+          <button className={s.sidebarClose} onClick={() => setSidebarOpen(false)} aria-label="Close activity guide">×</button>
 
-        <div className={s.sbBody}>
-          {sidebarTab === 'activities'
-            ? <ActivitiesTab responses={responses} activeActivityId={activeActivityId} onOpenActivity={openActivity} />
-            : <ConceptsTab onOpenConcept={openConcept} />}
-        </div>
-
-        <div className={s.sbFooter}>
-          {confirmReset ? (
-            <div className={s.sbResetConfirm}>
-              <span>Clear all responses and start again?</span>
-              <div className={s.sbResetBtns}>
-                <button onClick={() => setConfirmReset(false)}>Cancel</button>
-                <button onClick={() => { setResponses({}); setConfirmReset(false) }}>Start again</button>
-              </div>
+          <div className={s.sbHeader}>
+            <div className={s.sbEyebrow}>Activity Guide</div>
+            <div className={s.sbTitle}>The Bridge That Shouldn't Have Failed</div>
+            <div className={s.sbSubtitle}>1940-TN-001 · Inquiry Tribunal</div>
+            <div className={s.sbProgressRow}>
+              {completedCount} of {activities.length} activities complete
+              <span className={s.sbProgressTrack}><span className={s.sbProgressFill} style={{ width: `${progressPct}%` }} /></span>
             </div>
-          ) : (
-            <button className={s.sbFooterBtn} onClick={() => setConfirmReset(true)}>Start again</button>
-          )}
+          </div>
+
+          <div className={s.sbTabs}>
+            <button className={`${s.sbTab} ${sidebarTab === 'activities' ? s.sbTabActive : ''}`} onClick={() => setSidebarTab('activities')}>Activities</button>
+            <button className={`${s.sbTab} ${sidebarTab === 'concepts' ? s.sbTabActive : ''}`} onClick={() => setSidebarTab('concepts')}>Concepts</button>
+          </div>
+
+          <div className={s.sbBody}>
+            {sidebarTab === 'activities'
+              ? <ActivitiesTab responses={responses} activeActivityId={activeActivityId} onOpenActivity={openActivity} />
+              : <ConceptsTab onOpenConcept={openConcept} />}
+          </div>
+
+          <div className={s.sbFooter}>
+            {confirmReset ? (
+              <div className={s.sbResetConfirm}>
+                <span>Clear all responses and start again?</span>
+                <div className={s.sbResetBtns}>
+                  <button onClick={() => setConfirmReset(false)}>Cancel</button>
+                  <button onClick={() => { setResponses({}); setConfirmReset(false) }}>Start again</button>
+                </div>
+              </div>
+            ) : (
+              <button className={s.sbFooterBtn} onClick={() => setConfirmReset(true)}>Start again</button>
+            )}
+          </div>
         </div>
       </aside>
 
