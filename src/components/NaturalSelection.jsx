@@ -374,7 +374,7 @@ export default function NaturalSelection() {
   return (
     <div className="ns-root">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
         .ns-root{
           --paper:#F4F0E7;--card:#FCFAF4;--border:#E4DDCE;--line:#EFE9DC;
           --ink:#23281F;--muted:#6E6B5E;--soft:#8A8677;
@@ -472,16 +472,16 @@ export default function NaturalSelection() {
         .ns-takeaway{font-size:14.5px;line-height:1.68;color:#3B4234;}
         .ns-takeaway p{margin:0 0 13px;} .ns-takeaway p:last-child{margin-bottom:0;} .ns-takeaway b{color:var(--ink);}
         .ns-pull{margin:0 0 16px;padding:20px 24px;background:var(--accent-wash);
-          border-radius:14px;font-family:'Fraunces',Georgia,serif;font-size:16px;line-height:1.55;font-weight:500;color:var(--ink);}
+          border-radius:14px;font-family:'Poppins',sans-serif;font-size:16px;line-height:1.55;font-weight:500;color:var(--ink);}
         .ns-concept{margin:16px 0;padding:16px 18px;background:var(--amber-wash);border:1px solid var(--amber-line);border-radius:12px;}
-        .ns-concept-term{font-weight:700;color:var(--amber);font-family:'Fraunces',Georgia,serif;font-size:15px;}
+        .ns-concept-term{font-weight:700;color:var(--amber);font-family:'Poppins',sans-serif;font-size:15px;}
         .ns-ingredients{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:9px;}
         .ns-ingredients li{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.5;color:#5A4A28;}
         .ns-ing-b{flex:0 0 auto;width:22px;height:22px;border-radius:6px;background:var(--amber);color:#fff;font-size:11px;font-weight:700;
           display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;margin-top:1px;}
         .ns-ing-b + span b{color:#3d2f12;}
 
-        .ns-quizhd{font-family:'Fraunces',Georgia,serif;font-size:20px;font-weight:600;margin:0 0 8px;color:var(--ink);}
+        .ns-quizhd{font-family:'Poppins',sans-serif;font-size:20px;font-weight:600;margin:0 0 8px;color:var(--ink);}
         .ns-quizprompt{font-size:14px;color:#40453A;margin:0 0 16px;line-height:1.5;}
         .ns-quizitem{margin-bottom:10px;}
         .ns-quizopt{display:block;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:13px 15px;cursor:pointer;transition:border-color .15s,background .15s;}
