@@ -279,6 +279,13 @@
   margin-bottom: 6px;
 }
 .statNum { font-size: 28px; font-weight: 800; display: block; }
+/* Sits right under the headline number, at the same glance, so a card reads
+   "7 months" before the reader ever gets to the fuller caption below — the
+   "17%" card already has this for free since the unit is part of the
+   number itself; the other two didn't, so their big number was meaningless
+   on its own. */
+.statUnit { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .04em; opacity: .8; margin-top: 2px; }
 .statLbl { font-size: 12px; opacity: .85; line-height: 1.4; margin-top: 4px; }
 
 /* ── SECTIONS ─────────────────────────────────────────────────────────── */

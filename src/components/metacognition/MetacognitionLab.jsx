@@ -817,22 +817,25 @@ export default function MetacognitionLab({ backHref }) {
               This review examines how metacognition (thinking about one's own thinking) functions as the cognitive engine of self-directed learning. Drawing on Flavell (1979), Brown (1987), Zimmerman (2002), Pintrich (2000, 2004), and Garrison (1997), it proposes a three-pillar integrative framework and a five-stage instructional model for cultivating metacognitive skills in learners.
             </div>
             <div className={s.statSection}>
-              <div className={s.statHeading}>What the research says.</div>
+              <div className={s.statHeading}>What the research says</div>
               <div className={s.statRow}>
                 <div className={s.statCard}>
                   <span className={s.statEyebrow}>Teaching impact</span>
                   <span className={s.statNum}><Counter target={7} /></span>
-                  <span className={s.statLbl}>months of extra progress per year when metacognitive strategies are explicitly taught (EEF, 2021)</span>
+                  <span className={s.statUnit}>months / year</span>
+                  <span className={s.statLbl}>of extra progress when metacognitive strategies are explicitly taught (EEF, 2021)</span>
                 </div>
                 <div className={s.statCard}>
                   <span className={s.statEyebrow}>Predicts achievement</span>
                   <span className={s.statNum}><Counter target={17} suffix="%" /></span>
-                  <span className={s.statLbl}>of student learning outcomes explained by metacognitive skill, more than IQ alone (Veenman, 2006)</span>
+                  <span className={s.statUnit}>of outcomes</span>
+                  <span className={s.statLbl}>explained by metacognitive skill, more than IQ alone (Veenman, 2006)</span>
                 </div>
                 <div className={s.statCard}>
                   <span className={s.statEyebrow}>Evidence base</span>
                   <span className={s.statNum}><Counter target={355} /></span>
-                  <span className={s.statLbl}>studies reviewed, effective across literacy, maths, and science (EEF, 2021)</span>
+                  <span className={s.statUnit}>studies reviewed</span>
+                  <span className={s.statLbl}>effective across literacy, maths, and science (EEF, 2021)</span>
                 </div>
               </div>
             </div>
