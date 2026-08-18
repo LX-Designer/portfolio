@@ -14,10 +14,10 @@ export default function WelcomeModal({ onBegin }) {
 
         <div className={s.briefingBody}>
           <p className={s.briefingText}>
-            You are a junior analyst assigned to the post-collapse inquiry tribunal of the Tacoma
-            Narrows bridge. All evidence in this case file has been provided to you. Your task is
-            to work through the inquiry activities, examine the data, evaluate competing expert
-            claims, and ultimately produce a tribunal report explaining the failure mechanism.
+            In 1940, the Tacoma Narrows bridge in Pierce County, Washington collapsed. You are a
+            junior analyst assigned to the post-collapse inquiry tribunal. Your task is to work
+            through the inquiry activities, examine the data, evaluate competing expert claims,
+            and ultimately produce a tribunal report explaining the failure mechanism.
           </p>
           <ol className={s.briefingSteps}>
             <li>Open each section of the file to examine the evidence</li>
