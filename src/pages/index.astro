@@ -7,7 +7,7 @@ import { pieces, getPiece } from '../data/pieces.js';
 import heroImage from '../assets/images/hero.png';
 import profileImage from '../assets/images/profile-pic.jpeg';
 
-const featuredSlugs = ['cumulative-advantage-explorable', 'interactive-alignment-map', 'tacoma-narrows-inquiry-lab'];
+const featuredSlugs = ['reaction-rate-simulator', 'interactive-alignment-map', 'tacoma-narrows-inquiry-lab'];
 const featured = featuredSlugs.map(getPiece);
 const rest = pieces.filter((p) => !featuredSlugs.includes(p.slug));
 const allPieces = [...featured, ...rest];
@@ -46,7 +46,7 @@ const allPieces = [...featured, ...rest];
             <button class="fpill active" data-value="all" aria-pressed="true">All</button>
             <button class="fpill" data-value="higher-ed" aria-pressed="false">Higher Ed</button>
             <button class="fpill" data-value="lnd" aria-pressed="false">Learning &amp; Development</button>
-            <button class="fpill" data-value="k12" aria-pressed="false">K-12</button>
+            <button class="fpill" data-value="k12" aria-pressed="false">Senior Secondary</button>
           </div>
         </div>
         <div class="filter-group">

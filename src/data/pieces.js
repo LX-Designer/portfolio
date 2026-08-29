@@ -9,7 +9,7 @@
 export const sectors = {
   'higher-ed': 'Higher Ed',
   'lnd': 'Learning & Development',
-  'k12': 'K-12',
+  'k12': 'Senior Secondary',
 };
 
 export const pieceTypes = {
@@ -32,15 +32,15 @@ export const pieces = [
     cardBody: "An interactive demonstrating an experiential approach to building conceptual understanding. Learners hunt moths in a simulated environment and breed the survivors to observe natural selection in action. They apply what they've learned by identifying the same mechanism at work in other real-world scenarios.",
   },
   {
-    slug: 'cumulative-advantage-explorable', category: 'interactive', tag: 'Tertiary Education',
-    sector: 'higher-ed', type: 'interactive',
-    title: 'Cumulative Advantage Explorable',
-    is: 'Build a music chart one listener at a time and watch a moderately good song snowball into a runaway hit from nothing but an accidental early lead, then compare it against a world where listeners can’t see the charts at all. A recreation of the 2006 Music Lab experiment.',
-    demonstrates: 'Modelling a systems-level concept, path dependency, through direct manipulation rather than description.',
-    island: 'CumulativeAdvantage',
+    slug: 'reaction-rate-simulator', category: 'interactive', tag: 'Concept',
+    sector: 'k12', type: 'interactive',
+    title: 'Reaction Rate Simulator',
+    is: 'A live particle collision simulation, driven by two continuous sliders (temperature and activation energy) instead of discrete choices, so cause and effect in collision theory update smoothly as the inputs change.',
+    demonstrates: 'A different simulation mechanic: continuous cause-and-effect rather than discrete decisions.',
+    island: 'ReactionRateSimulator',
     // Card-only override: this card's body copy differs from the "is" text
     // used on its own standalone page.
-    cardBody: 'An interactive explorable demonstrating a discovery-based approach to building conceptual understanding. Learners run an experiment across several simulated worlds, observe the results, and check their understanding of the concept (cumulative advantage) via a question set.',
+    cardBody: 'A chemistry lab simulator that demonstrates an observational approach to building conceptual understanding. Learners manipulate variables and observe the results before checking their understanding of the key features of the concept (collision theory) via a question set.',
   },
   {
     slug: 'metacognition-literature-review', category: 'interactive', tag: 'Professional Development',
@@ -104,15 +104,15 @@ export const pieces = [
     standalonePage: true,
   },
   {
-    slug: 'reaction-rate-simulator', category: 'interactive', tag: 'Concept',
-    sector: 'k12', type: 'interactive',
-    title: 'Reaction Rate Simulator',
-    is: 'A live particle collision simulation, driven by two continuous sliders (temperature and activation energy) instead of discrete choices, so cause and effect in collision theory update smoothly as the inputs change.',
-    demonstrates: 'A different simulation mechanic: continuous cause-and-effect rather than discrete decisions.',
-    island: 'ReactionRateSimulator',
+    slug: 'cumulative-advantage-explorable', category: 'interactive', tag: 'Tertiary Education',
+    sector: 'higher-ed', type: 'interactive',
+    title: 'Cumulative Advantage Explorable',
+    is: 'Build a music chart one listener at a time and watch a moderately good song snowball into a runaway hit from nothing but an accidental early lead, then compare it against a world where listeners can’t see the charts at all. A recreation of the 2006 Music Lab experiment.',
+    demonstrates: 'Modelling a systems-level concept, path dependency, through direct manipulation rather than description.',
+    island: 'CumulativeAdvantage',
     // Card-only override: this card's body copy differs from the "is" text
     // used on its own standalone page.
-    cardBody: 'A chemistry lab simulator that demonstrates an observational approach to building conceptual understanding. Learners manipulate variables and observe the results before checking their understanding of the key features of the concept (collision theory) via a question set.',
+    cardBody: 'An interactive explorable demonstrating a discovery-based approach to building conceptual understanding. Learners run an experiment across several simulated worlds, observe the results, and check their understanding of the concept (cumulative advantage) via a question set.',
   },
 
   // ── Assessment Strategies & Design ──
