@@ -81,6 +81,29 @@ export const pieces = [
     standalonePage: true,
   },
   {
+    slug: 'encryption-lesson', category: 'interactive', tag: 'Senior Secondary',
+    sector: 'k12', type: 'interactive',
+    title: 'Encryption: Keeping Data Secret',
+    is: 'An interactive Cambridge A Level Computer Science lesson on encryption. Crack a Caesar cipher by brute force, run a symmetric vs asymmetric key exchange simulation against an eavesdropper, break a password hash guess-and-check style, inspect a real certificate\'s fields, then complete a four-step secure login task and receive a full security audit of the choices made.',
+    demonstrates: 'Building a full lesson page as five connected widgets that escalate toward one applied scenario, rather than one interactive dropped into static content.',
+    // This piece is a self-contained lesson page (its own topbar, hero, five
+    // console widgets) built as static HTML/CSS/JS rather than a React
+    // island — served directly via iframe so it renders exactly as designed
+    // with no porting risk, same as the other standalone pieces below.
+    iframeSrc: '/encryption-lesson/index.html',
+    // Card-only override: this card's body copy differs from the "is" text
+    // used on its own standalone page.
+    cardBody: 'This lesson demonstrates a build-then-apply structure. Learners explore five connected simulations, from cracking a Caesar cipher to a live key-exchange demo, before applying everything in a branching task: securing a bank login, then receiving a full audit of their decisions.',
+    // This piece is a full-page lesson with its own topbar and progress
+    // indicator that doesn't suit the compact preview modal — send it to its
+    // standalone page in a new tab instead, like a normal link.
+    openInNewTab: true,
+    // The asset has its own full-page chrome (topbar, hero, footer nav) —
+    // render it without the portfolio's own nav/breadcrumb/footer so it reads
+    // as its own standalone tool, not an embed in a page.
+    standalonePage: true,
+  },
+  {
     slug: 'reaction-rate-simulator', category: 'interactive', tag: 'Concept',
     sector: 'k12', type: 'interactive',
     title: 'Reaction Rate Simulator',

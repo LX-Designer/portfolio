@@ -46,9 +46,13 @@ const MOBILE_BODY_BG = {
     <div id="piece-asset">
       {piece.island === 'TacomaNarrowsLab' ? (
         <TacomaNarrowsLab client:only="react" backHref="/#portfolio" />
-      ) : (
+      ) : piece.island === 'MetacognitionLab' ? (
         <MetacognitionLab client:only="react" backHref="/#portfolio" />
-      )}
+      ) : piece.iframeSrc ? (
+        // Static HTML/CSS/JS piece, not a React island — rendered via iframe
+        // rather than ported, so it behaves exactly as designed.
+        <iframe class="standalone-iframe" src={piece.iframeSrc} title={piece.title} />
+      ) : null}
     </div>
   </BaseLayout>
 ) : (
@@ -98,3 +102,13 @@ const MOBILE_BODY_BG = {
     <SubFooter />
   </BaseLayout>
 )}
+
+<style>
+  .standalone-iframe {
+    display: block;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    border: none;
+  }
+</style>

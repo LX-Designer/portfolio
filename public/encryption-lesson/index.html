@@ -1,0 +1,1986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lesson 3: Encryption | Cambridge A Level Computer Science</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#EEF1F4;
+    --paper:#FFFFFF;
+    --ink:#12182B;
+    --ink-soft:#525C70;
+    --ink-faint:#666C79;
+    --brass:#B8792E;
+    --brass-deep:#8F5A1E;
+    --brass-light:#E9AC5C;
+    --brass-ink:#946125;
+    --cyan:#0E9C93;
+    --cyan-light:#5EEAD4;
+    --cyan-ink:#0B7972;
+    --rust:#B24B3C;
+    --rust-light:#E7A79C;
+    --line:#DDE1E6;
+    --console-bg:#0D1220;
+    --console-bg-2:#141B30;
+    --console-line:#2A3355;
+    --console-amber:#F0BE72;
+    --console-cyan:#6FE7DA;
+    --console-rust:#E28A78;
+    --console-text:#C9D2E3;
+    --font-display:'Fraunces', serif;
+    --font-body:'IBM Plex Sans', -apple-system, sans-serif;
+    --font-mono:'IBM Plex Mono', 'Courier New', monospace;
+    --radius:14px;
+    --shadow-card:0 1px 2px rgba(18,24,43,0.06), 0 8px 24px -12px rgba(18,24,43,0.18);
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.6;
+  }
+  h1,h2,h3{ font-family:var(--font-display); font-weight:600; margin:0; color:var(--ink); }
+  p{ margin:0 0 1rem 0; color:var(--ink-soft); }
+  a{ color:var(--cyan-ink); }
+  .mono{ font-family:var(--font-mono); }
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    background:var(--paper);
+    border-bottom:1px solid var(--line);
+    font-size:0.82rem;
+    color:var(--ink-faint);
+    padding:0.85rem 1.75rem;
+  }
+  .topbar-inner{
+    max-width:880px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:1rem; flex-wrap:wrap;
+  }
+  .crumb b{ color:var(--ink); font-weight:600; }
+  .crumb-sep{ margin:0 0.35rem; color:var(--line); }
+  .progress-dots{ display:flex; align-items:center; gap:0.4rem; }
+  .progress-dots .dot{
+    width:8px; height:8px; border-radius:50%;
+    background:var(--line);
+  }
+  .progress-dots .dot.active{
+    background:var(--brass);
+    width:22px; border-radius:5px;
+  }
+  .progress-dots .dot.done{ background:var(--brass-light); }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;
+    background:radial-gradient(120% 160% at 85% -20%, #1B2340 0%, var(--console-bg) 55%);
+    color:#EDEFF6;
+    overflow:hidden;
+    padding:3.5rem 1.75rem 3rem;
+  }
+  .hero-disk{
+    position:absolute;
+    top:-90px; right:-90px;
+    width:420px; height:420px;
+    opacity:0.16;
+    animation:spin 140s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .hero-inner{
+    max-width:880px; margin:0 auto; position:relative; z-index:1;
+  }
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:0.78rem;
+    letter-spacing:0.12em;
+    color:var(--console-amber);
+    text-transform:uppercase;
+    margin-bottom:0.9rem;
+  }
+  .hero-title{
+    font-size:clamp(2.1rem, 4.4vw, 3.1rem);
+    line-height:1.08;
+    color:#FAFAF7;
+    max-width:16ch;
+  }
+  .hero-sub{
+    margin-top:1rem;
+    font-size:1.08rem;
+    color:#B7C0DA;
+    max-width:52ch;
+  }
+  .meta-row{
+    display:flex; flex-wrap:wrap; gap:0.6rem;
+    margin-top:1.5rem;
+  }
+  .meta-chip{
+    font-family:var(--font-mono);
+    font-size:0.78rem;
+    color:var(--console-text);
+    border:1px solid var(--console-line);
+    background:rgba(255,255,255,0.03);
+    padding:0.35rem 0.7rem;
+    border-radius:999px;
+  }
+  .lo-box{
+    margin-top:2rem;
+    border-top:1px solid var(--console-line);
+    padding-top:1.5rem;
+  }
+  .lo-statement{
+    display:flex; gap:0.75rem; align-items:flex-start;
+    color:#D6DCEE; font-size:1.02rem; line-height:1.5; margin:0;
+  }
+  .lo-statement::before{
+    content:"";
+    flex:none;
+    width:20px; height:20px; margin-top:0.2rem;
+    border-radius:50%;
+    border:1.5px solid var(--brass-light);
+    background:radial-gradient(circle, var(--brass-light) 0 4px, transparent 4.5px);
+  }
+
+  .task-steps{
+    counter-reset:task-step;
+    list-style:none; margin:1.1rem 0 1.4rem; padding:0;
+    display:grid; gap:0.65rem;
+  }
+  .task-steps li{
+    display:flex; gap:0.75rem; align-items:flex-start;
+    color:var(--ink); font-size:1.02rem; line-height:1.5;
+  }
+  .task-steps li::before{
+    content:counter(task-step);
+    counter-increment:task-step;
+    flex:none;
+    width:26px; height:26px; margin-top:0.05rem;
+    border-radius:50%;
+    border:1.5px solid var(--brass-light);
+    background:rgba(233,172,92,0.12);
+    color:#875616;
+    font-family:var(--font-mono); font-size:0.82rem; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* ---------- Page ---------- */
+  .page{ max-width:880px; margin:0 auto; padding:3.2rem 1.75rem 1rem; }
+  .section{ margin-bottom:4rem; }
+  .section-head{
+    font-family:var(--font-mono);
+    font-size:0.78rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--brass-ink);
+    margin-bottom:0.7rem;
+    display:flex; align-items:center; gap:0.6rem;
+  }
+  .section-head::after{
+    content:"";
+    height:1px; flex:1;
+    background:var(--line);
+  }
+  .section h2{ font-size:1.7rem; margin-bottom:0.9rem; }
+  .hook{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:1.6rem 1.8rem;
+    box-shadow:var(--shadow-card);
+    margin-bottom:4rem;
+  }
+  .hook p{ font-size:1.06rem; color:var(--ink); margin:0; }
+  .hook p + p{ margin-top:0.8rem; }
+
+  .reveal{ opacity:0; transform:translateY(14px); transition:opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.in-view{ opacity:1; transform:translateY(0); }
+
+  /* ---------- Focus states ---------- */
+  a:focus-visible, button:focus-visible, input:focus-visible{
+    outline:2px solid var(--brass-ink);
+    outline-offset:2px;
+    border-radius:6px;
+  }
+  .console a:focus-visible, .console button:focus-visible, .console input:focus-visible,
+  .hero a:focus-visible, .hero button:focus-visible{
+    outline:2px solid var(--console-amber);
+    outline-offset:2px;
+  }
+
+  /* ---------- Console (dark interactive panels) ---------- */
+  .console{
+    background:linear-gradient(180deg, var(--console-bg-2), var(--console-bg));
+    border:1px solid var(--console-line);
+    border-radius:var(--radius);
+    padding:1.6rem 1.7rem 1.8rem;
+    margin:1.6rem 0;
+    color:var(--console-text);
+    position:relative;
+    box-shadow:0 20px 40px -24px rgba(9,12,26,0.55);
+  }
+  .console::before{
+    content:"";
+    position:absolute; inset:0;
+    border-radius:var(--radius);
+    pointer-events:none;
+    background-image:repeating-linear-gradient(180deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 3px);
+    opacity:0.5;
+  }
+  .console-head{
+    display:flex; align-items:center; gap:0.5rem;
+    font-family:var(--font-mono);
+    font-size:0.74rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--console-cyan);
+    margin-bottom:1.2rem;
+  }
+  .console-head .lamp{
+    width:8px; height:8px; border-radius:50%;
+    background:var(--console-cyan);
+    box-shadow:0 0 8px 1px var(--console-cyan);
+  }
+  .console label{
+    display:block;
+    font-size:0.82rem;
+    color:#93A0C2;
+    margin-bottom:0.4rem;
+    font-family:var(--font-mono);
+  }
+  .console input[type="text"]{
+    width:100%;
+    background:#080B16;
+    border:1px solid var(--console-line);
+    color:var(--console-amber);
+    font-family:var(--font-mono);
+    /* 16px, not the 0.98rem this started at: iOS Safari auto-zooms the page
+       on focus for any text input under 16px, and that zoom doesn't reliably
+       reset on blur. Staying at/above the threshold avoids it entirely. */
+    font-size:1rem;
+    padding:0.65rem 0.8rem;
+    border-radius:8px;
+    outline:none;
+  }
+  .console input[type="text"]:focus{ border-color:var(--console-amber); }
+  .console input[type="range"]{
+    width:100%; accent-color:var(--console-amber);
+  }
+  .console input:disabled{ opacity:0.5; cursor:not-allowed; }
+  .row-inline{ display:flex; align-items:center; gap:0.7rem; flex-wrap:wrap; margin-bottom:1.1rem; }
+  .field{ margin-bottom:1.1rem; }
+  .console .btn{
+    font-family:var(--font-mono);
+    font-size:0.82rem;
+    background:transparent;
+    color:var(--console-amber);
+    border:1px solid var(--brass);
+    padding:0.55rem 1rem;
+    border-radius:8px;
+    cursor:pointer;
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  .console .btn:hover{ background:var(--brass); color:#1A1206; }
+  .console .btn.cyan{ border-color:var(--cyan-light); color:var(--console-cyan); }
+  .console .btn.cyan:hover{ background:var(--cyan-light); color:#062521; }
+  .console .btn:disabled{ opacity:0.4; cursor:not-allowed; }
+  .console .btn:disabled:hover{ background:transparent; color:var(--console-amber); }
+
+  .brute-list{
+    margin-top:1rem;
+    border:1px solid var(--console-line);
+    border-radius:8px;
+    background:#080B16;
+  }
+  .brute-list.hidden{ display:none; }
+  @keyframes bruteRowIn{
+    from{ opacity:0; transform:translateY(-4px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  @keyframes crackPulse{
+    0%{ box-shadow:0 0 0 0 rgba(94,234,212,0.55); }
+    70%{ box-shadow:0 0 0 10px rgba(94,234,212,0); }
+    100%{ box-shadow:0 0 0 0 rgba(94,234,212,0); }
+  }
+  .brute-row{
+    display:flex; gap:0.8rem; align-items:center;
+    padding:0.65rem 0.8rem;
+    font-family:var(--font-mono);
+    font-size:0.95rem;
+    border-bottom:1px solid #171F35;
+    animation:bruteRowIn 0.18s ease-out;
+  }
+  .brute-row .shift-n{ color:#7583A8; width:3.4rem; flex:none; }
+  .brute-row .attempt{ color:#9AA6C4; }
+  .brute-row.match{ background:rgba(94,234,212,0.08); }
+  .brute-row.match .attempt{ color:var(--console-cyan); font-weight:600; }
+  .brute-row.match .shift-n::after{ content:" ✓"; color:var(--console-cyan); }
+  .brute-row.crack-flash{ animation:crackPulse 0.7s ease-out; }
+
+  .attempt .reel-cell{
+    display:inline-block; width:1ch; height:1.3em; line-height:1.3em;
+    overflow:hidden; vertical-align:middle; position:relative;
+  }
+  .attempt .reel-strip{
+    display:block;
+    transition-property:transform;
+    transition-timing-function:linear;
+    will-change:transform;
+  }
+  .attempt .reel-letter{
+    display:block; height:1.3em; line-height:1.3em; text-align:center;
+  }
+
+  .brute-summary{
+    padding:0.65rem 0.8rem;
+    font-family:var(--font-mono); font-size:0.85rem;
+    color:var(--console-text);
+    border-bottom:1px solid #171F35;
+  }
+  .brute-summary b{ color:var(--console-cyan); }
+
+  .mini-cyu{
+    padding:0.9rem 0.8rem 1rem;
+    opacity:0; transform:translateY(8px);
+    transition:opacity 0.4s ease, transform 0.4s ease;
+  }
+  .mini-cyu.show{ opacity:1; transform:translateY(0); }
+  .mini-cyu-label{
+    font-family:var(--font-mono); font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--console-cyan); margin-bottom:0.5rem;
+  }
+  .mini-cyu-q{ font-size:0.92rem; color:#fff; margin-bottom:0.7rem; font-weight:600; }
+  .mini-cyu-options{ display:grid; gap:0.45rem; }
+  .mini-cyu-option{
+    text-align:left; padding:0.5rem 0.75rem; border-radius:8px;
+    border:1px solid var(--console-line); background:rgba(255,255,255,0.03);
+    color:var(--console-text); font-family:var(--font-body); font-size:0.86rem;
+    cursor:pointer; transition:border-color 0.15s ease, background 0.15s ease;
+  }
+  .mini-cyu-option:hover:not(:disabled){ border-color:var(--console-amber); }
+  .mini-cyu-option:disabled{ cursor:default; }
+  .mini-cyu-option.correct{ background:rgba(74,222,128,0.14); border-color:#4ADE80; color:#fff; }
+  .mini-cyu-option.incorrect{ background:rgba(226,138,120,0.12); border-color:var(--console-rust); color:#fff; }
+  .mini-cyu-feedback{ margin-top:0.6rem; font-size:0.84rem; color:#93A0C2; display:none; }
+  .mini-cyu-feedback.show{ display:block; }
+  .mini-cyu-feedback.ok{ color:#4ADE80; }
+
+  /* ---------- Mission (closing challenge) ---------- */
+  .setup-strip-label{
+    font-family:var(--font-mono); font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase;
+    color:#5c6784; margin-bottom:0.5rem;
+  }
+  .setup-strip{ display:flex; flex-wrap:wrap; gap:0.6rem; margin-bottom:1.6rem; }
+  .setup-chip{
+    flex:1 1 auto; min-width:120px;
+    display:flex; flex-direction:column; gap:0.15rem;
+    padding:0.55rem 0.75rem; border-radius:8px;
+    border:1px solid var(--console-line); background:var(--console-bg-2);
+    transition:border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  }
+  .setup-chip.active{
+    border-color:var(--console-cyan);
+    box-shadow:0 0 12px rgba(111,231,218,0.4);
+  }
+  .setup-chip-label{
+    font-family:var(--font-mono); font-size:0.65rem; letter-spacing:0.08em; text-transform:uppercase;
+    color:#5c6784;
+  }
+  .setup-chip-value{
+    font-size:0.82rem; font-weight:600; color:#4A5578;
+    opacity:0.5; transition:opacity 0.35s ease, color 0.3s ease;
+  }
+  .setup-chip.filled .setup-chip-value{ opacity:1; color:var(--console-text); }
+  .setup-chip.node-pass{ border-color:#4ADE80; background:rgba(74,222,128,0.08); }
+  .setup-chip.node-pass .setup-chip-value{ color:#8CEBAE; opacity:1; }
+  .setup-chip.node-fail{ border-color:var(--console-rust); background:rgba(226,138,120,0.1); }
+  .setup-chip.node-fail .setup-chip-value{ color:#F3B3A4; opacity:1; }
+  .setup-chip.node-moot{ border-color:var(--console-line); opacity:0.55; }
+  .setup-chip.node-warn{ border-color:var(--console-amber); background:rgba(240,190,114,0.1); }
+  .setup-chip.node-warn .setup-chip-value{ color:var(--console-amber); opacity:1; }
+
+  .mission-phase{ display:none; }
+  .mission-phase.active{ display:block; }
+  .mission-phase-head{ margin-bottom:1rem; border-bottom:1px solid var(--console-line); padding-bottom:0.8rem; }
+  .mission-phase-title{ font-size:1.05rem; color:var(--console-cyan); margin-bottom:0.2rem; font-weight:600; }
+  .mission-phase-subtitle{ font-family:var(--font-mono); font-size:0.78rem; color:#7583A8; }
+  .mission-scenario{ line-height:1.6; margin-bottom:1.2rem; font-size:0.94rem; color:var(--console-text); }
+
+  .mission-options{ display:grid; grid-template-columns:1fr; gap:0.75rem; margin-bottom:1.2rem; }
+  .mission-options.two-col{ grid-template-columns:1fr; }
+  @media (min-width:600px){
+    .mission-options.two-col{ grid-template-columns:1fr 1fr; }
+  }
+  .mission-option-card{
+    background:#080B16; border:1px solid var(--console-line); border-radius:8px;
+    padding:0.9rem 1rem; cursor:pointer;
+    transition:border-color 0.15s ease, transform 0.1s ease, background 0.15s ease;
+  }
+  .mission-option-card:hover{ border-color:var(--console-amber); transform:translateY(-1px); }
+  .mission-option-card.selected{ border-color:var(--console-cyan); background:rgba(111,231,218,0.08); }
+  .mission-option-card h4{ font-size:0.92rem; margin-bottom:0.4rem; color:#fff; }
+  .mission-option-card p{ font-size:0.82rem; color:#93A0C2; line-height:1.5; margin:0.15rem 0; }
+
+  .mission-wire{
+    background:#080B16; border:1px dashed var(--console-line); border-radius:8px;
+    padding:1rem; margin-bottom:1.2rem; text-align:center;
+    font-family:var(--font-mono); font-size:0.86rem; color:var(--console-text);
+  }
+  .mission-wire .wire-eve{ color:var(--console-rust); }
+
+  .mission-next{ display:none; margin-left:auto; }
+  .mission-next.visible{ display:inline-block; }
+  .mission-nav{ display:flex; align-items:center; gap:0.7rem; }
+  .mission-prev{
+    font-family:var(--font-mono); font-size:0.82rem;
+    background:transparent; color:#7583A8; border:1px solid var(--console-line);
+    padding:0.55rem 1rem; border-radius:8px; cursor:pointer;
+    transition:border-color 0.15s ease, color 0.15s ease;
+  }
+  .mission-prev:hover{ border-color:var(--console-amber); color:var(--console-amber); }
+
+  .audit-verdict{
+    padding:1rem 1.1rem; border-radius:8px; margin-bottom:1.2rem;
+    font-size:0.98rem; font-weight:600;
+  }
+  .audit-verdict.secure{ background:rgba(74,222,128,0.1); border:1px solid #4ADE80; color:#8CEBAE; }
+  .audit-verdict.compromised{ background:rgba(226,138,120,0.1); border:1px solid var(--console-rust); color:#F3B3A4; }
+
+  .audit-row{
+    padding:0.9rem 1rem; border-radius:8px; margin-bottom:0.7rem;
+    border:1px solid var(--console-line); background:#080B16;
+  }
+  .audit-row-head{ display:flex; align-items:baseline; gap:0.5rem; margin-bottom:0.3rem; }
+  .audit-row-title{ font-weight:600; font-size:0.9rem; color:#fff; }
+  .audit-row-choice{ font-family:var(--font-mono); font-size:0.78rem; color:#7583A8; margin-bottom:0.4rem; }
+  .audit-row-note{ font-size:0.86rem; line-height:1.5; color:var(--console-text); }
+  .audit-row.pass{ border-color:#4ADE80; }
+  .audit-row.fail{ border-color:var(--console-rust); }
+  .audit-row.moot{ border-color:var(--console-line); opacity:0.85; }
+
+  .mission-complete-summary{ font-size:0.9rem; color:#93A0C2; margin:1rem 0 0 0; padding-top:1rem; border-top:1px solid var(--console-line); }
+
+  .sr-only{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+    overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+  }
+
+  .helper-text{ font-size:0.86rem; color:#7583A8; margin-top:0.9rem; }
+  .helper-text.intro-text{ margin-top:0; margin-bottom:1.3rem; }
+
+  /* ---------- Compare grid ---------- */
+  .compare-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:1.2rem;
+    margin-bottom:0.4rem;
+  }
+  .compare-card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:1.3rem 1.4rem;
+    box-shadow:var(--shadow-card);
+  }
+  .compare-card h4{
+    font-family:var(--font-mono);
+    font-size:0.82rem;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    margin:0 0 0.6rem 0;
+  }
+  .compare-card.symmetric h4{ color:var(--brass-deep); }
+  .compare-card.asymmetric h4{ color:var(--cyan-ink); }
+  .compare-card p{ font-size:0.94rem; margin:0; }
+
+  /* ---------- Key exchange simulator ---------- */
+  .mode-toggle{ display:inline-flex; border:1px solid var(--console-line); border-radius:999px; padding:3px; margin-bottom:0.3rem; }
+  .mode-toggle button{
+    font-family:var(--font-mono); font-size:0.8rem;
+    padding:0.4rem 0.9rem; border-radius:999px; border:none;
+    background:transparent; color:#8894B8; cursor:pointer;
+  }
+  .mode-toggle button.active{ background:var(--brass); color:#1A1206; }
+  .mode-toggle button:disabled{ opacity:0.45; cursor:not-allowed; }
+  .eve-toggle{
+    display:inline-flex; align-items:center; gap:0.45rem;
+    font-family:var(--font-mono); font-size:0.8rem; color:#8894B8;
+    margin-left:0.8rem;
+  }
+  .eve-toggle input{ accent-color:var(--rust); }
+  .eve-toggle input:disabled{ opacity:0.5; cursor:not-allowed; }
+  .mode-desc{ font-size:0.88rem; color:#93A0C2; margin:0.7rem 0 1rem 0; min-height:2.4em; }
+
+  .sim-wrap{ display:grid; gap:1.2rem; }
+  .sim-svg{ width:100%; height:auto; display:block; }
+  .sim-actions{ display:flex; gap:0.7rem; align-items:center; flex-wrap:wrap; margin-top:0.2rem; }
+
+  .sim-outcome{
+    border-radius:10px; padding:1rem 1.1rem;
+    border:1px solid var(--console-line);
+    background:#080B16;
+    font-size:0.92rem;
+    display:flex; gap:0.7rem; align-items:flex-start;
+  }
+  .sim-outcome .icon{ font-size:1.2rem; line-height:1; }
+  .sim-outcome.state-safe{ border-color:rgba(94,234,212,0.35); }
+  .sim-outcome.state-breached{ border-color:rgba(226,138,120,0.4); }
+  .sim-outcome .msg{ color:var(--console-text); }
+  .sim-outcome .msg b{ color:#fff; }
+
+  .intercept-log{
+    font-family:var(--font-mono); font-size:0.8rem; color:#7583A8;
+    list-style:none; margin:0; padding:0;
+    display:grid; gap:0.35rem;
+    justify-items:center; text-align:center;
+    margin-top:-0.4rem;
+  }
+  .intercept-log li b{ color:var(--console-amber); }
+  .intercept-log li.ok b{ color:var(--console-cyan); }
+
+  /* ---------- Hash playground ---------- */
+  .hash-tabs{
+    flex-wrap:wrap;
+    border:none;
+    padding:0;
+    gap:0.5rem;
+  }
+  .hash-tabs button{
+    border:1px solid var(--console-line);
+  }
+  .hash-tabs button.active{
+    border-color:var(--brass);
+  }
+  .hash-panel{ margin-top:1rem; }
+  .hash-pair{ display:grid; gap:1rem; grid-template-columns:1fr 1fr; margin-top:1rem; }
+  .hash-pair-label{ display:block; font-size:0.82rem; color:#93A0C2; margin-bottom:0.4rem; font-family:var(--font-mono); }
+  .hash-out{
+    font-family:var(--font-mono); font-size:0.92rem;
+    background:#080B16; border:1px solid var(--console-line); border-radius:8px;
+    padding:0.7rem 0.8rem; margin-top:0.4rem; color:var(--console-amber);
+    word-break:break-all;
+  }
+  .hash-out.diff-hint{ color:var(--console-cyan); }
+  .hash-stat{ font-size:0.84rem; color:#93A0C2; margin:0.7rem 0; }
+  .hash-stat b{ color:var(--console-amber); }
+
+  .hash-presets{ display:flex; flex-wrap:wrap; gap:0.5rem; margin:0.9rem 0 0; }
+  .hash-preset-btn{
+    font-family:var(--font-mono); font-size:0.78rem;
+    padding:0.4rem 0.75rem; border-radius:999px;
+    border:1px solid var(--console-line); background:transparent;
+    color:#93A0C2; cursor:pointer;
+    transition:border-color 0.15s ease, color 0.15s ease;
+  }
+  .hash-preset-btn:hover{ border-color:var(--console-amber); color:var(--console-amber); }
+
+  .hash-candidates{ display:flex; flex-wrap:wrap; gap:0.5rem; margin:1rem 0 0.8rem; }
+  .hash-candidate{
+    font-family:var(--font-mono); font-size:0.86rem;
+    padding:0.5rem 0.9rem; border-radius:8px;
+    border:1px solid var(--console-line); background:rgba(255,255,255,0.03);
+    color:var(--console-text); cursor:pointer;
+    transition:border-color 0.15s ease, background 0.15s ease;
+  }
+  .hash-candidate:hover:not(:disabled){ border-color:var(--console-amber); }
+  .hash-candidate:disabled{ cursor:default; }
+  .hash-candidate.correct{ background:rgba(94,234,212,0.15); border-color:var(--console-cyan); color:#fff; }
+  .hash-candidate.incorrect{ background:rgba(226,138,120,0.1); border-color:var(--console-rust); }
+  .hash-guess-count{ font-family:var(--font-mono); font-size:0.8rem; color:#7583A8; }
+  .hash-guess-feedback{ margin-top:0.6rem; font-size:0.86rem; color:var(--console-text); min-height:1.3em; }
+  .hash-guess-feedback.ok{ color:var(--console-cyan); }
+  .hash-guess-feedback .mono{ font-family:var(--font-mono); }
+
+  /* ---------- Browser mock (certificate section) ---------- */
+  .browser-mock{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow-card); overflow:visible; margin-top:1.4rem; position:relative;
+  }
+  .browser-bar{
+    display:flex; align-items:center; gap:0.6rem;
+    padding:0.75rem 1rem; border-bottom:1px solid var(--line);
+  }
+  .browser-dots{ display:flex; gap:5px; }
+  .browser-dots span{ width:9px; height:9px; border-radius:50%; background:var(--line); }
+  .addr-pill{
+    flex:1; min-width:0; display:flex; align-items:center; gap:0.5rem;
+    background:var(--bg); border-radius:999px; padding:0.4rem 0.9rem;
+    font-family:var(--font-mono); font-size:0.84rem; color:var(--ink-soft);
+    position:relative;
+  }
+  .addr-pill .padlock{ color:var(--cyan); flex:none; }
+  .addr-text{
+    overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+    min-width:0;
+  }
+  .cert-callout{
+    position:absolute; top:58px; left:60px;
+    background:var(--ink); color:#EDEFF6;
+    font-size:0.8rem; padding:0.6rem 0.8rem; border-radius:8px;
+    max-width:220px; box-shadow:var(--shadow-card);
+  }
+  .cert-callout::before{
+    content:""; position:absolute; top:-6px; left:26px;
+    width:12px; height:12px; background:var(--ink);
+    transform:rotate(45deg);
+  }
+  .browser-body{ padding:6.5rem 1.2rem 2.2rem; text-align:center; color:var(--ink-faint); font-size:0.85rem; }
+
+  .cert-fields{ display:flex; flex-direction:column; gap:0.6rem; margin-top:1rem; }
+  .cert-field{
+    border:1px solid var(--console-line); border-radius:8px;
+    background:#080B16; overflow:hidden;
+  }
+  .cert-field-toggle{
+    width:100%; display:flex; justify-content:space-between; align-items:center;
+    gap:0.75rem; padding:0.75rem 1rem; background:none; border:none;
+    cursor:pointer; text-align:left; font-family:var(--font-body);
+    transition:background 0.15s ease;
+  }
+  .cert-field-toggle:hover{ background:rgba(255,255,255,0.03); }
+  .cert-field-text{ display:flex; flex-direction:column; gap:0.15rem; min-width:0; }
+  .cert-field-label{ font-size:0.78rem; color:#7583A8; }
+  .cert-field-value{ font-family:var(--font-mono); font-size:0.9rem; color:var(--console-amber); overflow-wrap:anywhere; }
+  .cert-field-chevron{
+    flex:none; font-family:var(--font-mono); color:#7583A8; font-size:0.9rem;
+    transition:transform 0.25s ease;
+  }
+  .cert-field.open .cert-field-chevron{ transform:rotate(90deg); }
+  .cert-field-body{
+    max-height:0; overflow:hidden;
+    transition:max-height 0.3s ease;
+  }
+  .cert-field.open .cert-field-body{ max-height:300px; }
+  .cert-field-body p{
+    font-size:0.86rem; line-height:1.55; color:var(--console-text);
+    margin:0; padding:0 1rem 0.9rem;
+  }
+
+  /* ---------- Footer nav ---------- */
+  .footer-nav{
+    max-width:880px; margin:1rem auto 3.5rem; padding:0 1.75rem;
+    display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+    border-top:1px solid var(--line); padding-top:1.6rem;
+  }
+  .footer-nav .prev, .footer-nav .next{
+    text-decoration:none; color:var(--ink);
+    font-size:0.9rem; display:flex; flex-direction:column; gap:0.15rem;
+    max-width:280px;
+  }
+  .footer-nav span.dir{ font-family:var(--font-mono); font-size:0.72rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.06em; }
+  .footer-nav .next{ text-align:right; align-items:flex-end; }
+
+  @media (max-width: 720px){
+    .compare-grid, .hash-pair{ grid-template-columns:1fr; }
+    .hero{ padding:2.6rem 1.25rem 2.2rem; }
+    .page{ padding:2.4rem 1.25rem 1rem; }
+    .topbar{ padding:0.85rem 1.25rem; }
+    .hero-disk{ width:280px; height:280px; top:-60px; right:-90px; }
+    .topbar .progress-dots{ display:none; }
+  }
+
+  /* ---------- Touch targets ---------- */
+  /* Several of the console's small text/icon buttons compute well under the
+     ~44px touch target guideline on their font-size + padding alone — fine
+     with a mouse pointer, cramped under a fingertip. min-height plus flex
+     centering enlarges the hit area without changing how the button looks. */
+  @media (max-width: 768px){
+    .console .btn,
+    .mode-toggle button,
+    .mission-prev,
+    .hash-preset-btn,
+    .hash-candidate,
+    .mini-cyu-option,
+    .cert-field-toggle{
+      min-height:44px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .hash-candidates .hash-candidate{ justify-content:center; }
+    .cert-field-toggle{ justify-content:space-between; }
+    .mini-cyu-option{ justify-content:flex-start; text-align:left; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .hero-disk{ animation:none; }
+    .reveal{ opacity:1; transform:none; transition:none; }
+    .brute-row{ animation:none; }
+    .brute-row.crack-flash{ animation:none; }
+    .attempt .reel-strip{ transition:none; }
+    .mini-cyu{ opacity:1; transform:none; transition:none; }
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="crumb">
+        Cambridge A Level Computer Science <span class="crumb-sep">›</span>
+        <b>Topic 17: Security</b> <span class="crumb-sep">›</span>
+        Lesson 3
+      </div>
+      <div class="progress-dots" aria-hidden="true">
+        <span class="dot done" title="Lesson 1"></span>
+        <span class="dot done" title="Lesson 2"></span>
+        <span class="dot active" title="Lesson 3 (current)"></span>
+        <span class="dot" title="Lesson 4"></span>
+        <span class="dot" title="Lesson 5"></span>
+        <span class="dot" title="Lesson 6"></span>
+      </div>
+    </div>
+  </div>
+
+  <header class="hero">
+    <svg class="hero-disk" viewBox="0 0 200 200" aria-hidden="true">
+      <circle cx="100" cy="100" r="96" fill="none" stroke="#E9AC5C" stroke-width="0.6"/>
+      <circle cx="100" cy="100" r="78" fill="none" stroke="#6FE7DA" stroke-width="0.5"/>
+      <circle cx="100" cy="100" r="60" fill="none" stroke="#E9AC5C" stroke-width="0.6"/>
+      <g fill="#E9AC5C" font-family="IBM Plex Mono" font-size="8">
+        <text x="96" y="14">A</text><text x="140" y="26">F</text><text x="170" y="60">K</text>
+        <text x="182" y="104">P</text><text x="170" y="148">U</text><text x="140" y="182">Y</text>
+        <text x="96" y="194">3</text><text x="52" y="182">7</text><text x="22" y="148">Q</text>
+        <text x="10" y="104">L</text><text x="22" y="60">G</text><text x="52" y="26">B</text>
+      </g>
+      <circle cx="100" cy="100" r="3" fill="#6FE7DA"/>
+    </svg>
+    <div class="hero-inner">
+      <div class="eyebrow">Topic 17 · Security · Lesson 3</div>
+      <h1 class="hero-title">Encryption: Keeping Data Secret</h1>
+      <p class="hero-sub">Every message you send online can be intercepted. This lesson is about how it stays unreadable regardless.</p>
+      <div class="meta-row">
+        <span class="meta-chip">⏱ 45 min</span>
+        <span class="meta-chip">9 key terms</span>
+      </div>
+      <div class="lo-box">
+        <p class="lo-statement">By the end of this lesson, you should be able to assess the end-to-end security of a website login, from establishing a trusted connection to protecting the information sent over it.</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+
+    <section class="hook reveal">
+      <p>If you're reading this over Wi-Fi you don't fully control, your device and this server are exchanging data across a network neither of you can fully see. Anyone positioned along that route could, in principle, capture every packet (message) that passes by.</p>
+      <p>Encryption is the layer that makes this irrelevant: even if the data is intercepted, it can't be read. The real question isn't whether your data can be seen in transit: it's what an attacker can actually <em>do</em> with it once they have it. That's what this lesson is about.</p>
+    </section>
+
+    <section class="section reveal" id="sec-basics">
+      <div class="section-head">01 · Foundations</div>
+      <h2>Plaintext, Ciphertext, and Keys</h2>
+      <p>An encryption algorithm transforms readable <strong>plaintext</strong> into unreadable <strong>ciphertext</strong>, using a <strong>key</strong>, a piece of information that controls exactly how the transformation happens. Change the key, and the same plaintext produces completely different ciphertext.</p>
+      <p>Try it below with one of the oldest encryption methods on record: the <strong>Caesar cipher</strong>, which shifts every letter a fixed number of places through the alphabet. The amount that each letter shifts is the key.</p>
+
+      <div class="console cipher-console">
+        <div class="console-head"><span class="lamp"></span> Cipher Console</div>
+        <p class="helper-text intro-text">Use the slider to set a shift key and encipher the message below. Then, select the "Decipher" button to watch a computer try every possible key until it finds the one that deciphers the message.</p>
+        <div class="field">
+          <label for="caesarInput">Message</label>
+          <input type="text" id="caesarInput" class="mono" value="MEET ME AT MIDNIGHT" maxlength="60" />
+        </div>
+        <div class="field">
+          <label for="caesarShift">Shift key: <span id="shiftVal">0</span></label>
+          <input type="range" id="caesarShift" min="0" max="25" value="0" />
+        </div>
+        <div class="row-inline">
+          <button class="btn" id="bruteBtn">Decipher</button>
+        </div>
+        <div class="sr-only" aria-live="polite" id="bruteStatus"></div>
+        <div class="brute-list hidden" id="bruteResults"></div>
+      </div>
+
+      <p>That's the core weakness of any scheme with too small a key space: if there are few enough possible keys, brute force finds the right one. Modern algorithms don't fix this by hiding <em>how</em> they work (the method is usually public); they fix it by making the key space astronomically large.</p>
+    </section>
+
+    <section class="section reveal" id="sec-symasym">
+      <div class="section-head">02 · Two Strategies</div>
+      <h2>Symmetric vs Asymmetric Encryption</h2>
+      <p>Every practical encryption system has to solve two problems: how to scramble the message, and how the sender and receiver agree on a key without anyone else getting hold of it. Symmetric and asymmetric encryption differ mainly in how they solve that second problem.</p>
+
+      <div class="compare-grid">
+        <div class="compare-card symmetric">
+          <h4>Symmetric</h4>
+          <p>One shared secret key both encrypts and decrypts. It's fast, but Alice and Bob both need the <em>exact same key</em> before they can talk securely, which means that key has to be delivered somehow. Whatever route it takes to reach Bob, that moment of delivery is a risk.</p>
+        </div>
+        <div class="compare-card asymmetric">
+          <h4>Asymmetric</h4>
+          <p>Each person has a matched key pair: a <strong>public key</strong>, shared freely, and a <strong>private key</strong>, kept secret and never sent anywhere. Only the private key can decrypt what the public key encrypted.</p>
+        </div>
+      </div>
+
+      <div class="console keysim-console">
+        <div class="console-head"><span class="lamp"></span> Key Exchange Simulator</div>
+
+        <div class="row-inline">
+          <div class="mode-toggle" role="tablist" aria-label="Encryption mode">
+            <button type="button" class="active" data-mode="symmetric" id="btnSymmetric">Symmetric</button>
+            <button type="button" data-mode="asymmetric" id="btnAsymmetric">Asymmetric</button>
+          </div>
+          <label class="eve-toggle">
+            <input type="checkbox" id="eveListening" checked />
+            Eve is listening on the wire
+          </label>
+        </div>
+        <p class="mode-desc" id="modeDesc">Alice and Bob need to share one secret key before they can talk. Press send to watch the exchange.</p>
+
+        <div class="sim-wrap">
+          <svg class="sim-svg" id="simSvg" viewBox="0 0 600 245" role="img" aria-label="Diagram of Alice, Bob and Eve on a network">
+            <line x1="90" y1="60" x2="510" y2="60" stroke="#2A3355" stroke-width="2"/>
+            <line x1="300" y1="60" x2="300" y2="160" stroke="#2A3355" stroke-width="2" stroke-dasharray="4 5"/>
+
+            <g id="nodeAlice">
+              <circle cx="90" cy="60" r="30" fill="#141B30" stroke="#E9AC5C" stroke-width="2"/>
+              <text x="90" y="66" text-anchor="middle" fill="#F0BE72" font-family="IBM Plex Mono" font-size="13">A</text>
+            </g>
+            <text x="90" y="112" text-anchor="middle" fill="#93A0C2" font-family="IBM Plex Mono" font-size="12">Alice</text>
+
+            <g id="nodeBob">
+              <circle cx="510" cy="60" r="30" fill="#141B30" stroke="#E9AC5C" stroke-width="2"/>
+              <text x="510" y="66" text-anchor="middle" fill="#F0BE72" font-family="IBM Plex Mono" font-size="13">B</text>
+            </g>
+            <text x="510" y="112" text-anchor="middle" fill="#93A0C2" font-family="IBM Plex Mono" font-size="12">Bob</text>
+
+            <g id="nodeEve">
+              <circle cx="300" cy="185" r="26" fill="#1E1420" stroke="#E28A78" stroke-width="2"/>
+              <text x="300" y="191" text-anchor="middle" fill="#E28A78" font-family="IBM Plex Mono" font-size="13">E</text>
+            </g>
+            <text x="300" y="233" text-anchor="middle" fill="#93A0C2" font-family="IBM Plex Mono" font-size="12">Eve (eavesdropper)</text>
+
+            <g id="packetLayer"></g>
+          </svg>
+
+          <ul class="intercept-log" id="interceptLog">
+            <li>No activity yet: press send to begin.</li>
+          </ul>
+
+          <div class="sim-actions">
+            <button class="btn cyan" id="sendBtn">Send secure message</button>
+            <button class="btn" id="resetSimBtn">Reset</button>
+          </div>
+
+          <div class="sim-outcome" id="simOutcome" style="display:none;">
+            <span class="icon" id="simOutcomeIcon"></span>
+            <span class="msg" id="simOutcomeMsg"></span>
+          </div>
+        </div>
+      </div>
+
+      <p>This is the reason HTTPS, secure messaging apps and online banking rely on asymmetric encryption to get started, even though it's slower than symmetric encryption. In practice, most systems use asymmetric encryption just long enough to safely agree on a temporary symmetric key, then switch to symmetric encryption for the rest of the conversation, because it's faster.</p>
+    </section>
+
+    <section class="section reveal" id="sec-hash">
+      <div class="section-head">03 · A One-Way Street</div>
+      <h2>Hashing Isn't Encryption</h2>
+      <p>Encryption is designed to be reversed: with the right key, ciphertext transforms back into original plaintext. <strong>Hashing</strong> is designed to be a one-way street. A hash function takes input of any length, from a single letter to a multi-gigabyte file, and maps it to a fixed-length string of characters called a <em>digest</em>. It achieves this by scrambling the input's bits through multiple rounds of mathematical operations like shifting, combining, and mixing until the output bears zero resemblance to the original.</p>
+      <p>Unlike encryption, which relies on a key to reverse the process, hashing cannot be undone for two fundamental reasons. First, the mathematical operations used during mixing have no clean inverse to run backward. Second, squeezing arbitrary amounts of data into a fixed-size digest intentionally discards information. Because multiple different inputs could technically yield the identical digest (a <em>collision</em>), there is no unique original to recover. It is less like locking a document in a safe and more like blending fruit into a smoothie: no amount of skill can run the blender in reverse to get your whole apple back.</p>
+
+      <div class="console hash-console">
+        <div class="console-head"><span class="lamp"></span> Hash Playground</div>
+        <p class="helper-text" style="margin-top:0;">Illustrative digest, not a real cryptographic hash algorithm.</p>
+
+        <div class="mode-toggle hash-tabs">
+          <button type="button" class="active" data-panel="size">1 · Same box, any size</button>
+          <button type="button" data-panel="avalanche">2 · One letter, big change</button>
+          <button type="button" data-panel="reverse">3 · Try to reverse it</button>
+        </div>
+
+        <div class="hash-panel" data-panel="size">
+          <p class="helper-text" style="margin-top:0;">Type anything below: one letter or a full paragraph. The digest never changes length.</p>
+          <div class="field">
+            <label for="hashSizeInput">Message</label>
+            <input type="text" id="hashSizeInput" class="mono" value="Hi" maxlength="400" />
+          </div>
+          <div class="hash-presets">
+            <button type="button" class="hash-preset-btn" data-fill="letter">1 letter</button>
+            <button type="button" class="hash-preset-btn" data-fill="word">1 word</button>
+            <button type="button" class="hash-preset-btn" data-fill="sentence">1 sentence</button>
+            <button type="button" class="hash-preset-btn" data-fill="paragraph">1 paragraph</button>
+          </div>
+          <div class="hash-stat" id="hashSizeStat"></div>
+          <div class="hash-out mono" id="hashSizeOut"></div>
+        </div>
+
+        <div class="hash-panel" data-panel="avalanche" style="display:none;">
+          <p class="helper-text" style="margin-top:0;">Type a message, then flip just its last character and compare the two digests.</p>
+          <div class="field">
+            <label for="hashAvalancheInput">Message</label>
+            <input type="text" id="hashAvalancheInput" class="mono" value="Password123" maxlength="40" />
+          </div>
+          <div class="row-inline">
+            <button type="button" class="btn" id="hashFlipBtn">Flip the last character</button>
+          </div>
+          <div class="hash-pair">
+            <div>
+              <span class="hash-pair-label">Original</span>
+              <div class="hash-out mono" id="hashOutOriginal"></div>
+            </div>
+            <div>
+              <span class="hash-pair-label">After one flip</span>
+              <div class="hash-out mono diff-hint" id="hashOutFlipped"></div>
+            </div>
+          </div>
+          <div class="hash-stat" id="hashDiffStat"></div>
+        </div>
+
+        <div class="hash-panel" data-panel="reverse" style="display:none;">
+          <p class="helper-text" style="margin-top:0;">Below is the digest of a secret word, one of the eight candidates listed. Even knowing every possibility, there's no way to calculate which one produced it. The only option is to hash each candidate and check.</p>
+          <div class="hash-out mono" id="hashSecretTarget"></div>
+          <div class="hash-candidates" id="hashCandidates"></div>
+          <div class="hash-guess-count" id="hashGuessCount">Guesses tried: 0</div>
+          <div class="hash-guess-feedback" id="hashGuessFeedback"></div>
+          <div class="row-inline" style="margin-top:0.8rem;">
+            <button type="button" class="btn" id="hashNewSecretBtn">New secret word</button>
+          </div>
+        </div>
+      </div>
+
+      <p>That unpredictability, combined with the lack of any reverse key, means the only way to figure out what created a specific digest is to guess inputs, hash them, and compare results. This one-way design is precisely what makes hashing ideal for password security. A system verifies your login by hashing the password you type and comparing the result to the stored digest, allowing it to validate your identity without ever needing to store (or even know) your actual password.</p>
+    </section>
+
+    <section class="section reveal" id="sec-cert">
+      <div class="section-head">04 · Trusting a Key</div>
+      <h2>Digital Certificates</h2>
+      <p>Asymmetric encryption solves key distribution, but it raises a new question: if Bob's public key just appears from somewhere, how does Alice know it's really <em>his</em>, and not an attacker's? A <strong>digital certificate</strong> answers that. It's Bob's public key, bundled with his identity, and digitally signed by a <strong>Certificate Authority</strong>, an organisation both Alice's browser and Bob already trust.</p>
+      <p>When Alice's browser connects, it checks that signature before trusting the key at all. That check, repeated automatically thousands of times a day, is what the small padlock next to a web address is actually reporting.</p>
+
+      <div class="browser-mock">
+        <div class="browser-bar">
+          <div class="browser-dots"><span></span><span></span><span></span></div>
+          <div class="addr-pill"><span class="padlock">🔒</span><span class="addr-text">https://www.onlinebanking.example</span></div>
+        </div>
+        <div class="cert-callout">Certificate verified: this key really does belong to <b>onlinebanking.example</b>.</div>
+        <div class="browser-body">Page content loads only after this check passes.</div>
+      </div>
+
+      <div class="console cert-console">
+        <div class="console-head"><span class="lamp"></span> Certificate Inspector</div>
+        <p class="helper-text" style="margin-top:0;">Real browsers let you inspect a certificate behind the padlock. Click each field below to see what it means and why it's checked.</p>
+
+        <div class="cert-fields">
+          <div class="cert-field">
+            <button type="button" class="cert-field-toggle" aria-expanded="false">
+              <span class="cert-field-text">
+                <span class="cert-field-label">Subject (domain)</span>
+                <span class="cert-field-value">onlinebanking.example</span>
+              </span>
+              <span class="cert-field-chevron">&rsaquo;</span>
+            </button>
+            <div class="cert-field-body">
+              <p>The exact domain this certificate is issued for. Your browser checks that it matches the address bar precisely. Even a single extra letter, like onlinebankinng.example, would fail this check.</p>
+            </div>
+          </div>
+
+          <div class="cert-field">
+            <button type="button" class="cert-field-toggle" aria-expanded="false">
+              <span class="cert-field-text">
+                <span class="cert-field-label">Issuer</span>
+                <span class="cert-field-value">DigiCert Global Root CA</span>
+              </span>
+              <span class="cert-field-chevron">&rsaquo;</span>
+            </button>
+            <div class="cert-field-body">
+              <p>The Certificate Authority that verified this domain and signed the certificate. Browsers only trust a small, built-in list of these authorities. A certificate signed by anyone outside that list, including one that simply signs itself, gets flagged as untrusted.</p>
+            </div>
+          </div>
+
+          <div class="cert-field">
+            <button type="button" class="cert-field-toggle" aria-expanded="false">
+              <span class="cert-field-text">
+                <span class="cert-field-label">Valid from / to</span>
+                <span class="cert-field-value">14 Jan 2026 to 14 Jan 2027</span>
+              </span>
+              <span class="cert-field-chevron">&rsaquo;</span>
+            </button>
+            <div class="cert-field-body">
+              <p>Certificates expire on purpose. A shorter lifespan limits how long a compromised key could keep being trusted before anyone notices. An expired certificate is treated the same as an untrusted one.</p>
+            </div>
+          </div>
+
+          <div class="cert-field">
+            <button type="button" class="cert-field-toggle" aria-expanded="false">
+              <span class="cert-field-text">
+                <span class="cert-field-label">Public key</span>
+                <span class="cert-field-value">RSA 2048-bit</span>
+              </span>
+              <span class="cert-field-chevron">&rsaquo;</span>
+            </button>
+            <div class="cert-field-body">
+              <p>The actual public key this certificate is vouching for. Once everything else checks out, this is the key your browser uses to encrypt data meant for this server, the same kind of public key from the asymmetric encryption earlier in this lesson.</p>
+            </div>
+          </div>
+
+          <div class="cert-field">
+            <button type="button" class="cert-field-toggle" aria-expanded="false">
+              <span class="cert-field-text">
+                <span class="cert-field-label">Digital signature</span>
+                <span class="cert-field-value">SHA-256 with RSA</span>
+              </span>
+              <span class="cert-field-chevron">&rsaquo;</span>
+            </button>
+            <div class="cert-field-body">
+              <p>A cryptographic signature over every other field on this certificate, produced with a private key. Change the domain or the public key by even one character, and the signature no longer matches, which is what makes tampering detectable. But anyone can produce a signature, including the certificate itself. What actually makes it trustworthy is whether that signature came from a recognised Certificate Authority rather than from the certificate signing itself.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p>Every one of those fields exists to answer the same question: does this public key really belong to who it claims to? Get that answer wrong, and it doesn't matter how strong the encryption is afterward: you'd just be encrypting very securely to the wrong person.</p>
+    </section>
+
+    <section class="section challenge-section reveal" id="sec-check">
+      <div class="section-head">Task</div>
+      <h2>Implement the Secure Handshake</h2>
+      <p>You've been asked to build the login flow for a banking site. There are four decisions needed to secure the connection, all while someone else is watching the transaction:</p>
+      <ol class="task-steps">
+        <li>Verify who you're talking to.</li>
+        <li>Agree on a key without leaking it.</li>
+        <li>Move the data efficiently.</li>
+        <li>Decide how to protect the password sent at login.</li>
+      </ol>
+      <p>Make all four decisions then conduct a security review of your implementation.</p>
+
+      <div class="console mission-console">
+        <div class="console-head"><span class="lamp"></span> Task Console</div>
+
+        <div class="setup-strip-label">Your setup</div>
+        <div class="setup-strip" id="setupStrip">
+          <div class="setup-chip active" id="chip1"><span class="setup-chip-label">Cert</span><span class="setup-chip-value">-</span></div>
+          <div class="setup-chip" id="chip2"><span class="setup-chip-label">Key</span><span class="setup-chip-value">-</span></div>
+          <div class="setup-chip" id="chip3"><span class="setup-chip-label">Transfer</span><span class="setup-chip-value">-</span></div>
+          <div class="setup-chip" id="chip4"><span class="setup-chip-label">Password</span><span class="setup-chip-value">-</span></div>
+        </div>
+
+        <div class="mission-phase active" id="phase-1">
+          <div class="mission-phase-head">
+            <div class="mission-phase-title">Step 1: Verify Server Identity</div>
+            <div class="mission-phase-subtitle">Digital Certificates &amp; Certificate Authorities</div>
+          </div>
+          <p class="mission-scenario">Your login flow is connecting to <span class="mono">https://secure-bank.com</span>. Two certificates come back, both claiming to belong to that domain. Which one should you trust?</p>
+
+          <div class="mission-options two-col">
+            <div class="mission-option-card" data-phase="1" data-key="a">
+              <h4>Certificate A</h4>
+              <p><strong>Domain:</strong> secure-bank.com</p>
+              <p><strong>Public key:</strong> 0x9F4A...82B</p>
+              <p><strong>Signed by:</strong> Self-signed</p>
+            </div>
+            <div class="mission-option-card" data-phase="1" data-key="b">
+              <h4>Certificate B</h4>
+              <p><strong>Domain:</strong> secure-bank.com</p>
+              <p><strong>Public key:</strong> 0x3C81...19F</p>
+              <p><strong>Signed by:</strong> DigiCert Global Root CA</p>
+            </div>
+          </div>
+
+          <div class="mission-nav">
+            <button type="button" class="btn cyan mission-next" id="btn-1">Next &rarr;</button>
+          </div>
+        </div>
+
+        <div class="mission-phase" id="phase-2">
+          <div class="mission-phase-head">
+            <div class="mission-phase-title">Step 2: Establish a Session Key</div>
+            <div class="mission-phase-subtitle">Asymmetric Encryption</div>
+          </div>
+          <p class="mission-scenario">With the certificate check handled, your login flow needs to send a new session key to the server so both sides can switch to something faster. Someone else is watching the transaction the whole time.</p>
+
+          <div class="mission-wire">[ Client ] &mdash;&mdash;&mdash; ( <span class="wire-eve">Eve Watching</span> ) &mdash;&mdash;&mdash;&rsaquo; [ Server ]</div>
+
+          <div class="mission-options">
+            <div class="mission-option-card" data-phase="2" data-key="plain">
+              <h4>Option A: Send the session key in plaintext</h4>
+              <p>Transmit it directly, unencrypted, so the server can read it immediately.</p>
+            </div>
+            <div class="mission-option-card" data-phase="2" data-key="asym">
+              <h4>Option B: Encrypt the session key with the server's public key</h4>
+              <p>Scramble it using the public key you were given before sending it to the server.</p>
+            </div>
+          </div>
+
+          <div class="mission-nav">
+            <button type="button" class="btn mission-prev" id="prev-2">&larr; Previous</button>
+            <button type="button" class="btn cyan mission-next" id="btn-2">Next &rarr;</button>
+          </div>
+        </div>
+
+        <div class="mission-phase" id="phase-3">
+          <div class="mission-phase-head">
+            <div class="mission-phase-title">Step 3: Bulk Data Transmission</div>
+            <div class="mission-phase-subtitle">Symmetric vs Asymmetric Performance</div>
+          </div>
+          <p class="mission-scenario">A session key has been sent. Now you need to stream a 500 MB account archive between client and server. Which approach fits?</p>
+
+          <div class="mission-options two-col">
+            <div class="mission-option-card" data-phase="3" data-key="asym">
+              <h4>Asymmetric encryption</h4>
+              <p>Encrypt every packet using the public/private key pair.</p>
+            </div>
+            <div class="mission-option-card" data-phase="3" data-key="sym">
+              <h4>Symmetric encryption</h4>
+              <p>Encrypt every packet using the session key exchanged in Step 2.</p>
+            </div>
+          </div>
+
+          <div class="mission-nav">
+            <button type="button" class="btn mission-prev" id="prev-3">&larr; Previous</button>
+            <button type="button" class="btn cyan mission-next" id="btn-3">Next &rarr;</button>
+          </div>
+        </div>
+
+        <div class="mission-phase" id="phase-4">
+          <div class="mission-phase-head">
+            <div class="mission-phase-title">Step 4: Login Verification</div>
+            <div class="mission-phase-subtitle">One-Way Hashing</div>
+          </div>
+          <p class="mission-scenario">Last step: authenticate with your account password, <span class="mono">SuperSecret123</span>. How should it be handled?</p>
+
+          <div class="mission-options">
+            <div class="mission-option-card" data-phase="4" data-key="encrypt">
+              <h4>Option A: Encrypt it and store the encrypted password</h4>
+              <p>Send it encrypted so the server can decrypt and store it for later comparison.</p>
+            </div>
+            <div class="mission-option-card" data-phase="4" data-key="hash">
+              <h4>Option B: Hash it and compare digests</h4>
+              <p>Compute the password's digest and check it against the digest already stored on the server.</p>
+            </div>
+          </div>
+
+          <div class="mission-nav">
+            <button type="button" class="btn mission-prev" id="prev-4">&larr; Previous</button>
+            <button type="button" class="btn cyan mission-next" id="btn-4">Run Security Audit &rarr;</button>
+          </div>
+        </div>
+
+        <div class="mission-phase" id="mission-complete-panel">
+          <div class="mission-phase-head">
+            <div class="mission-phase-title">Security Audit</div>
+            <div class="mission-phase-subtitle">How your setup actually held up</div>
+          </div>
+          <div id="auditVerdict"></div>
+          <div id="auditBreakdown"></div>
+          <div class="row-inline" style="margin-top:1rem;">
+            <button type="button" class="btn" id="missionRestartBtn">Restart task</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer-nav">
+    <div class="prev"><span class="dir">← Previous</span>Lesson 2: Threats &amp; Vulnerabilities</div>
+    <div class="next"><span class="dir">Next →</span>Lesson 4: Firewalls &amp; Network Defences</div>
+  </footer>
+
+<script>
+(function(){
+
+  /* ---------- Scroll reveal ---------- */
+  var revealEls = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('in-view'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('in-view'); });
+  }
+
+  var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Caesar cipher ---------- */
+  var caesarInput = document.getElementById('caesarInput');
+  var caesarShift = document.getElementById('caesarShift');
+  var shiftVal = document.getElementById('shiftVal');
+  var bruteBtn = document.getElementById('bruteBtn');
+  var bruteResults = document.getElementById('bruteResults');
+  var bruteStatus = document.getElementById('bruteStatus');
+
+  function shiftChar(ch, shift){
+    var code = ch.charCodeAt(0);
+    if(code >= 65 && code <= 90){
+      return String.fromCharCode(((code - 65 + shift) % 26 + 26) % 26 + 65);
+    }
+    if(code >= 97 && code <= 122){
+      return String.fromCharCode(((code - 97 + shift) % 26 + 26) % 26 + 97);
+    }
+    return ch;
+  }
+  function caesar(text, shift){
+    var out = '';
+    for(var i=0;i<text.length;i++){ out += shiftChar(text[i], shift); }
+    return out;
+  }
+
+  // The field shows plain text while being edited, and the enciphered result
+  // (based on the current shift) once the person clicks away or moves the slider.
+  var plaintextSource = caesarInput.value || 'MEET ME AT MIDNIGHT';
+
+  function renderField(){
+    var shift = parseInt(caesarShift.value, 10);
+    shiftVal.textContent = shift;
+    caesarInput.value = caesar(plaintextSource, shift) || ' ';
+    bruteResults.classList.add('hidden');
+    bruteResults.innerHTML = '';
+    bruteStatus.textContent = '';
+  }
+
+  caesarInput.addEventListener('focus', function(){
+    caesarInput.value = plaintextSource;
+    bruteResults.classList.add('hidden');
+    bruteResults.innerHTML = '';
+    bruteStatus.textContent = '';
+  });
+  caesarInput.addEventListener('input', function(){
+    plaintextSource = caesarInput.value;
+  });
+  caesarInput.addEventListener('blur', renderField);
+  caesarShift.addEventListener('input', renderField);
+
+  var bruteRunning = false;
+  var LETTER_STAGGER = 10; // ms between each letter starting its scroll, within a step
+  var PER_LETTER_MS = 12;  // ms per alphabet-position during a letter's full-loop scroll
+  var LOOP_STEPS = 27;     // 26 to go all the way round + 1 more to land on the target
+
+  function buildLiveRow(chars){
+    var row = document.createElement('div');
+    row.className = 'brute-row live';
+    var label = document.createElement('span');
+    label.className = 'shift-n';
+    label.textContent = 'shift 0';
+    row.appendChild(label);
+    var reel = document.createElement('span');
+    reel.className = 'attempt';
+    var cells = [];
+    for(var i=0;i<chars.length;i++){
+      var cell = document.createElement('span');
+      cell.className = 'reel-cell';
+      cell.textContent = chars[i];
+      reel.appendChild(cell);
+      cells.push(cell);
+    }
+    row.appendChild(reel);
+    return { row: row, label: label, cells: cells };
+  }
+
+  function isLetterChar(ch){
+    var code = ch.charCodeAt(0);
+    return (code >= 65 && code <= 90) || (code >= 97 && code <= 122);
+  }
+
+  function scrollCellTo(cell, curChar, delay){
+    if(!isLetterChar(curChar)) return; // non-letters (spaces) never change, nothing to scroll
+    setTimeout(function(){
+      cell.innerHTML = '';
+      var strip = document.createElement('span');
+      strip.className = 'reel-strip';
+      for(var i=0; i<=LOOP_STEPS; i++){
+        var letterEl = document.createElement('span');
+        letterEl.className = 'reel-letter';
+        letterEl.textContent = shiftChar(curChar, -i);
+        strip.appendChild(letterEl);
+      }
+      cell.appendChild(strip);
+      requestAnimationFrame(function(){
+        strip.style.transitionDuration = (LOOP_STEPS * PER_LETTER_MS) + 'ms';
+        strip.style.transform = 'translateY(-' + (LOOP_STEPS * 1.3) + 'em)';
+      });
+    }, delay);
+  }
+
+  function showCipherCYU(){
+    var wrap = document.createElement('div');
+    wrap.className = 'mini-cyu';
+    wrap.innerHTML =
+      '<div class="mini-cyu-label">Quick check</div>' +
+      '<div class="mini-cyu-q">Why did this attack succeed so quickly?</div>' +
+      '<div class="mini-cyu-options">' +
+        '<button type="button" class="mini-cyu-option" data-key="a">The message was very short</button>' +
+        '<button type="button" class="mini-cyu-option" data-key="b">There were only 26 possible keys to try</button>' +
+        '<button type="button" class="mini-cyu-option" data-key="c">Computers can read any code instantly</button>' +
+        '<button type="button" class="mini-cyu-option" data-key="d">The alphabet was shifted incorrectly</button>' +
+      '</div>' +
+      '<div class="mini-cyu-feedback"></div>';
+    bruteResults.appendChild(wrap);
+    requestAnimationFrame(function(){ wrap.classList.add('show'); });
+
+    var correct = 'b';
+    var options = wrap.querySelectorAll('.mini-cyu-option');
+    var feedback = wrap.querySelector('.mini-cyu-feedback');
+    options.forEach(function(opt){
+      opt.addEventListener('click', function(){
+        var picked = opt.getAttribute('data-key');
+        options.forEach(function(o){ o.disabled = true; });
+        if(picked === correct){
+          opt.classList.add('correct');
+          feedback.textContent = 'Exactly. A keyspace this small takes a computer almost no time to exhaust.';
+        } else {
+          opt.classList.add('incorrect');
+          options.forEach(function(o){ if(o.getAttribute('data-key') === correct){ o.classList.add('correct'); } });
+          feedback.textContent = 'Not quite. It comes down to how many keys there were to check, not the message length or the computer itself.';
+        }
+        feedback.classList.add('show');
+      });
+    });
+  }
+
+  bruteBtn.addEventListener('click', function(){
+    if(bruteRunning) return;
+    var correctShift = parseInt(caesarShift.value, 10);
+    var cipher = caesar(plaintextSource, correctShift);
+
+    bruteRunning = true;
+    bruteBtn.disabled = true;
+    caesarInput.disabled = true;
+    caesarShift.disabled = true;
+    bruteBtn.textContent = 'Cracking…';
+    bruteResults.innerHTML = '';
+    bruteResults.classList.remove('hidden');
+
+    // Step 0 is the ciphertext itself (shift 0 = no change), shown immediately with no animation.
+    var live = buildLiveRow(cipher.split(''));
+    bruteResults.appendChild(live.row);
+
+    function finish(){
+      var finalAttempt = caesar(cipher, -correctShift);
+      for(var i=0;i<live.cells.length;i++){
+        live.cells[i].innerHTML = '';
+        live.cells[i].textContent = finalAttempt[i];
+      }
+      live.label.textContent = 'shift ' + correctShift;
+
+      bruteRunning = false;
+      bruteBtn.disabled = false;
+      caesarInput.disabled = false;
+      caesarShift.disabled = false;
+      bruteBtn.textContent = 'Decipher';
+
+      live.row.classList.add('match', 'crack-flash');
+
+      var attempts = correctShift + 1;
+      var summary = document.createElement('div');
+      summary.className = 'brute-summary';
+      summary.innerHTML = 'Cracked after ' + attempts + ' attempt' + (attempts === 1 ? '' : 's') + ': the key was <b>shift ' + correctShift + '</b>.';
+      bruteResults.appendChild(summary);
+
+      bruteStatus.textContent = 'Cracked after ' + attempts + ' attempts. The key was shift ' + correctShift + '.';
+      showCipherCYU();
+    }
+
+    if(reducedMotion || correctShift === 0){
+      finish();
+      return;
+    }
+
+    var stepMs = LETTER_STAGGER * Math.max(0, cipher.length - 1) + (LOOP_STEPS * PER_LETTER_MS);
+    var currentChars = cipher.split('');
+
+    (function scrollStep(s){
+      var attempt = caesar(cipher, -s);
+      live.label.textContent = 'shift ' + s;
+      for(var i=0;i<attempt.length;i++){
+        scrollCellTo(live.cells[i], currentChars[i], i * LETTER_STAGGER);
+      }
+      currentChars = attempt.split('');
+
+      if(s === correctShift){
+        setTimeout(finish, stepMs + 180);
+      } else {
+        setTimeout(function(){ scrollStep(s + 1); }, stepMs + 180);
+      }
+    })(1);
+  });
+
+  renderField();
+
+  /* ---------- Hash playground ---------- */
+  function toyDigest(str){
+    var h1 = 2166136261 ^ str.length;
+    for(var i=0;i<str.length;i++){
+      h1 ^= str.charCodeAt(i);
+      h1 = Math.imul(h1, 16777619);
+    }
+    h1 ^= h1 >>> 15;
+    h1 = Math.imul(h1, 2246822519);
+    h1 ^= h1 >>> 13;
+
+    var h2 = 5381 ^ str.length;
+    for(var j=0;j<str.length;j++){
+      h2 = Math.imul(h2, 33) ^ str.charCodeAt(j);
+    }
+    h2 ^= h2 >>> 16;
+    h2 = Math.imul(h2, 2654435761);
+    h2 ^= h2 >>> 13;
+
+    var a = (h1 >>> 0).toString(16).padStart(8,'0');
+    var b = (h2 >>> 0).toString(16).padStart(8,'0');
+    return (a + b);
+  }
+
+  /* Tab switching between the three hash panels */
+  var hashTabButtons = document.querySelectorAll('.hash-tabs button');
+  var hashPanels = document.querySelectorAll('.hash-panel');
+  hashTabButtons.forEach(function(tabBtn){
+    tabBtn.addEventListener('click', function(){
+      hashTabButtons.forEach(function(b){ b.classList.remove('active'); });
+      tabBtn.classList.add('active');
+      var target = tabBtn.getAttribute('data-panel');
+      hashPanels.forEach(function(panel){
+        panel.style.display = (panel.getAttribute('data-panel') === target) ? '' : 'none';
+      });
+    });
+  });
+
+  /* Panel 1: same fixed-length digest regardless of input length */
+  var hashSizeInput = document.getElementById('hashSizeInput');
+  var hashSizeStat = document.getElementById('hashSizeStat');
+  var hashSizeOut = document.getElementById('hashSizeOut');
+  var HASH_PRESETS = {
+    letter: 'H',
+    word: 'Hello',
+    sentence: 'The quick brown fox jumps over the lazy dog.',
+    paragraph: 'Cryptography relies on mathematical techniques to protect data, ensuring that only authorized parties with the correct key can read or alter sensitive information.'
+  };
+  function updateHashSize(){
+    var text = hashSizeInput.value || '';
+    var digest = toyDigest(text);
+    hashSizeStat.innerHTML = 'Input: <b>' + text.length + '</b> character' + (text.length === 1 ? '' : 's') + ' &rarr; Digest: <b>' + digest.length + '</b> characters (fixed size).';
+    hashSizeOut.textContent = digest;
+  }
+  hashSizeInput.addEventListener('input', updateHashSize);
+  document.querySelectorAll('.hash-preset-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      hashSizeInput.value = HASH_PRESETS[btn.getAttribute('data-fill')];
+      updateHashSize();
+    });
+  });
+  updateHashSize();
+
+  /* Panel 2: flip exactly one character, compare digests */
+  var hashAvalancheInput = document.getElementById('hashAvalancheInput');
+  var hashFlipBtn = document.getElementById('hashFlipBtn');
+  var hashOutOriginal = document.getElementById('hashOutOriginal');
+  var hashOutFlipped = document.getElementById('hashOutFlipped');
+  var hashDiffStat = document.getElementById('hashDiffStat');
+
+  function flipLastChar(str){
+    if(!str) return str;
+    var chars = str.split('');
+    var lastIdx = chars.length - 1;
+    var code = chars[lastIdx].charCodeAt(0);
+    if(code >= 48 && code <= 57){
+      chars[lastIdx] = String.fromCharCode(code === 57 ? 48 : code + 1);
+    } else if(code >= 65 && code <= 90){
+      chars[lastIdx] = String.fromCharCode(code === 90 ? 65 : code + 1);
+    } else if(code >= 97 && code <= 122){
+      chars[lastIdx] = String.fromCharCode(code === 122 ? 97 : code + 1);
+    } else {
+      chars[lastIdx] = '*';
+    }
+    return chars.join('');
+  }
+  function countDiff(a, b){
+    var n = 0;
+    for(var i=0;i<Math.min(a.length, b.length);i++){
+      if(a[i] !== b[i]) n++;
+    }
+    return n;
+  }
+  function updateAvalanche(){
+    hashOutOriginal.textContent = toyDigest(hashAvalancheInput.value || '');
+    hashOutFlipped.textContent = '';
+    hashDiffStat.textContent = '';
+  }
+  hashAvalancheInput.addEventListener('input', updateAvalanche);
+  hashFlipBtn.addEventListener('click', function(){
+    var original = hashAvalancheInput.value || '';
+    var flipped = flipLastChar(original);
+    var digestOriginal = toyDigest(original);
+    var digestFlipped = toyDigest(flipped);
+    hashOutOriginal.textContent = digestOriginal;
+    hashOutFlipped.textContent = digestFlipped;
+    var diff = countDiff(digestOriginal, digestFlipped);
+    hashDiffStat.innerHTML = 'Changed one character in the input (<b>' + original + '</b> &rarr; <b>' + flipped + '</b>), resulting in <b>' + diff + ' of ' + digestOriginal.length + '</b> digest characters changing.';
+    hashAvalancheInput.value = flipped;
+  });
+  updateAvalanche();
+
+  /* Panel 3: guess-and-check reversal game against a small closed keyspace */
+  var HASH_ANIMALS = ['cat','dog','fox','owl','bee','ant','pig','cow'];
+  var hashSecretTarget = document.getElementById('hashSecretTarget');
+  var hashCandidates = document.getElementById('hashCandidates');
+  var hashGuessCount = document.getElementById('hashGuessCount');
+  var hashGuessFeedback = document.getElementById('hashGuessFeedback');
+  var hashNewSecretBtn = document.getElementById('hashNewSecretBtn');
+  var hashSecretWord, hashSecretDigest, hashGuessCountN, hashSecretSolved;
+
+  function newHashSecret(){
+    hashSecretWord = HASH_ANIMALS[Math.floor(Math.random() * HASH_ANIMALS.length)];
+    hashSecretDigest = toyDigest(hashSecretWord);
+    hashGuessCountN = 0;
+    hashSecretSolved = false;
+    hashSecretTarget.textContent = hashSecretDigest;
+    hashGuessCount.textContent = 'Guesses tried: 0';
+    hashGuessFeedback.className = 'hash-guess-feedback';
+    hashGuessFeedback.textContent = '';
+
+    hashCandidates.innerHTML = '';
+    HASH_ANIMALS.forEach(function(word){
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'hash-candidate';
+      btn.textContent = word;
+      btn.addEventListener('click', function(){
+        if(hashSecretSolved) return;
+        hashGuessCountN++;
+        hashGuessCount.textContent = 'Guesses tried: ' + hashGuessCountN;
+        var candidateDigest = toyDigest(word);
+        if(candidateDigest === hashSecretDigest){
+          hashSecretSolved = true;
+          btn.classList.add('correct');
+          hashCandidates.querySelectorAll('.hash-candidate').forEach(function(b){ b.disabled = true; });
+          hashGuessFeedback.innerHTML = '<b>Correct match.</b> "' + word + '" yields <span class="mono">' + candidateDigest + '</span>. Notice that you did not reverse the digest mathematically; you simply hashed candidate inputs until you found a match.';
+          hashGuessFeedback.classList.add('show', 'ok');
+        } else {
+          btn.classList.add('incorrect');
+          hashGuessFeedback.innerHTML = '"' + word + '" yields <span class="mono">' + candidateDigest + '</span> (no match).';
+          hashGuessFeedback.classList.add('show');
+        }
+      });
+      hashCandidates.appendChild(btn);
+    });
+  }
+  hashNewSecretBtn.addEventListener('click', newHashSecret);
+  newHashSecret();
+
+  /* ---------- Certificate inspector ---------- */
+  document.querySelectorAll('.cert-field-toggle').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var field = btn.parentElement;
+      var nowOpen = field.classList.toggle('open');
+      btn.setAttribute('aria-expanded', nowOpen ? 'true' : 'false');
+    });
+  });
+
+  /* ---------- Mission (closing challenge) ---------- */
+  (function(){
+    var missionAnswers = {};
+
+    var MISSION_PHASES = [
+      {
+        num: 1, name: 'Verify Server Identity', dimension: 'security', correctKey: 'b',
+        labels: { a: 'Certificate A (self-signed)', b: 'Certificate B (CA-signed)' },
+        chip: { a: 'Cert A', b: 'Cert B' },
+        passNote: 'A trusted Certificate Authority confirmed this key really belongs to secure-bank.com. You weren\'t just trusting a name written into a file.',
+        failNote: 'Nobody vouched for this certificate except whoever created it. Accepting it would let an attacker hand over their own key while claiming to be secure-bank.com, with no way for you to tell the difference.'
+      },
+      {
+        num: 2, name: 'Establish a Session Key', dimension: 'security', correctKey: 'asym',
+        labels: { plain: 'Session key sent in plaintext', asym: 'Session key encrypted with the public key' },
+        chip: { plain: 'Plaintext', asym: 'Encrypted' },
+        passNote: 'Eve intercepted only unreadable ciphertext. Only the matching private key, which never left the server, could unlock it.',
+        failNote: 'Eve was watching this exact transaction. A plaintext key sent across it is a plaintext key she now has too, and with it, everything encrypted using that key afterward.'
+      },
+      {
+        num: 3, name: 'Bulk Data Transmission', dimension: 'performance', correctKey: 'sym',
+        labels: { asym: 'Asymmetric encryption for the transfer', sym: 'Symmetric encryption for the transfer' },
+        chip: { asym: 'Asymmetric', sym: 'Symmetric' },
+        passNote: 'Symmetric encryption is far cheaper to compute: the right choice once a session key is already in place.',
+        failNote: 'Asymmetric encryption is expensive to compute. A 500 MB transfer run through public/private key math still works, but it\'s far slower than it needs to be for no extra security benefit here.'
+      },
+      {
+        num: 4, name: 'Login Verification', dimension: 'security', correctKey: 'hash',
+        labels: { encrypt: 'Password encrypted and stored', hash: 'Password hashed and compared' },
+        chip: { encrypt: 'Encrypted', hash: 'Hashed' },
+        passNote: 'The server never needed your actual password to check it, only a digest that can\'t be turned back into the original.',
+        failNote: 'Storing a recoverable password (even an encrypted one) means a decryption key exists somewhere. If that key or the database ever leaks, every stored password is exposed.'
+      }
+    ];
+
+    function fillChip(phaseNum, key){
+      var phaseData = MISSION_PHASES.filter(function(p){ return p.num === phaseNum; })[0];
+      var chip = document.getElementById('chip' + phaseNum);
+      if(!chip || !phaseData) return;
+      chip.querySelector('.setup-chip-value').textContent = phaseData.chip[key] || key;
+      chip.classList.add('filled');
+    }
+
+    function setActiveChip(phaseNum){
+      document.querySelectorAll('.setup-chip').forEach(function(c){ c.classList.remove('active'); });
+      var chip = document.getElementById('chip' + phaseNum);
+      if(chip){ chip.classList.add('active'); }
+    }
+
+    var currentPhase = 1;
+
+    function updateNavState(phaseNum){
+      var nextBtn = document.getElementById('btn-' + phaseNum);
+      if(nextBtn){ nextBtn.classList.toggle('visible', !!missionAnswers[phaseNum]); }
+    }
+
+    function goToPhase(phaseNum){
+      document.getElementById('phase-' + currentPhase).classList.remove('active');
+      currentPhase = phaseNum;
+      document.getElementById('phase-' + currentPhase).classList.add('active');
+      setActiveChip(currentPhase);
+      updateNavState(currentPhase);
+    }
+
+    document.querySelectorAll('.mission-option-card').forEach(function(card){
+      card.addEventListener('click', function(){
+        var phase = parseInt(card.getAttribute('data-phase'), 10);
+        var key = card.getAttribute('data-key');
+        missionAnswers[phase] = key;
+        fillChip(phase, key);
+
+        document.querySelectorAll('.mission-option-card[data-phase="' + phase + '"]').forEach(function(c){
+          c.classList.remove('selected');
+        });
+        card.classList.add('selected');
+
+        if(phase < 4){
+          goToPhase(phase + 1);
+        } else {
+          updateNavState(phase);
+        }
+      });
+    });
+
+    document.getElementById('btn-1').addEventListener('click', function(){ goToPhase(2); });
+    document.getElementById('btn-2').addEventListener('click', function(){ goToPhase(3); });
+    document.getElementById('btn-3').addEventListener('click', function(){ goToPhase(4); });
+    document.getElementById('btn-4').addEventListener('click', runAudit);
+
+    document.getElementById('prev-2').addEventListener('click', function(){ goToPhase(1); });
+    document.getElementById('prev-3').addEventListener('click', function(){ goToPhase(2); });
+    document.getElementById('prev-4').addEventListener('click', function(){ goToPhase(3); });
+
+    function runAudit(){
+      var securityPhases = MISSION_PHASES.filter(function(p){ return p.dimension === 'security'; });
+      var firstFailNum = null;
+      for(var i=0;i<securityPhases.length;i++){
+        var p = securityPhases[i];
+        if(missionAnswers[p.num] !== p.correctKey){ firstFailNum = p.num; break; }
+      }
+
+      var verdictEl = document.getElementById('auditVerdict');
+      if(firstFailNum === null){
+        verdictEl.className = 'audit-verdict secure';
+        verdictEl.textContent = '✅ Connection secure end-to-end. Every security decision held up.';
+      } else {
+        var failPhase = MISSION_PHASES.filter(function(p){ return p.num === firstFailNum; })[0];
+        verdictEl.className = 'audit-verdict compromised';
+        verdictEl.textContent = '🚨 Connection compromised in Step ' + firstFailNum + ': ' + failPhase.name + '.';
+      }
+
+      var breakdownEl = document.getElementById('auditBreakdown');
+      breakdownEl.innerHTML = '';
+
+      MISSION_PHASES.forEach(function(p){
+        var chosenKey = missionAnswers[p.num];
+        var chosenLabel = p.labels[chosenKey] || '(no choice recorded)';
+        var status, icon, note;
+
+        if(p.dimension === 'performance'){
+          var perfOk = (chosenKey === p.correctKey);
+          status = perfOk ? 'pass' : 'fail';
+          icon = perfOk ? '✅' : '⚠️';
+          note = perfOk ? p.passNote : p.failNote;
+        } else if(firstFailNum !== null && p.num > firstFailNum){
+          status = 'moot';
+          icon = '⚠️';
+          note = 'Didn\'t change the outcome: the connection was already compromised in Step ' + firstFailNum + '.';
+        } else if(p.num === firstFailNum){
+          status = 'fail';
+          icon = '🚨';
+          note = p.failNote;
+        } else {
+          status = 'pass';
+          icon = '✅';
+          note = p.passNote;
+        }
+
+        var row = document.createElement('div');
+        row.className = 'audit-row ' + status;
+        row.innerHTML =
+          '<div class="audit-row-head"><span>' + icon + '</span><span class="audit-row-title">Step ' + p.num + ': ' + p.name + '</span></div>' +
+          '<div class="audit-row-choice">You chose: ' + chosenLabel + '</div>' +
+          '<div class="audit-row-note">' + note + '</div>';
+        breakdownEl.appendChild(row);
+
+        var chip = document.getElementById('chip' + p.num);
+        if(chip){
+          chip.classList.remove('active', 'node-pass', 'node-fail', 'node-moot', 'node-warn');
+          if(p.dimension === 'performance'){
+            chip.classList.add(status === 'pass' ? 'node-pass' : 'node-warn');
+          } else if(status === 'moot'){
+            chip.classList.add('node-moot');
+          } else if(status === 'fail'){
+            chip.classList.add('node-fail');
+          } else {
+            chip.classList.add('node-pass');
+          }
+        }
+      });
+
+      var summary = document.createElement('p');
+      summary.className = 'mission-complete-summary';
+      summary.textContent = (firstFailNum === null)
+        ? 'That\'s how a real website login actually works: four different tools, each solving a different problem, working together.'
+        : 'Security doesn\'t average out. One weak link early in the chain compromises everything built on top of it, no matter how well the later steps were handled.';
+      breakdownEl.appendChild(summary);
+
+      document.querySelector('.mission-phase.active').classList.remove('active');
+      document.getElementById('mission-complete-panel').classList.add('active');
+    }
+
+    document.getElementById('missionRestartBtn').addEventListener('click', function(){
+      missionAnswers = {};
+      currentPhase = 1;
+      document.querySelectorAll('.mission-option-card').forEach(function(c){ c.classList.remove('selected'); });
+      document.querySelectorAll('.mission-next').forEach(function(b){ b.classList.remove('visible'); });
+      document.querySelectorAll('.mission-phase').forEach(function(p){ p.classList.remove('active'); });
+      document.getElementById('phase-1').classList.add('active');
+      for(var j=1;j<=4;j++){
+        var chip = document.getElementById('chip' + j);
+        if(chip){
+          chip.classList.remove('active', 'filled', 'node-pass', 'node-fail', 'node-moot', 'node-warn');
+          chip.querySelector('.setup-chip-value').textContent = '-';
+        }
+      }
+      setActiveChip(1);
+      document.getElementById('auditVerdict').innerHTML = '';
+      document.getElementById('auditBreakdown').innerHTML = '';
+    });
+  })();
+
+  /* ---------- Key exchange simulator ---------- */
+  var mode = 'symmetric';
+  var eveListening = true;
+  var busy = false;
+  var simToken = 0;
+
+  var btnSymmetric = document.getElementById('btnSymmetric');
+  var btnAsymmetric = document.getElementById('btnAsymmetric');
+  var modeDesc = document.getElementById('modeDesc');
+  var eveToggle = document.getElementById('eveListening');
+  var sendBtn = document.getElementById('sendBtn');
+  var resetSimBtn = document.getElementById('resetSimBtn');
+  var packetLayer = document.getElementById('packetLayer');
+  var nodeEve = document.getElementById('nodeEve');
+  var interceptLog = document.getElementById('interceptLog');
+  var simOutcome = document.getElementById('simOutcome');
+  var simOutcomeIcon = document.getElementById('simOutcomeIcon');
+  var simOutcomeMsg = document.getElementById('simOutcomeMsg');
+
+  var descriptions = {
+    symmetric: 'Alice and Bob need to share one secret key before they can talk. Press send to watch the exchange.',
+    asymmetric: 'Bob publishes a public key. Alice uses it to encrypt her message. Only Bob\'s private key, which never travels, can undo it.'
+  };
+
+  function setSimControlsDisabled(disabled){
+    sendBtn.disabled = disabled;
+    btnSymmetric.disabled = disabled;
+    btnAsymmetric.disabled = disabled;
+    eveToggle.disabled = disabled;
+  }
+
+  function setMode(m){
+    mode = m;
+    btnSymmetric.classList.toggle('active', m === 'symmetric');
+    btnAsymmetric.classList.toggle('active', m === 'asymmetric');
+    modeDesc.textContent = descriptions[m];
+    resetSim();
+  }
+  btnSymmetric.addEventListener('click', function(){ setMode('symmetric'); });
+  btnAsymmetric.addEventListener('click', function(){ setMode('asymmetric'); });
+  eveToggle.addEventListener('change', function(){ eveListening = eveToggle.checked; });
+
+  function logEntry(text, ok){
+    var placeholder = interceptLog.querySelector('li');
+    if(interceptLog.children.length === 1 && placeholder && placeholder.textContent.indexOf('No activity') === 0){
+      interceptLog.innerHTML = '';
+    }
+    var li = document.createElement('li');
+    if(ok){ li.className = 'ok'; }
+    li.innerHTML = text;
+    interceptLog.appendChild(li);
+  }
+
+  function resetSim(){
+    simToken++; // invalidates any in-flight animation frames and pending callbacks
+    packetLayer.innerHTML = '';
+    var eveCircle = nodeEve.querySelector('circle');
+    eveCircle.setAttribute('stroke', '#E28A78');
+    eveCircle.setAttribute('stroke-width', '2');
+    interceptLog.innerHTML = '<li>No activity yet: press send to begin.</li>';
+    simOutcome.style.display = 'none';
+    busy = false;
+    setSimControlsDisabled(false);
+  }
+  resetSimBtn.addEventListener('click', resetSim);
+
+  function flashEve(){
+    var c = nodeEve.querySelector('circle');
+    c.setAttribute('stroke', '#F0BE72');
+    c.setAttribute('stroke-width', '4');
+    setTimeout(function(){
+      c.setAttribute('stroke', '#E28A78');
+      c.setAttribute('stroke-width', '2');
+    }, 380);
+  }
+
+  function sendInterceptPacket(color, onArrive){
+    var duration = reducedMotion ? 1 : 500;
+    var start = null;
+    var fromY = 60, toY = 160;
+
+    var dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    dot.setAttribute('r', '6');
+    dot.setAttribute('fill', color);
+    dot.setAttribute('cx', '300');
+    dot.setAttribute('cy', fromY);
+    packetLayer.appendChild(dot);
+
+    function frame(ts){
+      if(!start) start = ts;
+      var progress = Math.min(1, (ts - start) / duration);
+      var y = fromY + (toY - fromY) * progress;
+      dot.setAttribute('cy', y);
+      dot.setAttribute('opacity', 1 - progress * 0.6);
+      if(progress < 1){
+        requestAnimationFrame(frame);
+      } else {
+        dot.remove();
+        if(onArrive) onArrive();
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function sendPacket(opts, myToken, onDone){
+    // opts: fromX, toX, y, label, color
+    var duration = reducedMotion ? 1 : 1450;
+    var start = null;
+    var triggered = false;
+
+    var g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    var circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circle.setAttribute('r', '9');
+    circle.setAttribute('fill', opts.color);
+    circle.setAttribute('cy', opts.y);
+    circle.setAttribute('cx', opts.fromX);
+    var text = document.createElementNS('http://www.w3.org/2000/svg','text');
+    text.setAttribute('y', opts.y - 16);
+    text.setAttribute('text-anchor','middle');
+    text.setAttribute('fill', opts.color);
+    text.setAttribute('font-family','IBM Plex Mono');
+    text.setAttribute('font-size','12');
+    text.textContent = opts.label;
+    g.appendChild(circle); g.appendChild(text);
+    packetLayer.appendChild(g);
+
+    function frame(ts){
+      // if the sim was reset or the mode changed since this packet was sent, stop quietly
+      if(myToken !== simToken){ g.remove(); return; }
+
+      if(!start) start = ts;
+      var progress = Math.min(1, (ts - start) / duration);
+      var x = opts.fromX + (opts.toX - opts.fromX) * progress;
+      circle.setAttribute('cx', x);
+      text.setAttribute('x', x);
+
+      var crossedMid = (opts.fromX < opts.toX) ? (x >= 300) : (x <= 300);
+      if(crossedMid && !triggered){
+        triggered = true;
+        if(eveListening){
+          sendInterceptPacket(opts.color, function(){
+            if(myToken !== simToken) return;
+            flashEve();
+            logEntry('<b>Eve captured:</b> ' + opts.logLabel, opts.harmless);
+          });
+        }
+      }
+
+      if(progress < 1){
+        requestAnimationFrame(frame);
+      } else {
+        g.remove();
+        onDone();
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function showOutcome(safe, text){
+    simOutcome.style.display = 'flex';
+    simOutcome.className = 'sim-outcome ' + (safe ? 'state-safe' : 'state-breached');
+    simOutcomeIcon.textContent = safe ? '✅' : '🚨';
+    simOutcomeMsg.innerHTML = text;
+  }
+
+  sendBtn.addEventListener('click', function(){
+    if(busy) return;
+    busy = true;
+    var myToken = ++simToken;
+    setSimControlsDisabled(true);
+    packetLayer.innerHTML = '';
+    interceptLog.innerHTML = '';
+    simOutcome.style.display = 'none';
+
+    function finish(){
+      busy = false;
+      setSimControlsDisabled(false);
+    }
+
+    if(mode === 'symmetric'){
+      sendPacket({fromX:90, toX:510, y:60, label:'🔑 shared key', color:'#F0BE72', logLabel:'the shared key', harmless:false}, myToken, function(){
+        if(myToken !== simToken) return;
+        setTimeout(function(){
+          if(myToken !== simToken) return;
+          sendPacket({fromX:90, toX:510, y:60, label:'🔒 ciphertext', color:'#6FE7DA', logLabel:'the ciphertext', harmless:false}, myToken, function(){
+            if(myToken !== simToken) return;
+            if(eveListening){
+              showOutcome(false, '<b>Eve has both the key and the ciphertext.</b> She can decrypt the message. This is the key distribution problem: the same secret has to reach Bob without anyone else getting a copy in transit.');
+            } else {
+              showOutcome(true, 'Nobody intercepted this exchange, but the shared key still had to travel across the wire in the open. If anyone <em>had</em> been listening, they\'d have caught it too.');
+            }
+            finish();
+          });
+        }, 250);
+      });
+    } else {
+      sendPacket({fromX:510, toX:90, y:60, label:"🔓 Bob's public key", color:'#F0BE72', logLabel:"Bob's public key (this is fine; it's meant to be public)", harmless:true}, myToken, function(){
+        if(myToken !== simToken) return;
+        setTimeout(function(){
+          if(myToken !== simToken) return;
+          sendPacket({fromX:90, toX:510, y:60, label:'🔒 ciphertext', color:'#6FE7DA', logLabel:'the ciphertext', harmless:false}, myToken, function(){
+            if(myToken !== simToken) return;
+            if(eveListening){
+              showOutcome(true, 'Eve has the public key and the ciphertext, but not Bob\'s <b>private key</b>, which never left his device. She can\'t decrypt this message.');
+            } else {
+              showOutcome(true, 'Nobody intercepted this exchange, but it wouldn\'t have mattered if they had. Even with the public key and the ciphertext, only Bob\'s <b>private key</b> can decrypt it, and that never left his device.');
+            }
+            finish();
+          });
+        }, 250);
+      });
+    }
+  });
+
+  setMode('symmetric');
+
+})();
+
+</script>
+</body>
+</html>
