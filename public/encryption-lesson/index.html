@@ -66,7 +66,6 @@
     display:flex; align-items:center; justify-content:space-between;
     gap:1rem; flex-wrap:wrap;
   }
-  .topbar-left{ display:flex; align-items:center; gap:0.9rem; flex-wrap:wrap; min-width:0; }
   .nav-back{
     font-family:var(--font-mono);
     font-size:0.78rem;
@@ -74,13 +73,13 @@
     text-decoration:none;
     white-space:nowrap;
     flex-shrink:0;
-    padding-right:0.9rem;
-    border-right:1px solid var(--line);
+    /* Always pinned to the far right of .topbar-inner, regardless of what
+       else is present or hidden (e.g. .progress-dots on mobile) — more
+       robust than relying on justify-content plus sibling order. */
+    margin-left:auto;
     transition:color 0.15s ease;
   }
   .nav-back:hover{ color:var(--ink); }
-  .crumb b{ color:var(--ink); font-weight:600; }
-  .crumb-sep{ margin:0 0.35rem; color:var(--line); }
   .progress-dots{ display:flex; align-items:center; gap:0.4rem; }
   .progress-dots .dot{
     width:8px; height:8px; border-radius:50%;
@@ -110,6 +109,13 @@
   @keyframes spin{ to{ transform:rotate(360deg); } }
   .hero-inner{
     max-width:880px; margin:0 auto; position:relative; z-index:1;
+  }
+  .hero-course{
+    font-family:var(--font-mono);
+    font-size:0.76rem;
+    letter-spacing:0.06em;
+    color:var(--console-text);
+    margin-bottom:0.5rem;
   }
   .eyebrow{
     font-family:var(--font-mono);
@@ -742,14 +748,6 @@
 
   <div class="topbar">
     <div class="topbar-inner">
-      <div class="topbar-left">
-        <a href="/#portfolio" class="nav-back">← Back to Portfolio</a>
-        <div class="crumb">
-          Cambridge A Level Computer Science <span class="crumb-sep">›</span>
-          <b>Topic 17: Security</b> <span class="crumb-sep">›</span>
-          Lesson 3
-        </div>
-      </div>
       <div class="progress-dots" aria-hidden="true">
         <span class="dot done" title="Lesson 1"></span>
         <span class="dot done" title="Lesson 2"></span>
@@ -758,6 +756,7 @@
         <span class="dot" title="Lesson 5"></span>
         <span class="dot" title="Lesson 6"></span>
       </div>
+      <a href="/#portfolio" class="nav-back">← Back to Portfolio</a>
     </div>
   </div>
 
@@ -775,6 +774,7 @@
       <circle cx="100" cy="100" r="3" fill="#6FE7DA"/>
     </svg>
     <div class="hero-inner">
+      <div class="hero-course">Cambridge A Level Computer Science</div>
       <div class="eyebrow">Topic 17 · Security · Lesson 3</div>
       <h1 class="hero-title">Encryption: Keeping Data Secret</h1>
       <p class="hero-sub">Every message you send online can be intercepted. This lesson is about how it stays unreadable regardless.</p>
