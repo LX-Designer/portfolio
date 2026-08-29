@@ -80,17 +80,25 @@ const allPieces = [...featured, ...rest];
       const filterState = { sector: 'all', type: 'all' };
       let expanded = false;
 
-      // Cards beyond the initial 3 stay hidden until expanded; filtering
-      // narrows which cards count toward that limit, so the "first row" the
-      // trigger reveals below is always the first 3 *matching* cards, not
-      // just the first 3 in source order.
+      // Cards beyond the initial limit stay hidden until expanded; filtering
+      // narrows which cards count toward that limit, so the "first row(s)"
+      // the trigger reveals below are always the first N *matching* cards,
+      // not just the first N in source order.
+      //
+      // That initial limit is 3 on desktop (3 columns — one full row) and
+      // mobile (1 column — no such thing as a partial row), but 3 leaves an
+      // orphan card alone on a second row at the 2-column tablet width, so
+      // it bumps to 4 there instead (two full rows of 2).
+      const isTabletGrid = () => window.matchMedia('(max-width:900px) and (min-width:561px)').matches;
+
       function apply() {
         const matching = cards.filter(
           (card) =>
             (filterState.sector === 'all' || filterState.sector === card.dataset.sector) &&
             (filterState.type === 'all' || filterState.type === card.dataset.type)
         );
-        const visibleLimit = expanded ? matching.length : 3;
+        const initialLimit = isTabletGrid() ? 4 : 3;
+        const visibleLimit = expanded ? matching.length : initialLimit;
 
         cards.forEach((card) => {
           const idx = matching.indexOf(card);
@@ -98,7 +106,7 @@ const allPieces = [...featured, ...rest];
         });
 
         noResults.toggleAttribute('hidden', matching.length !== 0);
-        trigger.hidden = matching.length <= 3;
+        trigger.hidden = matching.length <= initialLimit;
         trigger.setAttribute('aria-expanded', String(expanded));
         trigger.textContent = expanded ? 'See less ↑' : 'See more ↓';
       }
@@ -123,6 +131,12 @@ const allPieces = [...featured, ...rest];
         expanded = !expanded;
         apply();
       });
+
+      // Resizing across the tablet breakpoint (or rotating a tablet) changes
+      // the initial limit apply() should be using — re-run so an unexpanded
+      // grid re-settles on the correct count instead of staying stuck at
+      // whatever limit was correct for the width the page first loaded at.
+      window.addEventListener('resize', apply);
 
       apply();
     })();
