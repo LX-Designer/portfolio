@@ -284,6 +284,10 @@ section + section{border-top:1px solid var(--line);}
 .contact-value{font-size:13px;color:var(--text-soft);
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .contact-option.copied .contact-value{color:var(--blue);font-weight:600;}
+/* Same "opens in a new tab" icon as .piece-card's, sized to sit inline with
+   text instead of pinned to a card corner — kept as one visual language for
+   the same meaning across the site rather than two different treatments. */
+.new-tab-icon-inline{width:11px;height:11px;vertical-align:-1px;margin-left:3px;opacity:.7;}
 
 /* CONTACT / FOOTER */
 footer{padding:60px 0 44px;}
