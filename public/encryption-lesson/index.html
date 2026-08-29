@@ -62,7 +62,11 @@
     padding:0.85rem 1.75rem;
   }
   .topbar-inner{
-    max-width:880px; margin:0 auto;
+    /* Unlike .page/.hero-inner/.footer-nav below, this deliberately isn't
+       capped to the 880px reading column — Tacoma Narrows and Metacognition
+       both run their topbar edge-to-edge, so the back link sits at the
+       actual left edge of the window, not just the left edge of a centered
+       column with empty space beyond it. */
     display:flex; align-items:center; justify-content:space-between;
     gap:1rem; flex-wrap:wrap;
   }
