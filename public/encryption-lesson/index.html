@@ -73,14 +73,16 @@
     text-decoration:none;
     white-space:nowrap;
     flex-shrink:0;
-    /* Always pinned to the far right of .topbar-inner, regardless of what
-       else is present or hidden (e.g. .progress-dots on mobile) — more
-       robust than relying on justify-content plus sibling order. */
-    margin-left:auto;
     transition:color 0.15s ease;
   }
   .nav-back:hover{ color:var(--ink); }
-  .progress-dots{ display:flex; align-items:center; gap:0.4rem; }
+  .progress-dots{
+    display:flex; align-items:center; gap:0.4rem;
+    /* Always pinned to the far right of .topbar-inner, regardless of
+       .nav-back's own width — more robust than relying on justify-content
+       plus sibling order. */
+    margin-left:auto;
+  }
   .progress-dots .dot{
     width:8px; height:8px; border-radius:50%;
     background:var(--line);
@@ -748,6 +750,7 @@
 
   <div class="topbar">
     <div class="topbar-inner">
+      <a href="/#portfolio" class="nav-back">← Back to Portfolio</a>
       <div class="progress-dots" aria-hidden="true">
         <span class="dot done" title="Lesson 1"></span>
         <span class="dot done" title="Lesson 2"></span>
@@ -756,7 +759,6 @@
         <span class="dot" title="Lesson 5"></span>
         <span class="dot" title="Lesson 6"></span>
       </div>
-      <a href="/#portfolio" class="nav-back">← Back to Portfolio</a>
     </div>
   </div>
 
