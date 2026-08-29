@@ -29,7 +29,7 @@ export const pieces = [
     island: 'NaturalSelection',
     // Card-only override: this card's body copy differs from the "is" text
     // used on its own standalone page.
-    cardBody: "This explorable demonstrates an experiential approach to building conceptual understanding. Learners hunt moths in a simulated environment and breed the survivors to observe natural selection in action. They apply what they've learned by identifying the same mechanism at work in other real-world scenarios.",
+    cardBody: "An interactive demonstrating an experiential approach to building conceptual understanding. Learners hunt moths in a simulated environment and breed the survivors to observe natural selection in action. They apply what they've learned by identifying the same mechanism at work in other real-world scenarios.",
   },
   {
     slug: 'cumulative-advantage-explorable', category: 'interactive', tag: 'Tertiary Education',
@@ -40,7 +40,7 @@ export const pieces = [
     island: 'CumulativeAdvantage',
     // Card-only override: this card's body copy differs from the "is" text
     // used on its own standalone page.
-    cardBody: 'This explorable demonstrates a discovery-based approach to conceptual understanding. Learners build the same music chart across several simulated worlds, then observe how an initial, random advantage leads to wildly different results.',
+    cardBody: 'An interactive explorable demonstrating a discovery-based approach to building conceptual understanding. Learners run an experiment across several simulated worlds, observe the results, and check their understanding of the concept (cumulative advantage) via a question set.',
   },
   {
     slug: 'metacognition-literature-review', category: 'interactive', tag: 'Professional Development',
@@ -93,7 +93,7 @@ export const pieces = [
     iframeSrc: '/encryption-lesson/index.html',
     // Card-only override: this card's body copy differs from the "is" text
     // used on its own standalone page.
-    cardBody: 'This lesson demonstrates a build-then-apply structure. Learners explore five connected simulations, from cracking a Caesar cipher to a live key-exchange demo, before applying everything in a branching task: securing a bank login, then receiving a full audit of their decisions.',
+    cardBody: 'A demo Canvas page built around an interactive exploration of how encryption is used in cyber security. The lesson concludes with a task-based application of the key concepts.',
     // This piece is a full-page lesson with its own topbar and progress
     // indicator that doesn't suit the compact preview modal — send it to its
     // standalone page in a new tab instead, like a normal link.
@@ -112,7 +112,7 @@ export const pieces = [
     island: 'ReactionRateSimulator',
     // Card-only override: this card's body copy differs from the "is" text
     // used on its own standalone page.
-    cardBody: 'This explorable demonstrates an observational approach to helping learners build conceptual understanding. It allows learners to manipulate variables in an experiment and observe the results, then checks their understanding of the concept (collision theory) via a question set.',
+    cardBody: 'A chemistry lab simulator that demonstrates an observational approach to building conceptual understanding. Learners manipulate variables and observe the results before checking their understanding of the key features of the concept (collision theory) via a question set.',
   },
 
   // ── Assessment Strategies & Design ──
