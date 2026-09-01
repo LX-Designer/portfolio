@@ -6,6 +6,7 @@ import SoloRubric from '../../components/SoloRubric.jsx';
 import AlignmentMap from '../../components/AlignmentMap.jsx';
 import ReactionRateSimulator from '../../components/ReactionRateSimulator.jsx';
 import CumulativeAdvantage from '../../components/CumulativeAdvantage.jsx';
+import SHMProjection from '../../components/SHMProjection.jsx';
 import MetacognitionLab from '../../components/metacognition/MetacognitionLab.jsx';
 import TacomaNarrowsLab from '../../components/tacoma-narrows/TacomaNarrowsLab.jsx';
 import { pieces, getPiece } from '../../data/pieces.js';
@@ -91,6 +92,10 @@ const MOBILE_BODY_BG = {
           ) : piece.island === 'CumulativeAdvantage' ? (
             <div id="piece-asset" class="asset-mount">
               <CumulativeAdvantage client:only="react" />
+            </div>
+          ) : piece.island === 'SHMProjection' ? (
+            <div id="piece-asset" class="asset-mount">
+              <SHMProjection client:only="react" />
             </div>
           ) : (
             <div id="piece-asset" class="placeholder-box">Preview coming soon.</div>

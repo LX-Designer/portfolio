@@ -114,6 +114,17 @@ export const pieces = [
     // used on its own standalone page.
     cardBody: 'An interactive explorable demonstrating a discovery-based approach to building conceptual understanding. Learners run an experiment across several simulated worlds, observe the results, and check their understanding of the concept (cumulative advantage) via a question set.',
   },
+  {
+    slug: 'shm-projection-explorable', category: 'interactive', tag: 'Senior Secondary',
+    sector: 'k12', type: 'interactive',
+    title: 'Simple Harmonic Motion Explorable',
+    is: 'Watch a dot travel around a circle at a steady speed and follow its shadow oscillating along a diameter, with a synchronised displacement–time graph tracing out the cosine curve, revealing simple harmonic motion as the projection of uniform circular motion.',
+    demonstrates: 'Making an abstract physics relationship visible by animating it directly, so the link between circular motion and SHM is seen rather than asserted.',
+    island: 'SHMProjection',
+    // Card-only override: this card's body copy differs from the "is" text
+    // used on its own standalone page.
+    cardBody: 'An animated explorable demonstrating a visual approach to building conceptual understanding. Learners watch a dot move around a circle and follow its shadow oscillating along a line, revealing how simple harmonic motion is uniform circular motion seen from the side.',
+  },
 
   // ── Assessment Strategies & Design ──
   {
