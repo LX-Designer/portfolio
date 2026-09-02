@@ -14,9 +14,18 @@ const { title, description = '', showModalOverlay = false, hideChrome = false, e
   <meta property="og:type" content="website" />
   <meta property="og:title" content={title} />
   {description && <meta property="og:description" content={description} />}
-  <meta name="twitter:card" content="summary" />
+  {/* Absolute URL — link-preview crawlers (LinkedIn, Slack, etc.) won't
+     reliably resolve a relative one. Without this at all, crawlers that
+     don't find an og:image fall back to scanning the page for a plausible
+     <img> themselves, which is how the About section's headshot ended up
+     as the preview photo before this existed. */}
+  <meta property="og:image" content="https://www.dklearningdesign.com/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={title} />
   {description && <meta name="twitter:description" content={description} />}
+  <meta name="twitter:image" content="https://www.dklearningdesign.com/og-image.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   {!hideChrome && (
     // Only the portfolio's own chrome (nav/footer) uses Poppins/Inter — pages
