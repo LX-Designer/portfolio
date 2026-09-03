@@ -349,15 +349,21 @@
     <svg class="scene" id="scene" viewBox="0 0 1180 620" xmlns="http://www.w3.org/2000/svg"
          role="group" aria-label="Interactive rear view of a switchboard and the mechanism of an Australian double power point.">
       <defs>
-        <filter id="bodyShadow" x="-70%" y="-70%" width="240%" height="240%">
+        <!-- color-interpolation-filters="sRGB" on all three: without it, the
+             default linearRGB filter colour space combined with
+             feGaussianBlur + feColorMatrix produces a hard-edged artifact
+             at rounded-rect corners in Chromium (visible as a small square
+             poking out past the GPO body's corner on bodyShadow). sRGB
+             avoids the gamma round-trip that triggers it. -->
+        <filter id="bodyShadow" x="-70%" y="-70%" width="240%" height="240%" color-interpolation-filters="sRGB">
           <feGaussianBlur in="SourceAlpha" stdDeviation="14"/><feOffset dy="16" result="o"/>
           <feColorMatrix in="o" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.45 0"/>
         </filter>
-        <filter id="screwShadow" x="-60%" y="-60%" width="220%" height="220%">
+        <filter id="screwShadow" x="-60%" y="-60%" width="220%" height="220%" color-interpolation-filters="sRGB">
           <feGaussianBlur in="SourceAlpha" stdDeviation="2.4"/><feOffset dy="2.5" result="o"/>
           <feColorMatrix in="o" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0"/>
         </filter>
-        <filter id="softGlow" x="-80%" y="-80%" width="260%" height="260%">
+        <filter id="softGlow" x="-80%" y="-80%" width="260%" height="260%" color-interpolation-filters="sRGB">
           <feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
         <linearGradient id="plastic" x1="0" y1="0" x2="0" y2="1">
@@ -403,7 +409,7 @@
         <radialGradient id="copper" cx="0.36" cy="0.30" r="0.95">
           <stop offset="0" stop-color="#f6cf97"/><stop offset=".4" stop-color="#cf8a44"/><stop offset=".8" stop-color="#a5652c"/><stop offset="1" stop-color="#7a441d"/>
         </radialGradient>
-        <clipPath id="bodyClip"><rect x="120" y="120" width="320" height="320" rx="22"/></clipPath>
+        <clipPath id="bodyClip"><rect x="120" y="120" width="320" height="320" rx="26"/></clipPath>
       </defs>
 
       <!-- ===================== FEED CABLE (behind everything) ===================== -->
@@ -515,15 +521,13 @@
           <ellipse cx="-8" cy="-7" rx="4.5" ry="7" fill="#fff" opacity=".4"/>
         </g>
 
-        <!-- sheen overlay -->
-        <g clip-path="url(#bodyClip)"><polygon points="126,126 300,126 160,434 126,434" fill="url(#sheen)"/></g>
 
         <!-- cable gland (bottom of body) -->
         <rect x="256" y="430" width="48" height="26" rx="6" fill="#3a3f47" stroke="#181b1f"/>
         <rect x="262" y="452" width="36" height="14" rx="4" fill="#2a2e34" stroke="#181b1f"/>
 
         <!-- GPO OWN SWITCH (rocker) - right flank test cluster -->
-        <g id="gpoSwitch" class="focusable" role="switch" aria-checked="false" tabindex="0"
+        <g id="gpoSwitch" class="hit focusable" role="switch" aria-checked="false" tabindex="0"
            aria-label="Power point switch. Flick to test the outlet." style="pointer-events:none;opacity:.4;transition:opacity .3s;">
           <rect class="focus-ring" x="452" y="196" width="70" height="118" rx="12" fill="none" stroke="var(--warn)" stroke-width="2.5"/>
           <rect x="460" y="204" width="54" height="102" rx="9" fill="url(#plastic)" stroke="#b3ad9e"/>
