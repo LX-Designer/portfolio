@@ -10,6 +10,7 @@ export const sectors = {
   'higher-ed': 'Higher Ed',
   'lnd': 'Learning & Development',
   'k12': 'Senior Secondary',
+  'vet': 'VET',
 };
 
 export const pieceTypes = {
@@ -101,6 +102,29 @@ export const pieces = [
     // The asset has its own full-page chrome (topbar, hero, footer nav) —
     // render it without the portfolio's own nav/breadcrumb/footer so it reads
     // as its own standalone tool, not an embed in a page.
+    standalonePage: true,
+  },
+  {
+    slug: 'isolate-first', category: 'interactive', tag: 'Electrical Trades',
+    sector: 'vet', type: 'interactive',
+    title: 'Safe Isolation Procedure',
+    is: 'A safety-critical competency simulation for the electrical trade: isolate a switchboard, prove the circuit dead, terminate an Australian double power point correctly under AS/NZS 3000, then restore and test the outlet. Every action is logged and assessed — reaching into a live circuit ends the attempt immediately, the same way it would in reality.',
+    demonstrates: 'Consequence-based assessment for a physical safety procedure: the correct order of operations is what\'s being tested, not just the end result, so a full action trace backs up the verdict rather than a single pass/fail score.',
+    // Self-contained SVG-driven simulation with its own drag-and-drop
+    // interaction and assessment engine, built as static HTML/CSS/JS rather
+    // than a React island — served directly via iframe so it renders exactly
+    // as designed with no porting risk, same as the encryption lesson above.
+    iframeSrc: '/isolate-first/index.html',
+    // Card-only override: this card's body copy differs from the "is" text
+    // used on its own standalone page.
+    cardBody: 'Work through the full safe isolation procedure on a simulated switchboard and power point — then find out whether your work would be judged competent.',
+    // This piece is a full-page assessment tool with its own action log and
+    // report that doesn't suit the compact preview modal — send it to its
+    // standalone page in a new tab instead, like a normal link.
+    openInNewTab: true,
+    // The asset has its own full-page chrome (masthead, task brief, footer
+    // compliance notice) — render it without the portfolio's own
+    // nav/breadcrumb/footer so it reads as its own standalone tool.
     standalonePage: true,
   },
   {

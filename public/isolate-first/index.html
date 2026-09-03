@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safe Isolation Procedure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+  :root{
+    --stage-0:#22262c;
+    --stage-1:#31363f;
+    --stage-2:#3c414b;
+    --ink:#eceef1;
+    --ink-dim:#9aa0a8;
+    --ink-faint:#6b7078;
+    --hair:rgba(255,255,255,.08);
+    --hair-strong:rgba(255,255,255,.14);
+    --active:#8a5a2b;
+    --neutral:#2f6fb0;
+    --earth-g:#3c8a3c;
+    --earth-y:#e0c53a;
+    --live:#d9534a;
+    --ok:#4caf72;
+    --warn:#e0a33a;
+    --panel:rgba(20,23,27,.72);
+    --sans:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Code",Menlo,monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;min-height:100%;}
+  body{
+    font-family:var(--sans);
+    color:var(--ink);
+    background:
+      radial-gradient(130% 100% at 50% -8%, #444a55 0%, var(--stage-1) 40%, var(--stage-0) 100%) fixed;
+    -webkit-font-smoothing:antialiased;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:34px 18px 60px;
+  }
+  .wrap{width:100%;max-width:1040px;}
+
+  .nav-back{
+    display:inline-block;margin-bottom:18px;
+    font-family:var(--mono);font-size:11px;letter-spacing:.05em;
+    color:var(--ink-faint);text-decoration:none;transition:color .2s;
+  }
+  .nav-back:hover{color:var(--ink);}
+
+  header.masthead{
+    display:flex;align-items:flex-end;justify-content:space-between;gap:20px;
+    padding-bottom:16px;border-bottom:1px solid var(--hair);margin-bottom:8px;
+  }
+  .brand{display:flex;flex-direction:column;gap:7px;}
+  .eyebrow{
+    font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--warn);display:flex;align-items:center;gap:9px;
+  }
+  .eyebrow::before{content:"";width:20px;height:1px;background:var(--warn);opacity:.7;}
+  h1{font-size:26px;font-weight:800;letter-spacing:-.02em;margin:0;line-height:1;}
+  .masthead .sub{margin:0;font-size:12.5px;color:var(--ink-dim);max-width:300px;text-align:right;line-height:1.5;}
+
+  /* step tracker */
+  .steps{display:flex;gap:6px;margin:22px 0 14px;flex-wrap:wrap;}
+  .step{
+    flex:1 1 0;min-width:132px;display:flex;align-items:center;gap:10px;
+    padding:9px 12px;border:1px solid var(--hair);border-radius:9px;
+    background:rgba(255,255,255,.015);transition:border-color .3s,background .3s,opacity .3s;
+    opacity:.5;
+  }
+  .step .num{
+    font-family:var(--mono);font-size:11px;width:20px;height:20px;flex:none;
+    display:grid;place-items:center;border-radius:50%;border:1px solid var(--hair-strong);
+    color:var(--ink-dim);transition:.3s;
+  }
+  .step .lbl{font-size:12.5px;font-weight:600;letter-spacing:.01em;}
+  .step .lbl small{display:block;font-weight:400;color:var(--ink-faint);font-size:10.5px;letter-spacing:0;}
+  .step.active{opacity:1;border-color:var(--warn);background:rgba(224,163,58,.08);}
+  .step.active .num{border-color:var(--warn);color:var(--warn);background:rgba(224,163,58,.12);}
+  .step.done{opacity:1;border-color:rgba(76,175,114,.4);}
+  .step.done .num{border-color:var(--ok);color:#0c140f;background:var(--ok);}
+  .step.done .num::before{content:"✓";}
+  .step.done .num span{display:none;}
+
+  /* stage */
+  /* The scene's interactive geometry (drag targets, terminal hit radii) is
+     fixed in SVG-unit space, so letting the card shrink to fit a phone width
+     shrinks every tap target proportionally too — a wire's grab area would
+     end up only a few pixels wide. min-width holds the stage at a size where
+     everything stays tappable; .stage-scroll lets that overflow scroll
+     horizontally on narrow viewports instead of squeezing the whole diagram
+     down to illegible/untappable. */
+  .stage-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -2px;padding:2px;}
+  .stage-card{
+    position:relative;border:1px solid var(--hair);border-radius:16px;overflow:hidden;
+    background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(0,0,0,.12));
+    box-shadow:0 30px 60px -30px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.04);
+    min-width:900px;
+  }
+  svg.scene{display:block;width:100%;height:auto;touch-action:none;}
+
+  .banner{
+    position:absolute;left:0;right:0;top:0;padding:11px 18px;
+    display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;
+    background:linear-gradient(180deg,rgba(217,83,74,.96),rgba(217,83,74,.82));
+    color:#fff;transform:translateY(-100%);transition:transform .35s cubic-bezier(.2,.8,.2,1);
+    z-index:4;box-shadow:0 8px 24px -8px rgba(0,0,0,.6);
+  }
+  .banner.show{transform:translateY(0);}
+  .banner svg{width:18px;height:18px;flex:none;}
+
+  /* prompt + callout */
+  .console{margin-top:14px;display:flex;flex-direction:column;gap:12px;}
+  .prompt{
+    display:flex;align-items:center;gap:12px;min-height:26px;
+    font-size:14.5px;color:var(--ink);line-height:1.5;
+  }
+  .prompt .dot{width:9px;height:9px;border-radius:50%;flex:none;background:var(--warn);box-shadow:0 0 0 4px rgba(224,163,58,.16);}
+  .prompt.live .dot{background:var(--live);box-shadow:0 0 0 4px rgba(217,83,74,.18);animation:pulse 1.6s ease-in-out infinite;}
+  .prompt.ok .dot{background:var(--ok);box-shadow:0 0 0 4px rgba(76,175,114,.18);}
+  @keyframes pulse{50%{box-shadow:0 0 0 7px rgba(217,83,74,0);}}
+
+  .callout{
+    border:1px solid var(--hair);border-left-width:3px;border-radius:10px;padding:15px 17px;
+    background:var(--panel);display:none;animation:rise .4s cubic-bezier(.2,.8,.2,1);
+  }
+  .callout.show{display:block;}
+  .callout.warn{border-left-color:var(--warn);}
+  .callout.bad{border-left-color:var(--live);}
+  .callout.good{border-left-color:var(--ok);}
+  .callout h3{margin:0 0 6px;font-size:14.5px;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:9px;}
+  .callout p{margin:0;font-size:13.5px;line-height:1.62;color:var(--ink-dim);}
+  .callout .tagpill{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border-radius:5px;font-weight:600;}
+  .callout.warn .tagpill{background:rgba(224,163,58,.16);color:var(--warn);}
+  .callout.bad .tagpill{background:rgba(217,83,74,.16);color:#e88;}
+  .callout.good .tagpill{background:rgba(76,175,114,.16);color:#7fd6a0;}
+  @keyframes rise{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  .toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:6px;flex-wrap:wrap;}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:var(--ink-dim);}
+  .legend span{display:inline-flex;align-items:center;gap:7px;}
+  .sw{width:12px;height:12px;border-radius:3px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.3);}
+  /* Same shape/treatment as .btn-submit (padding, radius, font, weight,
+     translucent border+fill that lightens on hover) — grey instead of the
+     submit button's amber, so the two read as a matched pair rather than
+     two different button styles. */
+  .restart{
+    appearance:none;border:1px solid rgba(154,160,168,.5);background:rgba(154,160,168,.14);
+    color:#c5cad0;font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.01em;
+    padding:9px 18px;border-radius:8px;cursor:pointer;transition:.2s;
+  }
+  .restart:hover{background:rgba(154,160,168,.22);border-color:rgba(154,160,168,.7);color:#dde1e5;}
+
+  footer.compliance{
+    margin-top:26px;padding-top:16px;border-top:1px solid var(--hair);
+    font-size:11.5px;line-height:1.6;color:var(--ink-faint);max-width:none;
+  }
+  footer.compliance b{color:var(--ink-dim);font-weight:600;}
+
+  /* interactive SVG states */
+  .hit{cursor:pointer;}
+  .wire-boot{cursor:grab;}
+  .wire-boot:active{cursor:grabbing;}
+  .locked .wire-boot{cursor:not-allowed;}
+  [tabindex]:focus, .focusable:focus{outline:none;}
+  .focus-ring{opacity:0;transition:opacity .12s;}
+  .term-focus{opacity:0;transition:opacity .12s;}
+  /* Shown for keyboard focus only, not mouse clicks. :focus-visible's own
+     heuristic isn't reliable here since these are custom ARIA widgets (a
+     <g role="button">, not a real <button>) — some browsers treat a click
+     on them as focus-visible-worthy same as a Tab press. html.using-mouse
+     is toggled in JS from actual input events instead, which is exact. */
+  html:not(.using-mouse) .focusable:focus .focus-ring{opacity:1;}
+  html:not(.using-mouse) .term-hit:focus .term-focus{opacity:1;}
+
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms!important;transition-duration:.001ms!important;}
+  }
+  @media (max-width:560px){
+    h1{font-size:22px;}
+    .masthead .sub{display:none;}
+    .step .lbl small{display:none;}
+  }
+  /* .btn-submit/.restart compute well under the ~44px touch-target
+     guideline on their font-size + padding alone. */
+  @media (max-width:768px){
+    .btn-submit,.restart{min-height:44px;display:inline-flex;align-items:center;justify-content:center;}
+  }
+
+  /* assessment: task instruction — shown as a gating modal on load rather
+     than an inline banner, so the brief has to be read before the task
+     becomes reachable at all. */
+  .objective-backdrop{
+    position:fixed;inset:0;z-index:50;background:rgba(10,11,13,.74);
+    display:flex;align-items:center;justify-content:center;padding:24px;
+    backdrop-filter:blur(2px);
+  }
+  .objective-backdrop.hide{display:none;}
+  .objective{
+    display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:22px 24px 24px;
+    border:1px solid rgba(224,163,58,.4);border-left:3px solid var(--warn);border-radius:14px;
+    background:linear-gradient(180deg,#2c2f36,#23262c);
+    box-shadow:0 30px 70px -20px rgba(0,0,0,.7);
+    max-width:440px;width:100%;
+  }
+  .obj-tag{flex:none;font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    color:#161208;background:var(--warn);padding:5px 10px;border-radius:6px;}
+  .objective p{margin:0;font-size:14px;color:var(--ink);line-height:1.55;flex:none;}
+  .objective p b{color:#f6d59a;font-weight:700;}
+  .obj-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;align-self:stretch;}
+  .obj-steps li{display:flex;align-items:center;gap:11px;font-size:13.5px;color:var(--ink);line-height:1.4;}
+  .obj-steps .n{flex:none;width:21px;height:21px;border-radius:50%;display:grid;place-items:center;
+    font-family:var(--mono);font-size:11px;line-height:1;font-weight:700;color:#161208;background:var(--warn);}
+  .btn-begin{
+    appearance:none;border:1px solid rgba(224,163,58,.6);background:var(--warn);
+    color:#161208;font-family:var(--sans);font-size:14px;font-weight:700;letter-spacing:.01em;
+    padding:12px 20px;border-radius:9px;cursor:pointer;transition:.2s;
+    align-self:stretch;text-align:center;margin-top:8px;
+  }
+  .btn-begin:hover{background:#f0c477;border-color:#f0c477;}
+  .btn-begin:focus-visible{outline:2px solid #fff;outline-offset:2px;}
+
+  /* recording badge (stage overlay) */
+  .rec-badge{position:absolute;top:12px;right:14px;z-index:3;display:inline-flex;align-items:center;gap:7px;
+    font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.08em;color:#e9b0ac;
+    background:rgba(18,20,24,.68);border:1px solid rgba(217,83,74,.4);padding:5px 11px;border-radius:20px;}
+  .rec-badge .rec-count{color:var(--ink-dim);font-weight:400;letter-spacing:.02em;}
+  .recdot{width:8px;height:8px;border-radius:50%;background:var(--live);box-shadow:0 0 0 3px rgba(217,83,74,.18);animation:pulse 1.6s ease-in-out infinite;}
+  .rec-badge.off{color:var(--ink-faint);border-color:var(--hair);}
+  .rec-badge.off .recdot{background:var(--ink-faint);box-shadow:none;animation:none;}
+
+  /* supply status badge (stage overlay, top-left — mirrors the REC badge) */
+  .status-badge{position:absolute;top:12px;left:14px;z-index:3;display:inline-flex;align-items:center;gap:9px;
+    font-size:12.5px;font-weight:500;color:var(--ink);background:rgba(18,20,24,.68);border:1px solid var(--hair-strong);
+    padding:6px 13px 6px 11px;border-radius:20px;max-width:calc(100% - 150px);}
+  .status-badge .dot{width:9px;height:9px;border-radius:50%;flex:none;background:var(--warn);
+    box-shadow:0 0 8px 2px rgba(224,163,58,.85), 0 0 0 3px rgba(224,163,58,.16);}
+  .status-badge.live .dot{background:var(--live);animation:glowpulse 1.7s ease-in-out infinite;}
+  @keyframes glowpulse{
+    0%,100%{box-shadow:0 0 8px 2px rgba(217,83,74,.9), 0 0 0 3px rgba(217,83,74,.24);}
+    50%{box-shadow:0 0 14px 4px rgba(217,83,74,1), 0 0 0 7px rgba(217,83,74,0);}
+  }
+  .status-badge.ok .dot{background:var(--ok);
+    box-shadow:0 0 9px 2px rgba(76,175,114,.9), 0 0 0 3px rgba(76,175,114,.18);}
+
+  /* end-of-assessment review callout */
+  .trace-callout{margin-top:14px;border:1px solid var(--hair);border-radius:11px;background:rgba(255,255,255,.02);overflow:hidden;}
+  .trace-head{display:flex;gap:11px;align-items:flex-start;padding:13px 16px;border-bottom:1px solid var(--hair);}
+  .trace-ic{flex:none;font-size:15px;color:var(--warn);line-height:1.1;}
+  .trace-head b{display:block;font-size:13px;color:var(--ink);}
+  .trace-head small{display:block;font-size:11.5px;color:var(--ink-faint);margin-top:2px;line-height:1.45;}
+  ol.tracelist{
+    margin:0;padding:10px 16px 14px 36px;color:var(--ink-dim);font-size:12.5px;max-height:230px;overflow-y:auto;
+    scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.22) transparent;
+  }
+  ol.tracelist::-webkit-scrollbar{width:7px;}
+  ol.tracelist::-webkit-scrollbar-track{background:transparent;}
+  ol.tracelist::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:999px;}
+  ol.tracelist::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.32);}
+  ol.tracelist li{padding:3px 0;line-height:1.5;}
+  ol.tracelist li.tw{color:#f0a09a;}
+  ol.tracelist .tick{color:var(--ok);font-weight:800;margin-left:2px;}
+  ol.tracelist .cross{color:var(--live);font-weight:800;margin-left:2px;}
+
+  /* ended stage */
+  .stage-card.ended svg.scene{filter:saturate(.8) brightness(.82);transition:filter .4s;}
+
+  .btn-submit{
+    appearance:none;border:1px solid rgba(224,163,58,.5);background:rgba(224,163,58,.14);
+    color:#f0c477;font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.01em;
+    padding:9px 18px;border-radius:8px;cursor:pointer;transition:.2s;
+  }
+  .btn-submit:hover{background:rgba(224,163,58,.22);border-color:rgba(224,163,58,.7);color:#f6d59a;}
+  .btn-submit:disabled{opacity:.4;cursor:not-allowed;}
+
+  /* report */
+  .report{display:none;}
+  .report.show{display:block;animation:rise .4s cubic-bezier(.2,.8,.2,1);}
+  .verdict{display:flex;flex-direction:column;gap:8px;padding:16px 18px;border-radius:11px 11px 0 0;
+    border:1px solid var(--hair);border-bottom:none;}
+  .verdict .vpill{align-self:flex-start;font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase;padding:5px 11px;border-radius:6px;}
+  .verdict p{margin:0;font-size:13.5px;line-height:1.6;color:var(--ink-dim);}
+  .verdict.pass{background:rgba(76,175,114,.10);} .verdict.pass .vpill{background:rgba(76,175,114,.2);color:#8fdcac;}
+  .verdict.notes{background:rgba(224,163,58,.10);} .verdict.notes .vpill{background:rgba(224,163,58,.2);color:#f0c477;}
+  .verdict.fail{background:rgba(217,83,74,.10);} .verdict.fail .vpill{background:rgba(217,83,74,.2);color:#f0a09a;}
+  .verdict.fatal{background:rgba(217,83,74,.18);} .verdict.fatal .vpill{background:var(--live);color:#fff;}
+
+  ul.findings{list-style:none;margin:0;padding:6px 0 0;border:1px solid var(--hair);border-top:none;border-radius:0 0 11px 11px;
+    background:var(--panel);}
+  ul.findings li{display:flex;gap:11px;padding:11px 18px;border-top:1px solid var(--hair);font-size:13px;line-height:1.55;}
+  ul.findings li:first-child{border-top:none;}
+  .ficon{flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;margin-top:1px;}
+  .fbody{color:var(--ink-dim);} .fbody b{color:var(--ink);font-weight:600;margin-right:2px;}
+  .f-ok .ficon{background:rgba(76,175,114,.18);color:#7fd6a0;}
+  .f-warn .ficon{background:rgba(224,163,58,.18);color:#e0a33a;}
+  .f-bad .ficon,.f-fatal .ficon{background:rgba(217,83,74,.18);color:#f0a09a;}
+  .f-note .ficon{background:rgba(255,255,255,.06);color:var(--ink-dim);}
+
+  .trace{margin-top:12px;font-size:12.5px;}
+  .trace summary{cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--ink-dim);padding:8px 0;}
+  .trace summary:hover{color:var(--ink);}
+  .trace ol{margin:6px 0 0;padding-left:30px;color:var(--ink-dim);}
+  .trace li{padding:3px 0;line-height:1.5;}
+  .trace li.tw{color:#f0a09a;}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a href="/#portfolio" class="nav-back" target="_top">← Back to Portfolio</a>
+
+  <header class="masthead">
+    <div class="brand">
+      <span class="eyebrow">Compliance training</span>
+      <h1>Safe Isolation Procedure</h1>
+    </div>
+    <p class="sub">A model of the safe sequence a <b>licensed electrician</b> follows to terminate an Australian double power point under AS/NZS&nbsp;3000.</p>
+  </header>
+
+  <div class="objective-backdrop" id="objectiveBackdrop">
+    <div class="objective" id="objective" role="dialog" aria-modal="true" aria-labelledby="objTitle">
+      <span class="obj-tag" id="objTitle">Your task</span>
+      <p>Complete this electrical termination safely and leave the outlet in service.</p>
+      <ol class="obj-steps">
+        <li><span class="n">1</span>Click or tap switches to operate them.</li>
+        <li><span class="n">2</span>Drag and drop wires to their correct terminal positions.</li>
+      </ol>
+      <p>Every action you take will be tracked. Press <b>Finish&nbsp;&amp;&nbsp;submit</b> when you're done to see if you have completed this task safely and correctly.</p>
+      <button type="button" class="btn-begin" id="beginTask">Begin task →</button>
+    </div>
+  </div>
+
+  <div class="stage-scroll">
+  <div class="stage-card">
+    <div class="rec-badge" id="rec"><span class="recdot"></span>REC<span class="rec-count" id="actionCount">0 actions</span></div>
+    <div class="banner" id="banner" role="alert">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 2 20h20L12 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v5M12 17.5v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span id="bannerText">Stop — the power is still on.</span>
+    </div>
+
+    <svg class="scene" id="scene" viewBox="0 0 1180 620" xmlns="http://www.w3.org/2000/svg"
+         role="group" aria-label="Interactive rear view of a switchboard and the mechanism of an Australian double power point.">
+      <defs>
+        <filter id="bodyShadow" x="-70%" y="-70%" width="240%" height="240%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="14"/><feOffset dy="16" result="o"/>
+          <feColorMatrix in="o" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.45 0"/>
+        </filter>
+        <filter id="screwShadow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="2.4"/><feOffset dy="2.5" result="o"/>
+          <feColorMatrix in="o" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0"/>
+        </filter>
+        <filter id="softGlow" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <linearGradient id="plastic" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#f4f1ea"/><stop offset=".45" stop-color="#e7e2d7"/><stop offset="1" stop-color="#cfc9bb"/>
+        </linearGradient>
+        <linearGradient id="plasticRim" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fffdf7"/><stop offset="1" stop-color="#b3ad9e"/>
+        </linearGradient>
+        <radialGradient id="cavity" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stop-color="#0a0906"/><stop offset=".62" stop-color="#171410"/><stop offset=".86" stop-color="#332c22"/><stop offset="1" stop-color="#6b6152"/>
+        </radialGradient>
+        <radialGradient id="brass" cx="0.34" cy="0.30" r="0.9">
+          <stop offset="0" stop-color="#fbf0c4"/><stop offset=".35" stop-color="#e3c268"/><stop offset=".7" stop-color="#b58f38"/><stop offset="1" stop-color="#7c5c1f"/>
+        </radialGradient>
+        <radialGradient id="steel" cx="0.35" cy="0.3" r="0.95">
+          <stop offset="0" stop-color="#fbfbfd"/><stop offset=".5" stop-color="#c4c8cf"/><stop offset="1" stop-color="#7f858e"/>
+        </radialGradient>
+        <linearGradient id="slot" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#5a4718"/><stop offset=".5" stop-color="#2c2109"/><stop offset="1" stop-color="#6b5622"/>
+        </linearGradient>
+        <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".25" stop-color="#fff" stop-opacity=".06"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="boardMetal" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#4a4f57"/><stop offset=".5" stop-color="#3a3f47"/><stop offset="1" stop-color="#2c3037"/>
+        </linearGradient>
+        <linearGradient id="railMetal" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#d7dade"/><stop offset=".5" stop-color="#a9adb3"/><stop offset="1" stop-color="#7c8087"/>
+        </linearGradient>
+        <linearGradient id="module" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#33373e"/><stop offset="1" stop-color="#23262c"/>
+        </linearGradient>
+        <linearGradient id="lever" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#f0f1f3"/><stop offset="1" stop-color="#b7bbc1"/>
+        </linearGradient>
+        <radialGradient id="lampOff" cx="0.4" cy="0.35" r="0.7">
+          <stop offset="0" stop-color="#3a3f47"/><stop offset="1" stop-color="#20242a"/>
+        </radialGradient>
+        <linearGradient id="earthSplit" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#3c8a3c"/><stop offset=".5" stop-color="#3c8a3c"/>
+          <stop offset=".5" stop-color="#e0c53a"/><stop offset="1" stop-color="#e0c53a"/>
+        </linearGradient>
+        <radialGradient id="copper" cx="0.36" cy="0.30" r="0.95">
+          <stop offset="0" stop-color="#f6cf97"/><stop offset=".4" stop-color="#cf8a44"/><stop offset=".8" stop-color="#a5652c"/><stop offset="1" stop-color="#7a441d"/>
+        </radialGradient>
+        <clipPath id="bodyClip"><rect x="120" y="120" width="320" height="320" rx="22"/></clipPath>
+      </defs>
+
+      <!-- ===================== FEED CABLE (behind everything) ===================== -->
+      <g id="feed">
+        <path d="M 370 352 C 560 352 620 456 840 456" fill="none" stroke="#1b1e23" stroke-width="26" stroke-linecap="round"/>
+        <path d="M 370 352 C 560 352 620 456 840 456" fill="none" stroke="#2a2e34" stroke-width="20" stroke-linecap="round"/>
+        <path d="M 370 352 C 560 352 620 456 840 456" fill="none" stroke="#34383f" stroke-width="4" stroke-dasharray="2 12" stroke-linecap="round" opacity=".6"/>
+      </g>
+
+      <!-- ===================== SWITCHBOARD ===================== -->
+      <g id="board">
+        <g filter="url(#bodyShadow)"><rect x="70" y="108" width="300" height="404" rx="16" fill="#20242a"/></g>
+        <rect x="70" y="108" width="300" height="404" rx="16" fill="url(#boardMetal)" stroke="#14161a" stroke-width="1.5"/>
+        <rect x="84" y="122" width="272" height="376" rx="10" fill="#191c21" stroke="#0e1013"/>
+        <!-- header: label + supply status readout -->
+        <text x="100" y="152" font-family="var(--mono)" font-size="12" letter-spacing="1.5" fill="#7c828b">SWITCHBOARD</text>
+        <rect x="232" y="137" width="112" height="30" rx="6" fill="#0c0e11" stroke="#000"/>
+        <circle id="supplyPip" cx="250" cy="152" r="5" fill="var(--live)"/>
+        <text id="supplyText" x="264" y="156.5" font-family="var(--mono)" font-size="12.5" font-weight="700" letter-spacing="1" fill="#e6a">LIVE</text>
+
+        <!-- DIN rails (centred) -->
+        <rect x="98" y="198" width="244" height="12" rx="2" fill="url(#railMetal)"/>
+        <rect x="98" y="346" width="244" height="12" rx="2" fill="url(#railMetal)"/>
+
+        <!-- MAIN SWITCH (isolator) — module centred on x=220 -->
+        <g id="mainSwitch" class="hit focusable" role="switch" aria-checked="false" transform="translate(0,10)"
+           tabindex="0" aria-label="Main switch. Currently on, supply live. Activate to isolate the circuit.">
+          <rect class="focus-ring" x="104" y="200" width="232" height="128" rx="11" fill="none" stroke="var(--warn)" stroke-width="2.5"/>
+          <rect x="110" y="206" width="220" height="120" rx="9" fill="url(#module)" stroke="#0e1013"/>
+          <text x="128" y="232" font-family="var(--mono)" font-size="11" letter-spacing=".5" fill="#8b919a">MAIN SWITCH</text>
+          <!-- throw slot -->
+          <rect x="192" y="246" width="56" height="66" rx="7" fill="#0c0e11"/>
+          <!-- lever -->
+          <g id="mainLever" style="transition:transform .28s cubic-bezier(.3,1.4,.5,1);">
+            <rect x="199" y="252" width="42" height="28" rx="5" fill="url(#lever)" stroke="#8a8f96"/>
+            <rect x="199" y="252" width="42" height="9" rx="4" fill="#fff" opacity=".5"/>
+          </g>
+          <text x="262" y="262" font-family="var(--mono)" font-size="10" fill="#c66" id="mainOnLbl">ON</text>
+          <text x="262" y="306" font-family="var(--mono)" font-size="10" fill="#6b7078" id="mainOffLbl">OFF</text>
+        </g>
+
+        <!-- RCD / SAFETY SWITCH — module centred on x=220 -->
+        <g id="rcdModule" transform="translate(0,10)">
+          <rect x="110" y="354" width="220" height="120" rx="9" fill="url(#module)" stroke="#0e1013"/>
+          <text x="128" y="380" font-family="var(--mono)" font-size="11" letter-spacing=".5" fill="#8b919a">SAFETY SWITCH</text>
+          <text x="128" y="395" font-family="var(--mono)" font-size="9" letter-spacing=".5" fill="#61666e">RCD · 30mA</text>
+          <circle id="rcdPip" cx="308" cy="376" r="5" fill="#3a3f47"/>
+          <!-- throw slot -->
+          <rect x="150" y="408" width="46" height="52" rx="6" fill="#0c0e11"/>
+          <g id="rcdLever" style="transition:transform .2s;">
+            <rect x="156" y="413" width="34" height="24" rx="5" fill="url(#lever)" stroke="#8a8f96"/>
+            <rect x="156" y="413" width="34" height="8" rx="3.5" fill="#fff" opacity=".5"/>
+          </g>
+          <!-- TEST button -->
+          <g id="rcdTest" class="hit focusable" role="button" tabindex="0" aria-label="Safety switch test button. Press to test the safety switch.">
+            <rect class="focus-ring" x="242" y="404" width="46" height="66" rx="8" fill="none" stroke="var(--warn)" stroke-width="2.5"/>
+            <rect x="248" y="410" width="34" height="34" rx="6" fill="url(#module)" stroke="#0e1013"/>
+            <rect x="251" y="413" width="28" height="28" rx="5" fill="#5a3230" stroke="#20100f"/>
+            <rect x="251" y="413" width="28" height="9" rx="4" fill="#fff" opacity=".14"/>
+            <text x="265" y="431" text-anchor="middle" font-family="var(--mono)" font-size="12" font-weight="700" fill="#eab4b0">T</text>
+            <text x="265" y="459" text-anchor="middle" font-family="var(--mono)" font-size="8" letter-spacing="1" fill="#9aa0a8">TEST</text>
+          </g>
+        </g>
+      </g>
+
+      <!-- ===================== GPO MECHANISM (style-proof geometry, translated) ===================== -->
+      <g id="gpo" transform="translate(560,0)">
+        <g filter="url(#bodyShadow)"><rect x="120" y="120" width="320" height="320" rx="26" fill="url(#plasticRim)"/></g>
+        <rect x="126" y="126" width="308" height="308" rx="22" fill="url(#plastic)"/>
+        <rect x="150" y="150" width="260" height="260" rx="16" fill="#ded8cb"/>
+        <rect x="150" y="150" width="260" height="260" rx="16" fill="none" stroke="#b7b1a2" stroke-width="1.5"/>
+        <rect x="150" y="150" width="260" height="10" rx="6" fill="#000" opacity=".06"/>
+        <g fill="#cbc5b6" stroke="#a9a394" stroke-width="1.5"><circle cx="168" cy="168" r="9"/><circle cx="392" cy="392" r="9"/></g>
+        <g fill="#8f8a7d"><circle cx="168" cy="168" r="3.4"/><circle cx="392" cy="392" r="3.4"/></g>
+        <text x="280" y="404" text-anchor="middle" font-family="var(--mono)" font-size="12" letter-spacing="1.5" fill="#a49e8f">250V ~ 10A</text>
+        <text x="280" y="403.2" text-anchor="middle" font-family="var(--mono)" font-size="12" letter-spacing="1.5" fill="#fbf8f1" opacity=".5">250V ~ 10A</text>
+
+        <!-- terminal labels -->
+        <text x="212" y="176" text-anchor="middle" font-family="var(--sans)" font-size="20" font-weight="700" fill="#8a8577">A</text>
+        <text x="348" y="176" text-anchor="middle" font-family="var(--sans)" font-size="20" font-weight="700" fill="#8a8577">N</text>
+        <text x="326" y="343" text-anchor="middle" font-family="var(--sans)" font-size="20" font-weight="700" fill="#8a8577">E</text>
+
+        <!-- terminals: rendered by template; slots differ (A/N horizontal, E vertical) -->
+        <g class="terminal" data-term="A" transform="translate(212,214)">
+          <circle cx="0" cy="0" r="37" fill="url(#cavity)"/>
+          <circle class="term-glow" cx="0" cy="0" r="34" fill="none" stroke="var(--ok)" stroke-width="3" opacity="0"/>
+          <circle cx="0" cy="0" r="30" fill="url(#steel)" stroke="#6f757e" stroke-width="1"/>
+          <circle cx="0" cy="0" r="21" fill="url(#brass)" filter="url(#screwShadow)"/>
+          <circle cx="0" cy="0" r="21" fill="none" stroke="#5f4715" stroke-width="1" opacity=".5"/>
+          <rect x="-16" y="-2.4" width="32" height="4.8" rx="2" fill="url(#slot)"/>
+          <ellipse cx="-7" cy="-8" rx="7" ry="4.5" fill="#fff" opacity=".4"/>
+        </g>
+        <g class="terminal" data-term="N" transform="translate(348,214)">
+          <circle cx="0" cy="0" r="37" fill="url(#cavity)"/>
+          <circle class="term-glow" cx="0" cy="0" r="34" fill="none" stroke="var(--ok)" stroke-width="3" opacity="0"/>
+          <circle cx="0" cy="0" r="30" fill="url(#steel)" stroke="#6f757e" stroke-width="1"/>
+          <circle cx="0" cy="0" r="21" fill="url(#brass)" filter="url(#screwShadow)"/>
+          <circle cx="0" cy="0" r="21" fill="none" stroke="#5f4715" stroke-width="1" opacity=".5"/>
+          <rect x="-16" y="-2.4" width="32" height="4.8" rx="2" fill="url(#slot)"/>
+          <ellipse cx="-7" cy="-8" rx="7" ry="4.5" fill="#fff" opacity=".4"/>
+        </g>
+        <g class="terminal" data-term="E" transform="translate(280,336)">
+          <circle cx="0" cy="0" r="37" fill="url(#cavity)"/>
+          <circle class="term-glow" cx="0" cy="0" r="34" fill="none" stroke="var(--ok)" stroke-width="3" opacity="0"/>
+          <circle cx="0" cy="0" r="30" fill="url(#steel)" stroke="#6f757e" stroke-width="1"/>
+          <circle cx="0" cy="0" r="21" fill="url(#brass)" filter="url(#screwShadow)"/>
+          <circle cx="0" cy="0" r="21" fill="none" stroke="#5f4715" stroke-width="1" opacity=".5"/>
+          <rect x="-2.4" y="-16" width="4.8" height="32" rx="2" fill="url(#slot)"/>
+          <ellipse cx="-8" cy="-7" rx="4.5" ry="7" fill="#fff" opacity=".4"/>
+        </g>
+
+        <!-- sheen overlay -->
+        <g clip-path="url(#bodyClip)"><polygon points="126,126 300,126 160,434 126,434" fill="url(#sheen)"/></g>
+
+        <!-- cable gland (bottom of body) -->
+        <rect x="256" y="430" width="48" height="26" rx="6" fill="#3a3f47" stroke="#181b1f"/>
+        <rect x="262" y="452" width="36" height="14" rx="4" fill="#2a2e34" stroke="#181b1f"/>
+
+        <!-- GPO OWN SWITCH (rocker) - right flank test cluster -->
+        <g id="gpoSwitch" class="focusable" role="switch" aria-checked="false" tabindex="0"
+           aria-label="Power point switch. Flick to test the outlet." style="pointer-events:none;opacity:.4;transition:opacity .3s;">
+          <rect class="focus-ring" x="452" y="196" width="70" height="118" rx="12" fill="none" stroke="var(--warn)" stroke-width="2.5"/>
+          <rect x="460" y="204" width="54" height="102" rx="9" fill="url(#plastic)" stroke="#b3ad9e"/>
+          <text x="487" y="222" text-anchor="middle" font-family="var(--mono)" font-size="8.5" letter-spacing=".5" fill="#8a8577">SWITCH</text>
+          <rect x="470" y="230" width="34" height="66" rx="6" fill="#cfc9bb" stroke="#a9a394"/>
+          <!-- rocker paddle -->
+          <g id="rockerPaddle" style="transition:transform .18s;">
+            <rect x="472" y="232" width="30" height="30" rx="5" fill="url(#lever)" stroke="#9a9f56"/>
+            <rect x="472" y="232" width="30" height="9" rx="4" fill="#fff" opacity=".45"/>
+          </g>
+          <text x="487" y="252" text-anchor="middle" font-family="var(--mono)" font-size="8" fill="#7a7f45" id="gpoOnLbl" opacity="0">ON</text>
+          <text x="487" y="290" text-anchor="middle" font-family="var(--mono)" font-size="8" fill="#8a8577" id="gpoOffLbl">OFF</text>
+        </g>
+
+        <!-- POLARITY TEST LAMP - right flank -->
+        <g id="tester">
+          <rect x="452" y="330" width="70" height="70" rx="12" fill="#23262c" stroke="#14161a"/>
+          <circle id="lampGlow" cx="487" cy="360" r="17" fill="url(#lampOff)" stroke="#14161a" stroke-width="1.5"/>
+          <text id="testerLabel" x="487" y="390" text-anchor="middle" font-family="var(--mono)" font-size="8.5" letter-spacing=".5" fill="#7c828b">TEST</text>
+        </g>
+      </g>
+
+      <!-- ===================== WIRES (drawn above bodies) ===================== -->
+      <g id="wires"></g>
+
+      <!-- keyboard hint -->
+      <text x="24" y="600" font-family="var(--mono)" font-size="11" fill="#5a5f66">Tab to move · Enter to pick up / connect · Esc to cancel</text>
+    </svg>
+  </div>
+  </div>
+
+  <div class="console">
+    <div class="report" id="report" role="status" aria-live="polite"></div>
+    <div class="toolbar">
+      <button class="btn-submit" id="submit" type="button">Finish &amp; submit</button>
+      <button class="restart" id="restart" type="button">↻ Reset</button>
+    </div>
+  </div>
+
+  <div class="sr-only" id="live" aria-live="assertive"></div>
+
+  <footer class="compliance">
+    <b>This is a training model, not a how-to.</b> In Australia, fixed electrical wiring must be carried out by a licensed electrician — doing it yourself is illegal and unsafe. Wiring colours and terminal markings follow AS/NZS&nbsp;3000. No live work, and no electric shock, is ever depicted here.
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var svg = document.getElementById('scene');
+  var wiresG = document.getElementById('wires');
+  var reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  // ---- keyboard-only focus rings ----
+  // html.using-mouse gates the .focus-ring/.term-focus CSS: added the moment
+  // a mouse/touch interaction happens, removed on Tab so the very next
+  // keyboard-focused element still gets its ring.
+  document.addEventListener('mousedown',function(){ document.documentElement.classList.add('using-mouse'); });
+  document.addEventListener('pointerdown',function(ev){ if(ev.pointerType!=='mouse') document.documentElement.classList.add('using-mouse'); });
+  document.addEventListener('keydown',function(ev){ if(ev.key==='Tab') document.documentElement.classList.remove('using-mouse'); });
+
+  // ---- geometry ----
+  var GLAND = {x:840, y:456};
+  var TERM = { A:{x:772,y:214}, N:{x:908,y:214}, E:{x:840,y:336} };
+  var WIRES = {
+    active:  {fn:'Active',  colour:'brown',            home:'A', color:'#8a5a2b', dark:'#5e3d1c', park:{x:702,y:526}},
+    neutral: {fn:'Neutral', colour:'blue',             home:'N', color:'#2f6fb0', dark:'#1f4c7d', park:{x:840,y:546}},
+    earth:   {fn:'Earth',   colour:'green and yellow', home:'E', color:'#3c8a3c', dark:'#2b632b', stripe:'#e0c53a', bootFill:'url(#earthSplit)', park:{x:978,y:526}}
+  };
+  var ACCEPT = 46;
+
+  // ---- state ----
+  function blank(){ return {
+    mainOn:true, tripped:false, verified:false,
+    place:{active:null, neutral:null, earth:null},
+    held:null, energisedHold:false, gpoOn:false, ended:null,
+    log:[], n:0,
+    everWorkedLive:false, touched:false, isolatedFirst:null,
+    provedDead:false, trips:0, failedTests:0,
+    reEnergisedAfterWiring:false, energisedIncomplete:false, lastTest:null
+  };}
+  var S = blank();
+
+  // ---- helpers ----
+  function el(tag,attrs){var e=document.createElementNS('http://www.w3.org/2000/svg',tag);if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);return e;}
+  function isLive(){return S.mainOn && !S.tripped;}
+  function placed(){var n=0;for(var w in S.place)if(S.place[w])n++;return n;}
+  function occupant(term){for(var w in S.place)if(S.place[w]===term)return w;return null;}
+  function ucfirst(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+  function plural(n,word){return n+' '+word+(n===1?'':'s');}
+  function announce(msg){var l=document.getElementById('live');l.textContent='';setTimeout(function(){l.textContent=msg;},30);}
+  function svgPoint(evt){var p=svg.createSVGPoint();p.x=evt.clientX;p.y=evt.clientY;return p.matrixTransform(svg.getScreenCTM().inverse());}
+  function wirePath(sx,sy,ex,ey){var m1=sy+(ey-sy)*0.42,m2=sy+(ey-sy)*0.6;return 'M '+sx+' '+sy+' C '+sx+' '+m1+' '+ex+' '+m2+' '+ex+' '+ey;}
+  function logE(type,detail){S.log.push({n:++S.n,type:type,detail:detail||''});var c=document.getElementById('actionCount');if(c)c.textContent=S.n+(S.n===1?' action':' actions');}
+
+  // ---- build wires (colour only — no letter give-away) ----
+  var wireEls={};
+  Object.keys(WIRES).forEach(function(id){
+    var w=WIRES[id];
+    var g=el('g',{'class':'wire focusable','data-wire':id,tabindex:'0',role:'button',
+      'aria-roledescription':'conductor','aria-label':ucfirst(w.colour)+' conductor.'});
+    var shade=el('path',{fill:'none',stroke:w.stripe||w.dark,'stroke-width':w.stripe?'5':'11','stroke-linecap':'round',opacity:w.stripe?'0.85':'0.35','data-role':'shade','stroke-dasharray':w.stripe?'9 15':'1 15'});
+    var path=el('path',{fill:'none',stroke:w.color,'stroke-width':'11','stroke-linecap':'round','data-role':'path'});
+    var ring=el('circle',{'class':'focus-ring',r:'24',fill:'none',stroke:'var(--warn)','stroke-width':'2.5','data-role':'ring'});
+    // stripped end: fanned multi-strand copper (drawn pointing +y; drawWire flips it to point away from the gland)
+    var boot=el('g',{'class':'wire-boot','data-role':'boot'});
+    boot.appendChild(el('rect',{x:'-16',y:'-14',width:'32',height:'42',fill:'transparent'}));                    // grab target (invisible, non-circular)
+    boot.appendChild(el('path',{d:'M -5 0 Q 0 15 5 0 Z',fill:'url(#copper)',opacity:'0.7','pointer-events':'none'})); // copper mass behind strands
+    var CN=11, SPREAD=30, LEN=23, tones=['#f0c88f','#cd8a44','#9c5c28'];
+    for(var si=0; si<CN; si++){
+      var fr=(si/(CN-1))*2-1;
+      var a=fr*SPREAD*Math.PI/180, ln=LEN*(0.78+0.22*Math.cos(fr*1.35));
+      var ex=(Math.sin(a)*ln).toFixed(1), ey=(Math.cos(a)*ln).toFixed(1);
+      var cx=(Math.sin(a)*ln*0.5+fr*2).toFixed(1), cy=(Math.cos(a)*ln*0.5).toFixed(1);
+      boot.appendChild(el('path',{d:'M 0 1 Q '+cx+' '+cy+' '+ex+' '+ey,fill:'none',stroke:tones[si%3],
+        'stroke-width':(si%3===0?'1.7':'2.3'),'stroke-linecap':'round',opacity:(si%3===2?'0.92':'1'),'pointer-events':'none'}));
+    }
+    g.appendChild(shade);g.appendChild(path);g.appendChild(ring);g.appendChild(boot);
+    wiresG.appendChild(g);
+    wireEls[id]={g:g,path:path,shade:shade,ring:ring,boot:boot,pos:{x:w.park.x,y:w.park.y}};
+  });
+  function drawWire(id){var e=wireEls[id],p=e.pos,d=wirePath(GLAND.x,GLAND.y,p.x,p.y);
+    e.path.setAttribute('d',d);e.shade.setAttribute('d',d);
+    var dir=(p.y<GLAND.y)?-1:1, sc=(S.held===id)?1.14:1; // strands point away from the gland; grow slightly while carried
+    e.boot.setAttribute('transform','translate('+p.x+','+p.y+') scale('+sc+','+(dir*sc)+')');
+    e.ring.setAttribute('cx',p.x);e.ring.setAttribute('cy',p.y);}
+  function setWirePos(id,x,y){wireEls[id].pos.x=x;wireEls[id].pos.y=y;drawWire(id);}
+  function tween(id,tx,ty,cb){
+    if(reduce){setWirePos(id,tx,ty);if(cb)cb();return;}
+    var e=wireEls[id],sx=e.pos.x,sy=e.pos.y,t0=null;
+    function step(ts){if(!t0)t0=ts;var k=Math.min(1,(ts-t0)/180),e2=1-Math.pow(1-k,3);
+      setWirePos(id,sx+(tx-sx)*e2,sy+(ty-sy)*e2);if(k<1)requestAnimationFrame(step);else if(cb)cb();}
+    requestAnimationFrame(step);}
+  Object.keys(WIRES).forEach(drawWire);
+
+  // ---- classify final wiring ----
+  function classify(){
+    if(placed()<3) return 'incomplete';
+    var p=S.place;
+    if(p.active==='E' || p.earth==='A') return 'active-earth';
+    if(p.active==='N' && p.neutral==='A' && p.earth==='E') return 'reversed';
+    if(p.neutral==='E' && p.earth==='N' && p.active==='A') return 'earthswap';
+    if(p.active==='A' && p.neutral==='N' && p.earth==='E') return 'correct';
+    return 'other';
+  }
+
+  // ---- banner (brief, neutral consequence only) ----
+  function banner(text){var b=document.getElementById('banner');document.getElementById('bannerText').textContent=text;b.classList.add('show');
+    clearTimeout(banner._t);banner._t=setTimeout(function(){b.classList.remove('show');},2400);}
+
+  function resetLamp(){var lamp=document.getElementById('lampGlow'),lbl=document.getElementById('testerLabel');
+    lamp.setAttribute('fill','url(#lampOff)');lamp.removeAttribute('filter');lbl.textContent='TEST';lbl.setAttribute('fill','#7c828b');}
+
+  // ================= ACTIONS =================
+  function toggleMain(){
+    if(S.ended) return;
+    if(S.tripped){ // reset the safety switch = attempt to restore supply
+      if(S.held) return fatal('energise-holding');
+      S.tripped=false; S.mainOn=true; logE('reset-rcd');
+      finishEnergise(); return;
+    }
+    if(S.mainOn){ // isolate
+      S.mainOn=false; S.energisedHold=false; S.gpoOn=false; resetLamp();
+      logE('isolate'); announce('Main switch off. Supply isolated.'); render(); return;
+    }
+    // re-energise
+    if(S.held) return fatal('energise-holding');
+    S.mainOn=true; logE('energise'); finishEnergise();
+  }
+  function finishEnergise(){
+    if(placed()===3){
+      S.reEnergisedAfterWiring=true;
+      if(classify()==='active-earth'){
+        render();
+        setTimeout(function(){ S.tripped=true; S.mainOn=false; S.energisedHold=false; S.trips++;
+          logE('trip'); banner('Safety switch tripped.'); render(); }, reduce?10:420);
+        return;
+      }
+      S.energisedHold=true; announce('Supply restored.');
+    } else {
+      S.energisedIncomplete=true; S.energisedHold=false; announce('Supply restored — terminations incomplete.');
+    }
+    render();
+  }
+
+  function rcdTest(){
+    if(S.ended) return;
+    if(isLive()){ logE('rcd-live'); banner('The circuit is live — this does not prove it dead.'); return; }
+    if(S.tripped){ logE('rcd-tripped'); return; }
+    S.verified=true; if(placed()===0) S.provedDead=true; logE('prove-dead');
+    var pip=document.getElementById('rcdPip'); pip.setAttribute('fill','#4caf72');
+    announce('Safety switch tested — circuit proven dead.'); render();
+  }
+
+  function grabAllowed(id){
+    if(S.ended) return false;
+    if(isLive()){ fatal('live-work'); return false; }
+    return true;
+  }
+  function markTouch(){ S.touched=true; if(S.isolatedFirst===null) S.isolatedFirst=!S.everWorkedLive; }
+
+  function selectWire(id){
+    if(!grabAllowed(id)) return;
+    if(S.place[id]){ S.place[id]=null; resetLamp(); }
+    S.held=id; markTouch(); logE('pickup',id);
+    wiresG.appendChild(wireEls[id].g);
+    announce(ucfirst(WIRES[id].colour)+' conductor picked up. Choose a terminal — A, N or E.');
+    render();
+  }
+  function connectTo(term,id){
+    id=id||S.held; if(!id) return;
+    if(occupant(term)){ banner('Terminal '+term+' already has a conductor.'); return; }
+    S.place[id]=term; S.held=null;
+    tween(id,TERM[term].x,TERM[term].y);
+    logE('place',{id:id,term:term,ok:WIRES[id].home===term});
+    announce(ucfirst(WIRES[id].colour)+' connected to terminal '+term+'. '+(placed()===3?'All three terminated.':(3-placed())+' remaining.'));
+    render();
+  }
+  function returnWire(id){ id=id||S.held; if(!id) return; S.held=null;
+    tween(id,WIRES[id].park.x,WIRES[id].park.y); announce(ucfirst(WIRES[id].colour)+' conductor returned.'); render(); }
+
+  function doTest(){
+    if(S.ended) return;
+    S.gpoOn=!S.gpoOn; render();
+    if(!S.gpoOn) return;
+    if(!S.energisedHold){ logE('flick-nopower'); return; }
+    var r=classify(); S.lastTest=r; if(r!=='correct') S.failedTests++; logE('test',r);
+    var lamp=document.getElementById('lampGlow'),lbl=document.getElementById('testerLabel');
+    if(r==='correct'){ lamp.setAttribute('fill','#4caf72'); lamp.setAttribute('filter','url(#softGlow)'); lbl.textContent='PASS'; lbl.setAttribute('fill','#7fd6a0'); }
+    else { lamp.setAttribute('fill','#e0a33a'); lamp.setAttribute('filter','url(#softGlow)'); lbl.textContent='FAULT'; lbl.setAttribute('fill','#e0a33a'); }
+  }
+
+  function submit(){ if(S.ended) return; logE('submit'); end('result'); }
+  function fatal(reason){ S.everWorkedLive=true; logE('live-work',reason); banner('Live contact — assessment ended.'); end('fatal'); }
+  function end(kind){ S.ended=kind; document.querySelector('.stage-card').classList.add('ended'); svg.classList.add('locked');
+    document.getElementById('submit').disabled=true; document.getElementById('rec').classList.add('off');
+    renderReport(evaluate(kind)); render(); }
+
+  // ================= EVALUATION =================
+  function F(status,cat,text){return {status:status,cat:cat,text:text};}
+  function evaluate(kind){
+    var res={findings:[], trace:buildTrace(), verdict:'', cls:'', summary:''};
+    var wiring=classify();
+
+    if(kind==='fatal' || S.everWorkedLive){
+      res.verdict='FATAL ERROR'; res.cls='fatal';
+      res.summary='You made contact with a live circuit. In a real installation this is a potentially fatal electric shock — so the assessment ends here. Reset to try again.';
+      res.findings.push(F('fatal','Isolation','You began working on the conductors while the supply was still live. The circuit must be isolated at the switchboard and proven dead before a conductor is touched — reaching into live terminals is the one mistake nothing protects you from.'));
+      if(S.provedDead) res.findings.push(F('ok','Earlier','You had tested the safety switch at some point — but the supply was live when you reached for a conductor.'));
+      return res;
+    }
+
+    // 1. Isolation
+    if(S.isolatedFirst) res.findings.push(F('ok','Isolation','You isolated the supply at the main switch before handling any conductor.'));
+    else if(!S.touched) res.findings.push(F('warn','Isolation','You never began terminating, so isolation was never put to the test.'));
+    else res.findings.push(F('ok','Isolation','You isolated before handling conductors.'));
+
+    // 2. Prove dead
+    if(S.provedDead) res.findings.push(F('ok','Prove dead','You confirmed the circuit was dead — you tested the safety switch before starting work.'));
+    else if(S.touched) res.findings.push(F('warn','Prove dead','You did not prove the circuit was dead before terminating. Isolating is not enough on its own — confirming there is no voltage is a required step, not an optional one.'));
+
+    // 3. Termination
+    if(wiring==='correct') res.findings.push(F('ok','Termination','All three conductors on their correct terminals — brown → A, blue → N, green/yellow → E.'));
+    else if(wiring==='active-earth') res.findings.push(F('bad','Termination','You connected an active conductor to the earthing system — a direct fault to earth. The safety switch tripped the moment power was restored. Protection did its job, but the termination was wrong.'));
+    else if(wiring==='reversed') res.findings.push(F('bad','Termination','Active and neutral are transposed. The outlet would still power an appliance — but its neutral pin is live, a hidden shock hazard that nothing trips on. Only a test reveals it.'));
+    else if(wiring==='earthswap') res.findings.push(F('bad','Termination','Neutral and earth are transposed. The outlet works, but it has no protective earth — a fault to a metal casing would not trip the supply.'));
+    else if(wiring==='incomplete') res.findings.push(F('bad','Termination','One or more conductors were never terminated to a terminal.'));
+    else res.findings.push(F('bad','Termination','The conductors are not on their correct terminals.'));
+
+    // 4. Restore supply
+    if(S.energisedIncomplete && placed()<3) res.findings.push(F('bad','Restore supply','You restored power before the terminations were complete — that leaves a live, exposed conductor in the enclosure.'));
+    else if(S.reEnergisedAfterWiring) res.findings.push(F('ok','Restore supply','You restored the supply after completing the terminations.'));
+    else res.findings.push(F('warn','Restore supply','You did not restore the supply, so the outlet was never returned to service.'));
+
+    // 5. Verify
+    if(S.lastTest==='correct') res.findings.push(F('ok','Verify','You tested the outlet after re-energising and confirmed it was safe.'));
+    else if(S.lastTest) res.findings.push(F('bad','Verify', wiring==='correct'
+        ? 'Your test showed a fault earlier, which you then corrected before finishing.'
+        : 'Your test showed a fault — and it was not corrected before you submitted.'));
+    else if(S.reEnergisedAfterWiring) res.findings.push(F('bad','Verify','You finished without testing the outlet. A reversed-polarity or lost-earth fault would go completely undetected — the test is how you catch the faults that never trip.'));
+    else res.findings.push(F('warn','Verify','No test was carried out.'));
+
+    // 6. Recovery
+    if(wiring==='correct' && (S.trips>0 || S.failedTests>0))
+      res.findings.push(F('note','Recovery','Along the way you caused '+plural(S.trips,'trip')+' and '+plural(S.failedTests,'failed test')+', then corrected your work. Good recovery — but getting it right first time is the goal.'));
+
+    // verdict
+    var passOutcome = wiring==='correct' && S.reEnergisedAfterWiring && S.lastTest==='correct';
+    if(!S.touched){ res.verdict='NOT YET COMPETENT'; res.cls='fail'; res.summary='You submitted without carrying out the termination. Reset and work through the full task.'; }
+    else if(passOutcome && S.provedDead && S.trips===0 && S.failedTests===0){ res.verdict='COMPETENT'; res.cls='pass';
+      res.summary='Safe, correct and verified — isolated first, proved dead, terminated correctly and confirmed with a test. This is the standard.'; }
+    else if(passOutcome){ res.verdict='COMPETENT — WITH NOTES'; res.cls='notes';
+      res.summary='You reached a safe, verified result. Tighten up the flagged steps to make it fully clean.'; }
+    else { res.verdict='NOT YET COMPETENT'; res.cls='fail';
+      res.summary='The outlet was not left safe and verified. Review the points below, reset, and try again.'; }
+    return res;
+  }
+
+  function buildTrace(){
+    var out=[];
+    S.log.forEach(function(e){
+      var t=e.type, d=e.detail, s='';
+      if(t==='isolate') s='Isolated the supply at the main switch';
+      else if(t==='energise') s='Restored the supply';
+      else if(t==='reset-rcd') s='Reset the safety switch (restored supply)';
+      else if(t==='prove-dead') s='Tested the safety switch — proved the circuit dead';
+      else if(t==='rcd-live') s='Pressed the safety-switch test while the circuit was live';
+      else if(t==='pickup') s='Picked up the '+WIRES[d].colour+' conductor';
+      else if(t==='place') s='Connected '+WIRES[d.id].colour+' to terminal '+d.term+(d.ok?' <span class="tick">✓</span>':' <span class="cross">✗</span>');
+      else if(t==='test') s='Tested the outlet — '+(d==='correct'?'PASS':'FAULT ('+d.replace('-',' ')+')');
+      else if(t==='trip') s='Safety switch tripped — fault to earth';
+      else if(t==='live-work') s='Reached into the live circuit';
+      else if(t==='submit') s='Submitted for assessment';
+      else return;
+      out.push({n:e.n, text:s, warn:(t==='live-work'||t==='trip'||t==='rcd-live')});
+    });
+    return out;
+  }
+
+  var ICON={ok:'✓',warn:'!',bad:'✕',fatal:'✕',note:'•'};
+  function renderReport(res){
+    var r=document.getElementById('report');
+    var h='';
+    h+='<div class="verdict '+res.cls+'"><span class="vpill">'+res.verdict+'</span><p>'+res.summary+'</p></div>';
+    h+='<ul class="findings">';
+    res.findings.forEach(function(f){
+      h+='<li class="f-'+f.status+'"><span class="ficon">'+ICON[f.status]+'</span><span class="fbody"><b>'+f.cat+'</b> '+f.text+'</span></li>';
+    });
+    h+='</ul>';
+    if(res.trace.length){
+      h+='<div class="trace-callout"><div class="trace-head"><span class="trace-ic">↳</span><div><b>Step-by-step review</b><small>Every action you took this attempt, in order — you can check this back after the assessment finishes.</small></div></div>';
+      h+='<ol class="tracelist">';
+      res.trace.forEach(function(t){ h+='<li'+(t.warn?' class="tw"':'')+'>'+t.text+'</li>'; });
+      h+='</ol></div>';
+    }
+    r.innerHTML=h; r.classList.add('show');
+    announce(res.verdict+'. '+res.summary);
+    r.scrollIntoView({behavior: reduce?'auto':'smooth', block:'nearest'});
+  }
+
+  // ================= RENDER =================
+  function render(){
+    var isolated=!S.mainOn && !S.tripped;
+    // main switch
+    document.getElementById('mainLever').setAttribute('transform', S.mainOn?'translate(0,0)':'translate(0,32)');
+    document.getElementById('mainSwitch').setAttribute('aria-checked', S.mainOn?'false':'true');
+    document.getElementById('mainOnLbl').setAttribute('fill', S.mainOn?'#d9534a':'#6b7078');
+    document.getElementById('mainOffLbl').setAttribute('fill', S.mainOn?'#6b7078':'#d7dade');
+    var live=isLive();
+    var sp=document.getElementById('supplyPip');
+    sp.setAttribute('fill', S.tripped?'#e0a33a':(live?'#d9534a':'#4caf72'));
+    sp.setAttribute('filter','url(#softGlow)'); sp.setAttribute('r','6');
+    var st=document.getElementById('supplyText');
+    st.textContent=S.tripped?'TRIPPED':(live?'LIVE':'ISOLATED');
+    st.setAttribute('fill', S.tripped?'#e0a33a':(live?'#e68a84':'#7fd6a0'));
+    // rcd
+    document.getElementById('rcdLever').setAttribute('transform', S.tripped?'translate(0,20)':'translate(0,0)');
+    var pipOn=S.verified&&isolated, pip=document.getElementById('rcdPip');
+    pip.setAttribute('fill', pipOn?'#5fce88':'#3a3f47');
+    if(pipOn){ pip.setAttribute('filter','url(#softGlow)'); pip.setAttribute('r','6'); }
+    else { pip.removeAttribute('filter'); pip.setAttribute('r','5'); }
+    // wires: always operable (contact-while-live is the assessed fatal error, not blocked)
+    Object.keys(WIRES).forEach(function(id){
+      wireEls[id].g.style.opacity=S.ended?'0.85':'1';
+      drawWire(id);
+    });
+    // terminals occupancy / drop hint
+    document.querySelectorAll('.terminal').forEach(function(t){
+      var tm=t.getAttribute('data-term'),glow=t.querySelector('.term-glow'),free=!occupant(tm);
+      if(S.held&&free){glow.setAttribute('stroke','var(--warn)');glow.setAttribute('opacity','0.9');}
+      else if(occupant(tm)){glow.setAttribute('stroke','var(--ok)');glow.setAttribute('opacity','0.45');}
+      else glow.setAttribute('opacity','0');
+    });
+    // gpo switch always physically operable
+    var gs=document.getElementById('gpoSwitch'); gs.style.pointerEvents=S.ended?'none':'auto'; gs.style.opacity='1';
+    document.getElementById('rockerPaddle').setAttribute('transform', S.gpoOn?'translate(0,36)':'translate(0,0)');
+    document.getElementById('gpoOnLbl').setAttribute('opacity', S.gpoOn?'1':'0');
+    document.getElementById('gpoOffLbl').setAttribute('opacity', S.gpoOn?'0':'1');
+  }
+
+  // ================= INPUT WIRING =================
+  var drag=null;
+  Object.keys(WIRES).forEach(function(id){
+    var g=wireEls[id].g;
+    g.addEventListener('pointerdown',function(ev){
+      if(ev.button!==undefined && ev.button!==0) return;
+      if(!grabAllowed(id)){ ev.preventDefault(); return; }
+      if(S.place[id]){ S.place[id]=null; resetLamp(); }
+      S.held=id; markTouch(); logE('pickup',id); wiresG.appendChild(g);
+      drag={id:id,moved:false,px:ev.clientX,py:ev.clientY};
+      try{g.setPointerCapture(ev.pointerId);}catch(e){}
+      render(); ev.preventDefault();
+    });
+    g.addEventListener('pointermove',function(ev){
+      if(!drag||drag.id!==id) return;
+      if(Math.abs(ev.clientX-drag.px)+Math.abs(ev.clientY-drag.py)>3) drag.moved=true;
+      var pt=svgPoint(ev); setWirePos(id,pt.x,pt.y);
+    });
+    g.addEventListener('pointerup',function(ev){
+      if(!drag||drag.id!==id) return;
+      try{g.releasePointerCapture(ev.pointerId);}catch(e){}
+      var pt=svgPoint(ev),best=null,bd=1e9;
+      for(var tm in TERM){var t=TERM[tm],d=Math.hypot(pt.x-t.x,pt.y-t.y);if(d<bd){bd=d;best=tm;}}
+      if(drag.moved && best && bd<=ACCEPT && !occupant(best)) connectTo(best,id);
+      else if(drag.moved) returnWire(id);
+      else { announce(ucfirst(WIRES[id].colour)+' conductor selected. Click a terminal to connect, or press Escape.'); render(); }
+      drag=null;
+    });
+    g.addEventListener('pointercancel',function(){ if(drag&&drag.id===id){ returnWire(id); drag=null; } });
+    g.addEventListener('keydown',function(ev){
+      if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); if(S.held===id) returnWire(id); else selectWire(id); }
+      else if(ev.key==='Escape'&&S.held===id) returnWire(id);
+    });
+  });
+  document.querySelectorAll('.terminal').forEach(function(t){
+    var tm=t.getAttribute('data-term');
+    var fr=el('circle',{'class':'term-focus',r:'42',fill:'none',stroke:'var(--warn)','stroke-width':'2.5'});
+    var hit=el('circle',{'class':'term-hit focusable',r:'40',fill:'transparent',tabindex:'0',role:'button','aria-label':'Terminal '+tm});
+    t.appendChild(fr);t.appendChild(hit);
+    hit.addEventListener('click',function(){ if(S.held) connectTo(tm); });
+    hit.addEventListener('keydown',function(ev){ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault();
+      if(S.held) connectTo(tm); else announce('Terminal '+tm+'. '+(occupant(tm)?'Occupied by the '+WIRES[occupant(tm)].colour+' conductor.':'Empty.')); } });
+  });
+
+  function bind(id,fn){var e=document.getElementById(id);e.addEventListener('click',fn);
+    e.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();fn();}});}
+  bind('mainSwitch',toggleMain);
+  bind('rcdTest',rcdTest);
+  document.getElementById('gpoSwitch').addEventListener('click',doTest);
+  document.getElementById('gpoSwitch').addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();doTest();}});
+  document.getElementById('submit').addEventListener('click',submit);
+
+  document.getElementById('restart').addEventListener('click',function(){
+    S=blank();
+    Object.keys(WIRES).forEach(function(id){ setWirePos(id,WIRES[id].park.x,WIRES[id].park.y); });
+    resetLamp();
+    document.querySelector('.stage-card').classList.remove('ended'); svg.classList.remove('locked');
+    var rep=document.getElementById('report'); rep.classList.remove('show'); rep.innerHTML='';
+    document.getElementById('submit').disabled=false;
+    document.getElementById('rec').classList.remove('off');
+    document.getElementById('actionCount').textContent='0 actions';
+    announce('Assessment reset. Supply is live.');
+    render();
+  });
+
+  // ---- task brief modal (gates the page until dismissed) ----
+  var beginBtn=document.getElementById('beginTask');
+  beginBtn.addEventListener('click',function(){
+    document.getElementById('objectiveBackdrop').classList.add('hide');
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
