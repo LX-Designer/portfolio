@@ -86,19 +86,24 @@
   .step.done .num span{display:none;}
 
   /* stage */
-  /* The scene's interactive geometry (drag targets, terminal hit radii) is
-     fixed in SVG-unit space, so letting the card shrink to fit a phone width
-     shrinks every tap target proportionally too — a wire's grab area would
-     end up only a few pixels wide. min-width holds the stage at a size where
-     everything stays tappable; .stage-scroll lets that overflow scroll
-     horizontally on narrow viewports instead of squeezing the whole diagram
-     down to illegible/untappable. */
   .stage-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -2px;padding:2px;}
   .stage-card{
     position:relative;border:1px solid var(--hair);border-radius:16px;overflow:hidden;
     background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(0,0,0,.12));
     box-shadow:0 30px 60px -30px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.04);
-    min-width:900px;
+  }
+  /* Above the mobile breakpoint (matches the JS's own mobileMQ), the scene
+     stays the wide desktop layout — the interactive geometry (drag
+     targets, terminal hit radii) is fixed in SVG-unit space, so letting the
+     card shrink to fit a narrower-than-designed width would shrink every
+     tap target proportionally too. min-width holds it at a size where
+     everything stays tappable; .stage-scroll lets that overflow scroll
+     horizontally rather than squeezing the whole wide diagram down to
+     illegible/untappable. Below the breakpoint, the JS swaps in a stacked
+     mobile layout sized to fit the card at 100% width instead, so neither
+     rule is needed there. */
+  @media (min-width:761px){
+    .stage-card{min-width:900px;}
   }
   svg.scene{display:block;width:100%;height:auto;touch-action:none;}
 
@@ -554,7 +559,7 @@
       <g id="wires"></g>
 
       <!-- keyboard hint -->
-      <text x="24" y="600" font-family="var(--mono)" font-size="11" fill="#5a5f66">Tab to move · Enter to pick up / connect · Esc to cancel</text>
+      <text id="kbdHint" x="24" y="600" font-family="var(--mono)" font-size="11" fill="#5a5f66">Tab to move · Enter to pick up / connect · Esc to cancel</text>
     </svg>
   </div>
   </div>
@@ -590,14 +595,82 @@
   document.addEventListener('keydown',function(ev){ if(ev.key==='Tab') document.documentElement.classList.remove('using-mouse'); });
 
   // ---- geometry ----
-  var GLAND = {x:840, y:456};
-  var TERM = { A:{x:772,y:214}, N:{x:908,y:214}, E:{x:840,y:336} };
+  // WIRES holds everything about each conductor EXCEPT where it sits —
+  // "park" (and GLAND/TERM below) come from whichever layout is active, so
+  // the same conductors/terminals work unchanged whether the scene is laid
+  // out wide (desktop) or stacked (mobile).
   var WIRES = {
-    active:  {fn:'Active',  colour:'brown',            home:'A', color:'#8a5a2b', dark:'#5e3d1c', park:{x:702,y:526}},
-    neutral: {fn:'Neutral', colour:'blue',             home:'N', color:'#2f6fb0', dark:'#1f4c7d', park:{x:840,y:546}},
-    earth:   {fn:'Earth',   colour:'green and yellow', home:'E', color:'#3c8a3c', dark:'#2b632b', stripe:'#e0c53a', bootFill:'url(#earthSplit)', park:{x:978,y:526}}
+    active:  {fn:'Active',  colour:'brown',            home:'A', color:'#8a5a2b', dark:'#5e3d1c'},
+    neutral: {fn:'Neutral', colour:'blue',             home:'N', color:'#2f6fb0', dark:'#1f4c7d'},
+    earth:   {fn:'Earth',   colour:'green and yellow', home:'E', color:'#3c8a3c', dark:'#2b632b', stripe:'#e0c53a', bootFill:'url(#earthSplit)'}
   };
   var ACCEPT = 46;
+  var GLAND, TERM;
+
+  // ---- responsive layout (desktop wide scene vs. mobile stacked scene) ----
+  // Every drag-drop/rendering coordinate (GLAND, TERM, each wire's park
+  // spot) lives in one shared SVG coordinate space, so switching between
+  // the wide desktop arrangement and a stacked mobile one means moving the
+  // whole coordinate set together, not just restyling — hence a full
+  // config per mode rather than a CSS breakpoint. The board's own position
+  // never changes; only the GPO's transform (and everything computed from
+  // it) does.
+  var LAYOUTS = {
+    desktop: {
+      viewBox: '0 0 1180 620',
+      gpoTransform: 'translate(560,0)',
+      gland: {x:840, y:456},
+      term: { A:{x:772,y:214}, N:{x:908,y:214}, E:{x:840,y:336} },
+      park: { active:{x:702,y:526}, neutral:{x:840,y:546}, earth:{x:978,y:526} },
+      feedPath: 'M 370 352 C 560 352 620 456 840 456',
+      hint: {x:24, y:600}
+    },
+    mobile: {
+      viewBox: '0 0 500 1060',
+      gpoTransform: 'translate(-60,460)',
+      gland: {x:220, y:916},
+      term: { A:{x:152,y:674}, N:{x:288,y:674}, E:{x:220,y:796} },
+      park: { active:{x:82,y:986}, neutral:{x:220,y:1006}, earth:{x:358,y:986} },
+      feedPath: 'M 220 512 L 220 916',
+      hint: {x:16, y:1040}
+    }
+  };
+  var mobileMQ = window.matchMedia('(max-width:760px)');
+  function currentModeFromMQ(){ return mobileMQ.matches ? 'mobile' : 'desktop'; }
+
+  var currentLayoutMode = null;
+  // Sets every geometry attribute/constant for a mode. Safe to call before
+  // the wires exist yet (used once, up front) — repositioning any
+  // already-built wire elements is applyLayout's job, below.
+  function setLayoutGeometry(mode){
+    currentLayoutMode = mode;
+    var L = LAYOUTS[mode];
+    svg.setAttribute('viewBox', L.viewBox);
+    document.getElementById('gpo').setAttribute('transform', L.gpoTransform);
+    GLAND = L.gland;
+    TERM = L.term;
+    Object.keys(WIRES).forEach(function(id){ WIRES[id].park = L.park[id]; });
+    document.querySelectorAll('#feed path').forEach(function(p){ p.setAttribute('d', L.feedPath); });
+    var hint = document.getElementById('kbdHint');
+    hint.setAttribute('x', L.hint.x);
+    hint.setAttribute('y', L.hint.y);
+  }
+  // Called on an actual breakpoint crossing (after initial load). Moves
+  // every wire to its position under the NEW layout — connected ones to
+  // their terminal's new spot, unconnected ones to the new park spot — and
+  // snaps back anything mid-drag first, so a resize never leaves a wire
+  // stranded at an old-layout coordinate.
+  function applyLayout(mode){
+    if (mode === currentLayoutMode) return;
+    setLayoutGeometry(mode);
+    if (S.held) returnWire(S.held);
+    Object.keys(WIRES).forEach(function(id){
+      var term = S.place[id];
+      if (term) setWirePos(id, TERM[term].x, TERM[term].y);
+      else setWirePos(id, WIRES[id].park.x, WIRES[id].park.y);
+    });
+  }
+  setLayoutGeometry(currentModeFromMQ());
 
   // ---- state ----
   function blank(){ return {
@@ -978,6 +1051,11 @@
   beginBtn.addEventListener('click',function(){
     document.getElementById('objectiveBackdrop').classList.add('hide');
   });
+
+  // Re-lay-out only on an actual desktop<->mobile breakpoint crossing, not
+  // on every resize tick (matchMedia's own change event already does that
+  // filtering for us).
+  mobileMQ.addEventListener('change', function(){ applyLayout(currentModeFromMQ()); });
 
   render();
 })();
